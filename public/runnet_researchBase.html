@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+        <!-- 导入 layui 的样式表 -->
+        <link rel="stylesheet" href="lib/layui/css/layui.css" />
+        <!-- 导入自己的样式表 -->
+        <link rel="stylesheet" href="css/font/iconfont.css" />
+        <link rel="stylesheet" href="css/runnet_common.css" />
+        <link rel="stylesheet" href="css/runnet_page.css" />
+        <title>科创联盟</title>
+        <style>
+            .project-manage {
+                /* width: 1200px; */
+                padding: 100px 150px;
+                position: relative;
+            }
+
+            .dashed-border {
+                border: 1px dashed #50b7f2;
+                height: 150px;
+                border-left: 0;
+                position: relative;
+            }
+            .dashed-border::before {
+                content: '';
+                width: 0;
+                height: 0;
+                border-width: 7px;
+                border-style: solid;
+                border-color: transparent #50b7f2 transparent transparent;
+                position: absolute;
+                bottom: -7px;
+                left: -7px;
+            }
+            .cricle-wrapper img {
+                width: 110px;
+            }
+            .cricle-wrapper .top {
+                position: absolute;
+                left: -75px;
+                top: 40px;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 0 150px;
+            }
+            .cricle-wrapper p {
+                padding-top: 5px;
+            }
+            .cricle-wrapper .bottom {
+                position: absolute;
+                left: 55px;
+                bottom: 30px;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 0 150px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="headDiv"></div>
+        <div class="searchDiv"></div>
+
+        <div class="runnet_main_body">
+            <div class="wrap">
+                <div class="runnut_head">
+                    <span class="borderl"></span>
+                    <span class="layui-breadcrumb" lay-separator=">">
+                        <a href="index.html">首页</a>
+                        <a href="runnet_crowdCreate.html">众创平台</a>
+                        <a><cite>‘云’端产学研究基地</cite></a>
+                    </span>
+                </div>
+                <div class="page-nav"><i class="iconfont icon-jidifengcai color-icon"></i> <span> 孵化基地 >></span></div>
+                <div class="layui-carousel block" id="carousel" lay-filter="test1">
+                    <div carousel-item="">
+                        <div>
+                            <div class="flex activity">
+                                <div style="width: 33.33%" class="p-xs relative m-r-md relative list">
+                                    <img src="images/researchBase/t.png" style="height: 180px; width: 100%" />
+                                    <p class="font-bold p-b-xs p-t-xs">一品集美创客基地</p>
+                                    <div class="text-ellipsis-3 text-indent-2" style="line-height: 26px">国家级众创空间，位于厦门市集美区软件园三期，面积 4000平方米，主要孵化方向为电子商务、移动互联网、TMT 与一品威客网平台主营业务相关项目等。</div>
+                                </div>
+                                <div style="width: 33.33%" class="p-xs relative m-r-md relative list">
+                                    <img src="images/researchBase/t.png" style="height: 180px; width: 100%" />
+                                    <p class="font-bold p-b-xs p-t-xs">一品创客海洛基地</p>
+                                    <div class="text-ellipsis-3 text-indent-2" style="line-height: 26px">国家级众创空间，位于厦门市海沧自贸区，面积8000平 方米，主题为“海峡两岸智能机器人孵化空间”，旨在孵化 无人机、机器人、智能硬件等方向创新创业项目。</div>
+                                </div>
+                                <div style="width: 33.33%" class="p-xs relative relative list">
+                                    <img src="images/researchBase/t.png" style="height: 180px; width: 100%" />
+                                    <p class="font-bold p-b-xs p-t-xs">一品创客加速器</p>
+                                    <div class="text-ellipsis-3 text-indent-2" style="line-height: 26px">国家级众创空间，位于厦门市集美区软件园三期，以两 岸成长期企业为主要服务对象，提供办公空间设备，政务代 理、路演对接、战略规划、市场营销、培训等专业服务。</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex activity">
+                                <div style="width: 33.33%" class="p-xs relative m-r-md relative list">
+                                    <img src="images/researchBase/t.png" style="height: 180px; width: 100%" />
+                                    <p class="font-bold p-b-xs p-t-xs">一品集美创客基地</p>
+                                    <div class="text-ellipsis-3 text-indent-2" style="line-height: 26px">国家级众创空间，位于厦门市集美区软件园三期，面积 4000平方米，主要孵化方向为电子商务、移动互联网、TMT 与一品威客网平台主营业务相关项目等。</div>
+                                </div>
+                                <div style="width: 33.33%" class="p-xs relative m-r-md relative list">
+                                    <img src="images/researchBase/t.png" style="height: 180px; width: 100%" />
+                                    <p class="font-bold p-b-xs p-t-xs">一品创客海洛基地</p>
+                                    <div class="text-ellipsis-3 text-indent-2" style="line-height: 26px">国家级众创空间，位于厦门市海沧自贸区，面积8000平 方米，主题为“海峡两岸智能机器人孵化空间”，旨在孵化 无人机、机器人、智能硬件等方向创新创业项目。</div>
+                                </div>
+                                <div style="width: 33.33%" class="p-xs relative m-r-md relative list">
+                                    <img src="images/researchBase/t.png" style="height: 180px; width: 100%" />
+                                    <p class="font-bold p-b-xs p-t-xs">一品创客加速器</p>
+                                    <div class="text-ellipsis-3 text-indent-2" style="line-height: 26px">国家级众创空间，位于厦门市集美区软件园三期，以两 岸成长期企业为主要服务对象，提供办公空间设备，政务代 理、路演对接、战略规划、市场营销、培训等专业服务。</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-nav"><i class="iconfont icon-xiangmuguanli color-icon"></i> <span>项目管理 >></span></div>
+                <div class="block project-manage">
+                    <div class="dashed-border"></div>
+                    <div class="cricle-wrapper">
+                        <div class="flex-between-w top">
+                            <div class="text-center">
+                                <img src="images/researchBase/c1.png" class="cursor-pointer" />
+                                <p>挖掘学生背景</p>
+                            </div>
+                            <div class="text-center">
+                                <img src="images/researchBase/c2.png" class="cursor-pointer" />
+                                <p>签合同</p>
+                            </div>
+                            <div class="text-center">
+                                <img src="images/researchBase/c3.png" class="cursor-pointer" />
+                                <p>签证指导</p>
+                            </div>
+                            <div class="text-center">
+                                <img src="images/researchBase/c4.png" class="cursor-pointer" />
+                                <p>行前指导</p>
+                            </div>
+                        </div>
+                        <div class="flex-between-w bottom">
+                            <div class="text-center">
+                                <img src="images/researchBase/c8.png" class="cursor-pointer" />
+                                <p>制定活动方案</p>
+                            </div>
+                            <div class="text-center">
+                                <img src="images/researchBase/c7.png" class="cursor-pointer" />
+                                <p>前期准备指导</p>
+                            </div>
+                            <div class="text-center">
+                                <img src="images/researchBase/c6.png" class="cursor-pointer" />
+                                <p>签证成功</p>
+                            </div>
+                            <div class="text-center">
+                                <img src="images/researchBase/c5.png" class="cursor-pointer" />
+                                <p>参加项目</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-nav"><i class="iconfont icon-chengjiu color-icon"></i> <span>成果应用 >></span></div>
+                <div class="flex-around block p-sm">
+                    <div class="p-r-sm text-center" style="width: 25%">
+                        <img class="p-b-sm" src="images/researchBase/b1.jpg" style="height: 250px" />
+                        <p>空气净化器</p>
+                    </div>
+                    <div class="p-r-sm text-center" style="width: 25%">
+                        <img class="p-b-sm" src="images/researchBase/b2.png" style="height: 250px" />
+                        <p>光学断层扫描成像仪OCT</p>
+                    </div>
+                    <div class="p-r-sm text-center" style="width: 25%">
+                        <img class="p-b-sm" src="images/researchBase/b3.png" style="height: 250px" />
+                        <p>药品耗材自动化管理系统管理系统</p>
+                    </div>
+                    <div class="text-center" style="width: 25%">
+                        <img class="p-b-sm" src="images/researchBase/b4.png" style="height: 250px" />
+                        <p>HPV基因分型检测芯片</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导入 layui 的JS文件 -->
+        <script src="lib/layui/layui.all.js"></script>
+        <!-- 导入 jQuery -->
+        <script src="lib/jquery.js"></script>
+        <script>
+            $('.headDiv').load('templates/header.html')
+            $('.searchDiv').load('templates/search.html')
+            layui.use(['carousel'], function () {
+                var carousel = layui.carousel
+                carousel.render({
+                    elem: '#carousel',
+                    arrow: 'always',
+                    width: '1200px',
+                    height: '310px',
+                })
+            })
+        </script>
+    </body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+        <!-- 导入 layui 的样式表 -->
+        <link rel="stylesheet" href="lib/layui/css/layui.css" />
+        <!-- 导入自己的样式表 -->
+        <link rel="stylesheet" href="css/runnet_common.css" />
+        <link rel="stylesheet" href="css/runnet_page.css" />
+        <title>通知公告</title>
+        <style></style>
+    </head>
+
+    <body>
+        <div class="headDiv"></div>
+        <div class="searchDiv"></div>
+
+        <div class="runnet_main_body">
+            <div class="wrap">
+                <div class="runnut_head">
+                    <span class="borderl"></span>
+                    <span class="layui-breadcrumb" lay-separator=">">
+                        <a href="index.html">首页</a>
+                        <a href="runnet_crowdCreate.html">众创平台</a>
+                        <a><cite>通知公告</cite></a>
+                    </span>
+                </div>
+                <div class="block p-md m-t-lg">
+                    <script id="notify_demo" type="text/html">
+                        {{# layui.each(datagrid, function(index, item){ }}
+                        <li class="flex-between">
+                            <div class="text-ellipsis-1 " style="width: 60%;">
+                                <i></i>
+                                <a href="notifyDetail.html" class="link-hover">{{item.title}}</a>
+                            </div>
+                            <div class="color-tip">{{item.createTime}}</div>
+                        </li>
+                        {{# }); }}
+                    </script>
+                    <ul id="notify-wrap" class="runnet_lists"></ul>
+                    <div id="page-wrap" class="text-center m-t-lg"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="lib/layui/layui.all.js"></script>
+<script src="lib/jquery.js"></script>
+<script src="js/base.js"></script>
+<script>
+    $('.headDiv').load('templates/header.html')
+    $('.searchDiv').load('templates/search.html')
+    console.log('in notifu list')
+    var datagrid = []
+    var params = {
+        pageNum: 1,
+        pageSize: 20,
+    }
+    $(function () {
+        init()
+    })
+    function setList() {
+        layui.use(['laytpl', 'laypage'], function () {
+            var laytpl = layui.laytpl,
+                laypage = layui.laypage
+
+            var notifyTpl = notify_demo.innerHTML
+            var notifyView = document.getElementById('notify-wrap')
+            laytpl(notifyTpl).render(datagrid, function (html) {
+                notifyView.innerHTML = html
+            })
+            laypage.render({
+                elem: 'page-wrap',
+                count: datagrid.length, //总条数
+                limit: 20, //每页显示的数据条数
+                limits: [10, 20, 50, 100],
+                layout: ['prev', 'page', 'next', 'count', 'limit'], //自定义排版
+                jump: function (obj, first) {
+                    if (!first) {
+                        layer.msg('第' + obj.curr + '页', { offset: 'b' })
+                    }
+                },
+            })
+        })
+    }
+    function init() {
+        $.ajax({
+            type: 'post',
+            url: baseUrl + '/notice/pageList',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify(params),
+            success: function (res) {
+                if (res.code == 200) {
+                    datagrid = res.data
+                    setList()
+                }
+            },
+        })
+    }
+</script>

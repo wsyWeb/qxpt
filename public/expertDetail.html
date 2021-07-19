@@ -1,0 +1,332 @@
+<link rel="stylesheet" href="lib/layui/css/layui.css" />
+<link rel="stylesheet" href="css/runnet_common.css" />
+<link rel="stylesheet" href="css/runnet_page.css" />
+<style>
+    .register_expert_form {
+        margin: 20px 50px;
+        border: 1px solid #dedede;
+        border-bottom: none;
+    }
+    .register_expert_form .layui-form-label {
+        text-align: center;
+        width: 120px;
+        color: #999999;
+    }
+    .register_expert_form .layui-input-block {
+        border-left: 1px solid #dedede;
+        margin-left: 150px;
+    }
+    .register_expert_form .layui-form-item {
+        margin: 0;
+        border-bottom: 1px solid #dedede;
+    }
+    .layui-col-md6:nth-child(2n) {
+        border-left: 1px solid #dedede;
+    }
+    .layui-col-md6 {
+        border-bottom: 1px solid #dedede;
+    }
+    .register_expert_form .layui-input,
+    .register_expert_form .layui-textarea {
+        /* width:90%; */
+        cursor: inherit;
+        border-color: transparent !important;
+    }
+    .register_expert_form .layui-input:hover,
+    .register_expert_form .layui-input:focus,
+    .register_expert_form .layui-textarea:hover,
+    .register_expert_form .layui-textarea:focus {
+        border-color: transparent !important;
+    }
+    .upload-img {
+        width: 100px;
+    }
+</style>
+<form class="layui-form m-t-md register_expert_form" action="" lay-filter="register_expert_form">
+    <div class="layui-form-item">
+        <div class="p-xs">
+            <img id="headPortrait-img" width="100px" height="120px" />
+        </div>
+    </div>
+    <div class="layui-row">
+        <div class="layui-col-md6">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" readonly class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-block">
+                <input type="text" name="gender" readonly class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <label class="layui-form-label">出生日期</label>
+            <div class="layui-input-block">
+                <input name="birthDay" readonly class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <label class="layui-form-label">政治面貌</label>
+            <div class="layui-input-block">
+                <input name="politis" readonly class="layui-input" />
+            </div>
+        </div>
+
+        <div class="layui-col-md6">
+            <label class="layui-form-label">工作单位</label>
+            <div class="layui-input-block">
+                <input name="workUnit" readonly class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <label class="layui-form-label">参工时间</label>
+            <div class="layui-input-block">
+                <input name="workingTime" readonly class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <label class="layui-form-label">岗位级别</label>
+            <div class="layui-input-block">
+                <input name="positionLevel" readonly class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <label class="layui-form-label">从事专业</label>
+            <div class="layui-input-block">
+                <input name="professional" readonly class="layui-input" />
+            </div>
+        </div>
+
+        <div class="layui-col-md6">
+            <label class="layui-form-label">职称</label>
+            <div class="layui-input-block">
+                <input name="positionTitle" readonly class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <label class="layui-form-label">职务</label>
+            <div class="layui-input-block">
+                <input name="positionJob" readonly class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <label class="layui-form-label">毕业学校</label>
+            <div class="layui-input-block">
+                <input name="graduateSchool" readonly class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <label class="layui-form-label">最高学历</label>
+            <div class="layui-input-block">
+                <input name="highestEducation" readonly class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <label class="layui-form-label">电子邮箱</label>
+            <div class="layui-input-block">
+                <input name="email" readonly class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <label class="layui-form-label">手机号</label>
+            <div class="layui-input-block">
+                <input name="mobilePhone" readonly class="layui-input" />
+            </div>
+        </div>
+
+        <div class="layui-col-md6">
+            <label class="layui-form-label">通讯地址</label>
+            <div class="layui-input-block">
+                <input name="postalAddress" readonly class="layui-input" />
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <label class="layui-form-label">入驻领域</label>
+            <div class="layui-input-block">
+                <input name="entryField" readonly class="layui-input" />
+            </div>
+        </div>
+    </div>
+    <div class="achievement">
+        <div class="layui-form-item">
+            <label class="layui-form-label">国内外相关团体认知情况</label>
+            <div class="layui-input-block">
+                <textarea readonly name="abroadGroup" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">近三年参加的科普活动</label>
+            <div class="layui-input-block">
+                <textarea readonly name="threeYearsActivity" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">近三年获得的奖励和荣誉</label>
+            <div class="layui-input-block">
+                <textarea readonly name="threeYearsReward" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">主要专业技术工作经历（含主持或参与的课题项目、撰写的报告、规划、标志规范等。填写信息包括项目来源、经费、本人排名等信息）</label>
+            <div class="layui-input-block">
+                <textarea readonly rows="12" name="majorMajors" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">发表的相关论文、专著、教材等</label>
+            <div class="layui-input-block">
+                <textarea readonly name="publishPaper" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">获得相关的专利</label>
+            <div class="layui-input-block">
+                <textarea readonly name="acquirePatent" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">对气象科普工作的认识和未来的工作设想</label>
+            <div class="layui-input-block">
+                <textarea readonly name="sceneOperation" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">单位推荐意见</label>
+            <div class="layui-input-block p-md" id="unit-opinion"></div>
+        </div>
+        <div class="comment-wrap-readonly" style="display: none">
+            <div class="layui-form-item">
+                <label class="layui-form-label">评分</label>
+                <div class="layui-input-block">
+                    <input name="scorereadonly" readonly class="layui-input" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">评价</label>
+                <div class="layui-input-block">
+                    <textarea name="evaluatereadonly" readonly class="layui-textarea"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div style="margin: 20px 50px" class="commnt-wrap">
+    <div class="layui-row commnt">
+        <label class="layui-form-label required">评分</label>
+        <div class="layui-input-block">
+            <input style="width: 500px; display: inline-block" name="score" type="number" class="layui-input comment-input" lay-verify="required" />
+            <a class="color-theme cursor-pointer">查看评分标准</a>
+        </div>
+    </div>
+    <div class="layui-row m-t-md">
+        <label class="layui-form-label required">评价</label>
+        <div class="layui-input-block">
+            <textarea name="evaluate" placeholder="请输入评价，限500字" maxlength="500" class="layui-textarea comment-input" lay-verify="required"></textarea>
+        </div>
+    </div>
+    <!-- <div class="m-t-lg text-center">
+        <button class="layui-btn submit-comment-btn" onclick="sumitComment()">提交</button>
+        <button class="layui-btn layui-btn-primary" onclick="closeFun()">关闭</button>
+    </div> -->
+</div>
+<script src="lib/jquery.js"></script>
+<script src="lib/layui/layui.all.js"></script>
+<script src="js/base.js"></script>
+<script>
+    var index = parent.layer.getFrameIndex(window.name)
+    var formData = {}
+    function child(v) {
+        $.get(baseUrl + '/expert/queryExpertByUserId?user_name=' + v.userName, function (res) {
+            if (res.code == 200) {
+                formData = res.data
+                setForm()
+            }
+        })
+    }
+    function setForm() {
+        document.getElementById('headPortrait-img').setAttribute('src', imageUrl + formData.headPortrait)
+        for (var i = 0; i < formData.resumeAddressArr.length; i++) {
+            var item = formData.resumeAddressArr[i]
+            $('#unit-opinion').append('<div class="p-b-xs"><span>附件' + (i + 1) + '：</span><a class="color-theme" target="_blak" href=' + imageUrl + item.newFileName + '>' + item.oldFileName + '</a></div>')
+        }
+        if (formData.examineStatus == 1) {
+            $('.comment-wrap-readonly').show()
+            $('.commnt-wrap').hide()
+        }
+        layui.use(['form', 'layer'], function () {
+            var form = layui.form //只有执行了这一步，部分表单元素才会自动修饰成功
+            // 获取父页面传参
+            form.val('register_expert_form', {
+                id: formData.id,
+                userName: formData.userName,
+                name: formData.name,
+                headPortrait: formData.headPortrait,
+                birthDay: formData.birthDay,
+                gender: formData.gender,
+                politis: formData.politis,
+                workUnit: formData.workUnit,
+                workingTime: formData.workingTime,
+                positionLevel: formData.positionLevel,
+                professional: formData.professional,
+                graduateSchool: formData.graduateSchool,
+                highestEducation: formData.highestEducation,
+                positionTitle: formData.positionTitle,
+                eamil: formData.eamil,
+                mobilePhone: formData.mobilePhone,
+                positionJob: formData.positionJob,
+                postalAddress: formData.postalAddress,
+                abroadGroup: formData.abroadGroup,
+                threeYearsActivity: formData.threeYearsActivity,
+                threeYearsReward: formData.threeYearsReward,
+                majorMajors: formData.majorMajors,
+                publishPaper: formData.publishPaper,
+                acquirePatent: formData.acquirePatent,
+                sceneOperation: formData.sceneOperation,
+                entryField: formData.entryField,
+                scorereadonly: formData.score,
+                evaluatereadonly: formData.evaluate,
+            })
+        })
+    }
+
+    function closeFun() {
+        parent.layer.close(index)
+    }
+    function callbackdata() {
+        var score = $("input[name='score']").val()
+        var evaluate = $("textarea[name='evaluate']").val()
+        if (!score || !evaluate) {
+            parent.layer.msg('带*是必填项')
+            return false
+        }
+        if (Math.abs(score) > 100) {
+            parent.layer.msg('评分不能超过100')
+            return false
+        }
+        var submitForm = {
+            score,
+            evaluate,
+            user_name: sessionStorage.getItem('token'),
+            id: formData.id,
+        }
+        // $.ajax({
+        //     type: 'post',
+        //     url: baseUrl + '/expert/updateByExpert',
+        //     contentType: 'application/json;charset=UTF-8',
+        //     data: JSON.stringify(submitForm),
+        //     success: function (res) {
+        //         if (res.code == 200) {
+        //             parent.layer.close(index)
+        //             parent.layer.msg('评分成功')
+        //             parent.updateScore(score)
+        //             // window.parent.location.reload()
+        //         } else {
+        //             parent.layer.msg(res.message)
+        //         }
+        //     },
+        // })
+        return submitForm
+    }
+</script>

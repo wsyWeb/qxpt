@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+        <!-- 导入 layui 的样式表 -->
+        <link rel="stylesheet" href="./lib/layui/css/layui.css" />
+        <!-- 导入自己的样式表 -->
+        <link rel="stylesheet" href="css/font/iconfont.css" />
+        <link rel="stylesheet" href="css/runnet_common.css" />
+        <link rel="stylesheet" href="css/runnet_page.css" />
+        <title>科创联盟</title>
+        <style>
+            .ck-wrap h1 {
+                color: #fff;
+                left: 20px;
+                bottom: 20px;
+            }
+            .center-wrap {
+                height: 230px;
+            }
+            .center-wrap .left li {
+                height: 40px;
+            }
+            .center-wrap .right li {
+                line-height: 25px;
+                margin-bottom: 15px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="headDiv"></div>
+        <div class="searchDiv"></div>
+
+        <div class="runnet_main_body">
+            <div class="wrap">
+                <div class="runnut_head">
+                    <span class="borderl"></span>
+                    <span class="layui-breadcrumb" lay-separator=">">
+                        <a href="index.html">首页</a>
+                        <a href="runnet_crowdCreate.html">众创平台</a>
+                        <a><cite>科创联盟</cite></a>
+                    </span>
+                </div>
+
+                <div class="page-nav">
+                    <span><i class="iconfont icon-qizhi color-icon"></i> 践习活动 >></span>
+                </div>
+
+                <div class="layui-tab flex runnet_tab_custom">
+                    <ul class="layui-tab-title tab-left">
+                        <li class="layui-this">社会实践</li>
+                        <li>教师实践</li>
+                        <li>学生实践</li>
+                    </ul>
+                    <div class="layui-tab-content content-righ block m-l-md">
+                        <div class="layui-tab-item layui-show">
+                            <div class="layui-carousel" id="carousel1">
+                                <div carousel-item>
+                                    <div style="display: flex; justify-content: space-around">
+                                        <img src="images/createLeague/4.png" width="33.33%; height: 200px" />
+                                        <img src="images/createLeague/2.png" width="33.33%; height: 200px" />
+                                        <img src="images/createLeague/3.png" width="33.33%; height: 200px" />
+                                    </div>
+                                    <img src="images/createLeague/2.png" />
+                                    <img src="images/createLeague/4.png" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-tab-item">
+                            <div class="layui-carousel" id="carousel2">
+                                <div carousel-item>
+                                    <div style="display: flex; justify-content: space-around">
+                                        <img src="images/createLeague/3.png" width="33.33%" />
+                                        <img src="images/createLeague/2.png" width="33.33%" />
+                                        <img src="images/createLeague/4.png" width="33.33%" />
+                                    </div>
+                                    <img src="images/createLeague/2.png" />
+                                    <img src="images/createLeague/2.png" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-tab-item">
+                            <div class="layui-carousel" id="carousel3">
+                                <div carousel-item>
+                                    <div style="display: flex; justify-content: space-around">
+                                        <img src="images/createLeague/2.png" width="33.33%" />
+                                        <img src="images/createLeague/2.png" width="33.33%" />
+                                        <img src="images/createLeague/3.png" width="33.33%" />
+                                    </div>
+                                    <img src="images/createLeague/3.png" />
+                                    <img src="images/createLeague/3.png" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="height: 300px" class="block ck-wrap relative m-t-lg m-b-lg">
+                    <img src="images/createLeague/1.png" height="100%;" width="100%" />
+                    <h1 class="absolute font-32">科技万里行</h1>
+                </div>
+                <div class="flex center-wrap">
+                    <div style="width: 50%" class="m-r-lg block p-md left">
+                        <div class="flex-between m-b-sm">
+                            <span class="font-16 font-bold">
+                                <i class="iconfont icon-jiangzhang color-theme"></i>
+                                科技成果
+                            </span>
+                            <span class="link-hover">更多 >></span>
+                        </div>
+                        <ul style="line-height: 24px">
+                            <li>CAP1000蒸汽发生器干燥器研制</li>
+                            <li>CAP1400 CVS化容补水泵研制JK【2014】第1074号</li>
+                            <li>CAP1400 厂用水泵JK鉴字【2014】第11881号</li>
+                            <li>CAP1400 反应堆冷却剂系统Mind-loop 运行临界液位研究</li>
+                        </ul>
+                    </div>
+                    <div style="width: 50%" class="m-l-lg block p-md right">
+                        <div class="flex-between m-b-sm">
+                            <span class="font-16 font-bold"><i class="iconfont icon-zhuanjia color-theme"></i> 专家推荐</span>
+                            <span class="link-hover">换一批</span>
+                        </div>
+                        <ul>
+                            <li>
+                                <p>1.一种具有抗病毒退烧功能的兽用饲料添加剂及其制备方法</p>
+                                <p>申请人: 张洁</p>
+                                <p>申请日: 2021-05-24</p>
+                            </li>
+                            <li>
+                                <p>2.一种基于系能源技术的楼宇热水中央供配控制装置</p>
+                                <p>申请人:电子科技大学中山学院</p>
+                                <p>申请日: 2021-05-24</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flex center-wrap m-t-lg">
+                    <div style="width: 50%" class="m-r-lg block p-md left">
+                        <div class="flex-between m-b-sm">
+                            <span class="font-16 font-bold">
+                                <i class="iconfont icon-kejixiangmu color-theme"></i>
+                                科技项目</span
+                            >
+                            <span class="link-hover">更多 >></span>
+                        </div>
+                        <ul style="line-height: 24px">
+                            <li>CAP1000蒸汽发生器干燥器研制</li>
+                            <li>CAP1400 CVS化容补水泵研制JK【2014】第1074号</li>
+                            <li>CAP1400 厂用水泵JK鉴字【2014】第11881号</li>
+                            <li>CAP1400 反应堆冷却剂系统Mind-loop 运行临界液位研究</li>
+                        </ul>
+                    </div>
+                    <div style="width: 50%" class="m-l-lg block p-md right">
+                        <div class="flex-between m-b-sm">
+                            <span class="font-16 font-bold"><i class="iconfont icon-remen color-theme"></i> 热门论文</span>
+                            <span class="link-hover">换一批</span>
+                        </div>
+                        <ul>
+                            <li>
+                                <p>1.一种具有抗病毒退烧功能的兽用饲料添加剂及其制备方法</p>
+                                <p>申请人: 张洁</p>
+                                <p>申请日: 2021-05-24</p>
+                            </li>
+                            <li>
+                                <p>2.一种基于系能源技术的楼宇热水中央供配控制装置</p>
+                                <p>申请人:电子科技大学中山学院</p>
+                                <p>申请日: 2021-05-24</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="page-nav">
+                    <i class="iconfont icon-fuwuzhan color-icon"></i>
+                    <span>科创服务站 >></span>
+                </div>
+                <div class="layui-tab flex runnet_tab_custom">
+                    <ul class="layui-tab-title tab-left">
+                        <li class="layui-this"><i class="iconfont icon-chuangke"></i> 成为创客</li>
+                        <li><i class="iconfont icon-zhuanjia"></i> 专家入驻</li>
+                        <li><i class="iconfont icon-rencai"></i> 人才评奖</li>
+                    </ul>
+
+                    <div class="layui-tab-content content-right">
+                        <div class="layui-tab-item layui-show">
+                            <div class="layui-tab layui-tab-card">
+                                <ul class="layui-tab-title">
+                                    <li class="layui-this">申请条件</li>
+                                    <li>申请加入</li>
+                                    <li>我的审批</li>
+                                </ul>
+                                <div class="layui-tab-content">
+                                    <div class="layui-tab-item layui-show">申请成为创客</div>
+                                    <div class="layui-tab-item">申请加入创客</div>
+                                    <div class="layui-tab-item">我的审批</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-tab-item">
+                            <div class="layui-tab layui-tab-card">
+                                <ul class="layui-tab-title">
+                                    <li class="layui-this">领域专家</li>
+                                    <li>专家入驻</li>
+                                    <li>我的领域</li>
+                                </ul>
+                                <div class="layui-tab-content">
+                                    <div class="layui-tab-item layui-show">这是一段介绍领域专家的文本</div>
+                                    <div class="layui-tab-item">
+                                        <a class="layui-btn" onclick="registerExpertFun()">马上入驻</a>
+                                    </div>
+                                    <div class="layui-tab-item">我的审批</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-tab-item">
+                            <div class="layui-tab layui-tab-card">
+                                <ul class="layui-tab-title">
+                                    <li class="layui-this">申请条件</li>
+                                    <li>申请加入</li>
+                                    <li>我的审批</li>
+                                </ul>
+                                <div class="layui-tab-content">
+                                    <div class="layui-tab-item layui-show">申请成为人才</div>
+                                    <div class="layui-tab-item">申请加入人才</div>
+                                    <div class="layui-tab-item">我的审批</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="./lib/layui/layui.all.js"></script>
+<script src="./lib/jquery.js"></script>
+<script src="./js/createLeague.js"></script>
+<script src="js/base.js"></script>
+
+<script>
+    $(function () {
+        //提公共部分
+        $('.headDiv').load('templates/header.html')
+        $('.searchDiv').load('templates/search.html')
+    })
+    function registerExpertFun() {
+        $.get(baseUrl + '/expert/queryExpertByUserId?user_name=' + sessionStorage.getItem('token'), function (res) {
+            if (res.code == 200) {
+                if (!res.data || (res.data && Number(res.data.examineStatus == 99))) {
+                    window.location.href = 'expertForm.html'
+                } else {
+                    window.location.href = 'expertApproveResult.html'
+                }
+            }
+        })
+    }
+</script>

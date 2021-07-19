@@ -1,0 +1,264 @@
+<!-- <table class="layui-table" lay-data="{height:315, url:'/demo/table/user/', page:true, id:'test'}" lay-filter="test">
+    <thead>
+      <tr>
+        <th lay-data="{field:'id', width:80, sort: true}">ID</th>
+        <th lay-data="{field:'username', width:80}">用户名</th>
+        <th lay-data="{field:'sex', width:80, sort: true}">性别</th>
+        <th lay-data="{field:'city'}">城市</th>
+        <th lay-data="{field:'sign'}">签名</th>
+        <th lay-data="{field:'experience', sort: true}">积分</th>
+        <th lay-data="{field:'score', sort: true}">评分</th>
+        <th lay-data="{field:'classify'}">职业</th>
+        <th lay-data="{field:'wealth', sort: true}">财富</th>
+      </tr>
+    </thead>
+  </table> -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+        <!-- 导入 layui 的样式表 -->
+        <link rel="stylesheet" href="./lib/layui/css/layui.css" />
+        <!-- 导入自己的样式表 -->
+        <link rel="stylesheet" href="./css/runnet_common.css" />
+        <link rel="stylesheet" href="./css/runnet_page.css" />
+        <title>评分结果确认</title>
+        <style lang="">
+            /* .laytable-cell-checkbox .layui-icon {
+                    position: relative;
+                    top: 6px;
+                } */
+        </style>
+    </head>
+
+    <body>
+        <div class="headDiv"></div>
+        <div class="searchDiv"></div>
+
+        <div class="runnet_main_body">
+            <div class="wrap p-t-lg flex">
+                <div id="my_space_nav" class="m-r-md" style="width: 200px"></div>
+                <div id="my_space_content" style="width: 1000px">
+                    <!-- <div class="search-wrap m-b-lg">
+                        当前评选请况:
+                        <div class="layui-inline">
+                            <input type="text" class="layui-input" />
+                        </div>
+                    </div>
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="150" />
+                            <col width="150" />
+                            <col width="200" />
+                            <col />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>领域</th>
+                                <th>申请人数</th>
+                                <th>一级专家数</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>观测类</td>
+                                <td>180</td>
+                                <td>30</td>
+                            </tr>
+                        </tbody>
+                    </table> -->
+                    <!-- <div class="border-bottom m-t-lg m-b-lg"></div> -->
+                    <table class="layui-hide" id="expert_table" lay-filter="expert_table">
+                        <tbody id="expert_tbody"></tbody>
+                    </table>
+
+                    <!-- <script type="text/html" id="operate_wrap">
+                            <input
+                                lay-filter="check_level"
+                                type="checkbox"
+                                name=""
+                                lay-skin="primary"
+                                checked
+                            />
+                        </script> -->
+                    <div class="text-center" style="margin-top: 50px">
+                        <a class="layui-btn layui-btn-primary load-more-btn" onclick="loadMore()">加载更多...</a>
+                        <a class="layui-btn layui-btn-primary" onclick="saveFun()">保存</a>
+                        <a class="layui-btn" onclick="releaseFun()">发布</a>
+                        （已选择<span id="expert_num" class="color-theme"></span>位专家）
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="lib/layui/layui.all.js"></script>
+<script src="lib/jquery.js"></script>
+<script src="js/base.js"></script>
+<script>
+    $('.headDiv').load('./templates/header.html')
+    $('.searchDiv').load('./templates/search.html')
+    $('#my_space_nav').load('templates/my_space_nav.html')
+
+    var expertObj = JSON.parse(sessionStorage.getItem('expertObj'))
+    var limit = Number(expertObj.limit)
+    var expectedNums = Number(expertObj.expectedNums)
+    var datagrid = [],
+        showGrid = [],
+        selectExpert = [],
+        table = null
+    $(function () {
+        $.get(baseUrl + '/expert/queryExperyList?examineStatus=1&score=desc&page=1&periodical=' + expertObj.periodical + '&limit=' + limit, function (res) {
+            if (res.code == 200) {
+                datagrid = res.data.data
+                //获取已经选择过的专家
+                selectExpert = datagrid.filter(function (i) {
+                    return Number(i.isCheked) == 1
+                })
+                for (var i = 0; i < expectedNums + 20; i++) {
+                    // 如果未选择专家，默认勾选录取人数
+                    if (datagrid[i]) {
+                        if (selectExpert.length == 0 && i < expectedNums) {
+                            datagrid[i].isCheked = 1
+                        }
+                        showGrid.push(datagrid[i])
+                    }
+                }
+                setList()
+            }
+        })
+    })
+    function setList() {
+        layui.use(['table'], function () {
+            table = layui.table
+            table.render({
+                elem: '#expert_table',
+                data: showGrid,
+                cols: [
+                    [
+                        { type: 'checkbox' },
+                        { field: 'name', title: '姓名' },
+                        { field: 'workUnit', title: '单位' },
+                        { field: 'positionJob', title: '职务' },
+                        { field: 'score', title: '得分' },
+                        // {
+                        //     field: "btn",
+                        //     title: "操作",
+                        // },
+                    ],
+                ],
+                done: function (res, page, count) {
+                    // 去掉全选
+                    $('thead .laytable-cell-checkbox').children().remove()
+                    // 初始化选中专家
+                    for (var i = 0; i < res.data.length; i++) {
+                        var check = res.data[i]['isCheked']
+                        if (Number(check) == 1) {
+                            res.data[i]['LAY_CHECKED'] = true
+                            $('tr[data-index=' + i + '] input[type="checkbox"]').prop('checked', true)
+                            $('tr[data-index=' + i + '] input[type="checkbox"]')
+                                .next()
+                                .addClass('layui-form-checked')
+                        }
+                    }
+                    // }
+                    // var checkStatus = table.checkStatus("expert_table");
+                    selectExpert = datagrid.filter(function (i) {
+                        return Number(i.isCheked) == 1
+                    })
+                    $('#expert_num').html(selectExpert.length)
+                    // selectExpert = checkStatus.data;
+                },
+                page: false,
+            })
+            table.on('checkbox(expert_table)', function (obj, idx) {
+                obj.update({
+                    isCheked: obj.checked ? 1 : 0,
+                })
+                // var checkStatus = table.checkStatus("expert_table");
+                selectExpert = datagrid.filter(function (i) {
+                    return Number(i.isCheked) == 1
+                })
+                $('#expert_num').html(selectExpert.length)
+            })
+        })
+    }
+    function saveFun() {
+        if (selectExpert.length == 0) {
+            return layer.msg('你还未选择专家')
+        }
+        var ExpertScoreParam = selectExpert.map(function (item) {
+            return {
+                id: item.id,
+                isCheked: 1,
+            }
+        })
+        var params = {
+            user_name: sessionStorage.getItem('token'),
+            periodical: expertObj.periodical,
+            ExpertScoreParam,
+        }
+        $.ajax({
+            type: 'post',
+            url: baseUrl + '/expert/updateByExpertAllCache',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify(params),
+            success: function (res) {
+                if (res.code == 200) {
+                    parent.layer.msg('缓存成功')
+                } else {
+                    parent.layer.msg(res.message)
+                }
+            },
+        })
+    }
+    function releaseFun() {
+        if (selectExpert.length !== expectedNums) {
+            return layer.msg('专家录取人数必须为' + expectedNums + '人')
+        }
+        var ExpertScoreParam = selectExpert.map(function (item) {
+            return {
+                id: item.id,
+                isCheked: 1,
+            }
+        })
+        var params = {
+            user_name: sessionStorage.getItem('token'),
+            periodical: expertObj.periodical,
+            ExpertScoreParam,
+        }
+        layer.confirm(
+            '是否确认此结果？确认后将无法修改',
+            { btn: ['确定', '取消'] },
+            function () {
+                $.ajax({
+                    type: 'post',
+                    url: baseUrl + '/expert/updateByExpertAll',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: JSON.stringify(params),
+                    success: function (res) {
+                        if (res.code == 200) {
+                            window.location.href = 'expertScoreLook.html'
+                            layer.msg('发布成功')
+                        } else {
+                            layer.msg(res.message)
+                        }
+                    },
+                })
+            },
+            function () {}
+        )
+    }
+    function loadMore() {
+        if (showGrid.length == datagrid.length) return layer.msg('已无更多数据')
+        var currentNum = showGrid.length
+        for (var i = currentNum; i < currentNum + 10; i++) {
+            if (datagrid[i]) {
+                showGrid.push(datagrid[i])
+            }
+        }
+        setList()
+    }
+</script>

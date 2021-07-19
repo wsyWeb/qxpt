@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+        <!-- 导入 layui 的样式表 -->
+        <link rel="stylesheet" href="lib/layui/css/layui.css" />
+        <!-- 导入自己的样式表 -->
+        <link rel="stylesheet" href="css/font/iconfont.css" />
+        <link rel="stylesheet" href="css/runnet_common.css" />
+        <link rel="stylesheet" href="css/runnet_page.css" />
+        <title>评选结果</title>
+    </head>
+
+    <body>
+        <div class="headDiv"></div>
+        <div class="searchDiv"></div>
+
+        <div class="runnet_main_body">
+            <div class="wrap">
+                <div class="runnut_head">
+                    <span class="borderl"></span>
+                    <span class="layui-breadcrumb" lay-separator=">">
+                        <a href="index.html">首页</a>
+                        <a href="runnet_crowdCreate.html">众创平台</a>
+                        <a href="runnet_createLeague.html">科创联盟</a>
+                        <a><cite>评选结果</cite></a>
+                    </span>
+                </div>
+                <div class="m-t-lg">
+                    <div class="result-wrap font-26 text-center"></div>
+                    <div class="text-right m-t-lg">中国气象科普宣传中心</div>
+                    <div class="time text-right"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="lib/layui/layui.all.js"></script>
+<script src="lib/jquery.js"></script>
+<script src="js/base.js"></script>
+<script>
+    $('.headDiv').load('templates/header.html')
+    $('.searchDiv').load('templates/search.html')
+    var personDetail = {}
+    $(function () {
+        var date = new Date()
+        var year = date.getFullYear()
+        var month = date.getMonth()
+        var day = date.getDate()
+        $('.time').html(year + '年' + month + '月' + day + '日')
+        $.get(baseUrl + '/expert/queryExpertByUserId?user_name=' + sessionStorage.getItem('token'), function (res) {
+            if (res.code == 200) {
+                personDetail = res.data
+                if (Number(res.data.examineStatus) == 1 || Number(res.data.examineStatus) == 0) {
+                    $('.result-wrap').html(
+                        '尊敬的' + res.data.name + '，你的申请正在审核中，请耐心等待！'
+                        // "<a class='font-14 color-theme cursor-pointer' onclick='showDetail() '>查看申请详情</a>"
+                    )
+                } else if (Number(res.data.examineStatus) == 2) {
+                    $('.result-wrap').html('尊敬的' + sessionStorage.getItem('token') + '： 感谢您对本次专家评选活动的支持！恭喜您成为' + res.data.entryField + '领域' + (Number(res.data.expertLevel) === 1 ? '一' : '二') + '级专家，希望您能在后续科普活动中给予更多的支持！')
+                }
+            }
+        })
+    })
+    function showDetail() {
+        layer.open({
+            type: 2,
+            id: 'check_iframe',
+            title: '候选人简历',
+            area: ['1200px', '90%'],
+            fixed: true, //不固定
+            // maxmin: true,
+            content: 'expertDetail.html',
+            success: function (layero, index) {
+                var iframe = window['layui-layer-iframe' + index] //拿到iframe元素
+                iframe.child(personDetail, index) //向此iframe层方法 传递参数
+            },
+        })
+    }
+</script>

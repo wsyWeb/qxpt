@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+        <!-- 导入 layui 的样式表 -->
+        <link rel="stylesheet" href="./lib/layui/css/layui.css" />
+        <!-- 导入自己的样式表 -->
+        <link rel="stylesheet" href="./css/runnet_common.css" />
+        <link rel="stylesheet" href="./css/runnet_page.css" />
+        <title>评分结果确认</title>
+        <style lang="">
+            /* .laytable-cell-checkbox .layui-icon {
+                position: relative;
+                top: 6px;
+            } */
+        </style>
+    </head>
+
+    <body>
+        <div class="headDiv"></div>
+        <div class="searchDiv"></div>
+
+        <div class="runnet_main_body">
+            <div class="wrap p-t-lg flex">
+                <div id="my_space_nav" class="m-r-md" style="width: 200px"></div>
+                <div id="my_space_content" style="width: 1000px">
+                    <table class="layui-hide" id="expert_table" lay-filter="expert_table"></table>
+                    <div class="text-center m-t-lg">
+                        <a class="layui-btn" onclick="exportFun()">导出</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="lib/layui/layui.all.js"></script>
+<script src="lib/jquery.js"></script>
+<script src="js/base.js"></script>
+
+<script>
+    $('.headDiv').load('./templates/header.html')
+    $('.searchDiv').load('./templates/search.html')
+    $('#my_space_nav').load('templates/my_space_nav.html')
+    var expertObj = JSON.parse(sessionStorage.getItem('expertObj'))
+    var dataGrid = []
+    layui.use('table', function () {
+        var table = layui.table
+
+        table.render({
+            elem: '#expert_table',
+            url: baseUrl + '/expert/queryExperyList?examineStatus=2&periodical=' + expertObj.periodical,
+            limit: Number(expertObj.limit),
+            response: {
+                statusCode: 200,
+            },
+            parseData: function (res) {
+                dataGrid = res.data.data
+                return {
+                    message: res.message,
+                    code: res.code,
+                    count: res.data.count, //解析数据长度
+                    data: res.data.data, //解析数据列表
+                }
+            },
+            cols: [
+                [
+                    { field: 'entryField', title: '领域' },
+                    { field: 'name', title: '姓名' },
+                    { field: 'workUnit', title: '单位' },
+                    { field: 'positionJob', title: '职务' },
+                    {
+                        field: 'expertLevel',
+                        title: '级别',
+                        templet: function (d) {
+                            if (Number(d.expertLevel) == 1) return '一级专家'
+                            return '二级专家'
+                        },
+                    },
+                ],
+            ],
+            page: false,
+        })
+    })
+
+    function exportFun() {
+        layui.use('table', function () {
+            var table = layui.table
+            table.exportFile('expert_table', dataGrid, 'xls')
+        })
+    }
+</script>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+        <!-- 导入 layui 的样式表 -->
+        <link rel="stylesheet" href="./lib/layui/css/layui.css" />
+        <!-- 导入自己的样式表 -->
+        <link rel="stylesheet" href="./css/runnet_common.css" />
+        <link rel="stylesheet" href="./css/runnet_page.css" />
+        <title>专家列表</title>
+        <style></style>
+    </head>
+
+    <body>
+        <div class="headDiv"></div>
+        <div class="searchDiv"></div>
+
+        <div class="runnet_main_body">
+            <div class="wrap p-t-lg flex">
+                <div id="my_space_nav" class="m-r-md" style="width: 200px"></div>
+                <div id="my_space_content" style="width: 1000px">
+                    <table class="layui-hide" id="expert_table" lay-filter="expert_table"></table>
+                    <script type="text/html" id="operate_wrap">
+                        <a class="layui-btn layui-btn-xs" lay-event="look">查看</a>
+                        {{# if(Number(d.isPublished) != 1){ }}
+                        <a class="layui-btn layui-btn-xs" lay-event="update">编辑录取人数</a>
+                        <a class="layui-btn layui-btn-xs" lay-event="release">发布</a>
+                        {{# } }}
+                    </script>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="./lib/layui/layui.all.js"></script>
+<script src="./lib/jquery.js"></script>
+<script src="js/base.js"></script>
+<script>
+    $('.headDiv').load('./templates/header.html')
+    $('.searchDiv').load('./templates/search.html')
+    $('#my_space_nav').load('templates/my_space_nav.html')
+    var datagrid = []
+    layui.use('table', function () {
+        var table = layui.table
+
+        table.render({
+            elem: '#expert_table',
+            url: baseUrl + '/expert/getExpertStatistics',
+            response: {
+                statusCode: 200, //重新规定成功的状态码为 200，table 组件默认为 0
+            },
+            cols: [
+                [
+                    { type: 'numbers' },
+                    { field: 'periodical', title: '期数' },
+                    { field: 'joinNums', title: '参评人数' },
+                    { field: 'expectedNums', title: '录取人数' },
+                    {
+                        field: 'done',
+                        title: '完成度',
+                        templet: function (d) {
+                            if (Number(d.partinNums) == Number(d.joinNums)) {
+                                return "<i class='layui-icon layui-icon-ok color-success'></i>"
+                            }
+                            return d.partinNums + '/' + d.joinNums
+                        },
+                    },
+                    {
+                        field: 'sign',
+                        title: '操作',
+                        width: 240,
+                        toolbar: '#operate_wrap',
+                    },
+                ],
+            ],
+        })
+        table.on('tool(expert_table)', function (obj) {
+            var data = obj.data
+            var expertObj = {
+                periodical: data.periodical,
+                limit: data.joinNums,
+                expectedNums: data.expectedNums,
+            }
+            sessionStorage.setItem('expertObj', JSON.stringify(expertObj))
+            if (obj.event === 'update') {
+                layer.prompt(
+                    {
+                        // formType: 2,
+                        title: '编辑录取人数',
+                        value: data.expectedNums,
+                    },
+                    function (value, index) {
+                        if (!/(^[1-9]\d*$)/.test(value)) {
+                            return layer.msg('录取人数格式有误，请重新输入', { offset: '100px', icon: 2 })
+                        }
+                        if (value > data.joinNums) {
+                            return layer.msg('录取人数不能超过参赛人数', { offset: '100px', icon: 2 })
+                        }
+                        updateExpectNum({
+                            periodical: data.periodical,
+                            expectedNums: Number(value),
+                        })
+                        obj.update({
+                            expectedNums: value,
+                        })
+                        layer.close(index)
+                    }
+                )
+            }
+            if (obj.event === 'look') {
+                window.location.href = 'expertScoreLook.html'
+            } else if (obj.event === 'release') {
+                if (!data.expectedNums || Number(data.expectedNums) == 0) {
+                    return layer.msg('请先设置录取人数', { offset: '100px', icon: 2 })
+                }
+                window.location.href = 'expertScoreRelease.html'
+            }
+        })
+    })
+    function updateExpectNum(v) {
+        $.ajax({
+            type: 'post',
+            url: baseUrl + '/invitationCode/updatePersonNums',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify(v),
+            success: function (res) {
+                if (res.code == 200) {
+                    parent.layer.msg('设置成功')
+                } else {
+                    parent.layer.msg(res.message)
+                }
+            },
+        })
+    }
+</script>

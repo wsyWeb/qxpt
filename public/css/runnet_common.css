@@ -1,0 +1,707 @@
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+legend,
+button form,
+fieldset,
+input,
+textarea,
+p,
+blockquote,
+th,
+td {
+    padding: 0;
+    margin: 0;
+}
+
+/* 酌情修改  */
+body {
+    font-size: 14px;
+    font-family: 'Arial Negreta', 'Arial';
+    box-sizing: border-box;
+}
+
+body {
+    /* background-color: rgb(242, 242, 242); */
+}
+
+/* 短引用的内容可取值：''或"" */
+q:before,
+q:after {
+    content: '';
+}
+
+/* 缩写，图片等无边框 */
+fieldset,
+img,
+abbr,
+acronym {
+    border: 0 none;
+}
+
+abbr,
+acronym {
+    font-variant: normal;
+}
+
+legend {
+    color: #000;
+}
+
+/* 清除特殊标记的字体和字号 */
+address,
+caption,
+cite,
+code,
+dfn,
+em,
+strong,
+th,
+var {
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 上下标 */
+sup {
+    vertical-align: text-top;
+}
+
+sub {
+    vertical-align: text-bottom;
+}
+
+/* 设置表格的边框被合并为一个单一的边框, 指定分隔边框模型中单元格边界之间的距离为0*/
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* 表格标题及内容居左显示 */
+caption,
+th {
+    text-align: left;
+}
+
+input,
+img,
+select {
+    vertical-align: middle;
+}
+
+/* 清除列表样式 */
+ol,
+ul {
+    list-style: none;
+}
+
+/* 输入控件字体 */
+input,
+button,
+textarea,
+select,
+optgroup,
+option {
+    font-family: inherit;
+    font-size: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+}
+
+/* 标题元素样式清除 */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: normal;
+    font-size: 100%;
+}
+
+/* 链接样式，颜色可酌情修改 */
+del,
+ins,
+a {
+    text-decoration: none;
+}
+
+/* 鼠标样式 */
+input[type='submit'] {
+    cursor: pointer;
+}
+
+button {
+    cursor: pointer;
+}
+
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+.m-sm {
+    margin: 10px;
+}
+
+.m-md {
+    margin: 20px;
+}
+
+.m-l-xs {
+    margin-left: 5px;
+}
+
+.m-l-sm {
+    margin-left: 10px;
+}
+
+.m-l {
+    margin-left: 15px;
+}
+
+.m-l-md {
+    margin-left: 20px;
+}
+
+.m-l-lg {
+    margin-left: 30px;
+}
+
+.m-l-xl {
+    margin-left: 40px;
+}
+
+.m-t-xxs {
+    margin-top: 1px;
+}
+
+.m-t-xs {
+    margin-top: 5px;
+}
+
+.m-t-sm {
+    margin-top: 10px;
+}
+
+.m-t {
+    margin-top: 15px;
+}
+
+.m-t-md {
+    margin-top: 20px;
+}
+
+.m-t-lg {
+    margin-top: 30px;
+}
+
+.m-t-xl {
+    margin-top: 40px;
+}
+
+.m-t-xxl {
+    margin-top: 80px;
+}
+
+.m-r-none {
+    margin-right: 0;
+}
+
+.m-r-xxs {
+    margin-right: 1px;
+}
+
+.m-r-xs {
+    margin-right: 5px;
+}
+
+.m-r-sm {
+    margin-right: 10px;
+}
+
+.m-r-md {
+    margin-right: 20px;
+}
+
+.m-r-lg {
+    margin-right: 30px;
+}
+
+.m-r-xl {
+    margin-right: 40px;
+}
+
+.m-b-none {
+    margin-bottom: 0;
+}
+
+.m-b-xxs {
+    margin-bottom: 1px;
+}
+
+.m-b-xs {
+    margin-bottom: 5px;
+}
+
+.m-b-sm {
+    margin-bottom: 10px;
+}
+
+.m-b {
+    margin-bottom: 15px;
+}
+
+.m-b-md {
+    margin-bottom: 20px;
+}
+
+.m-b-lg {
+    margin-bottom: 30px;
+}
+
+.m-b-xl {
+    margin-bottom: 40px;
+}
+
+/*------padding-------------------start---------------*/
+.p-xxs {
+    padding: 5px;
+}
+
+.p-b-xxs {
+    padding-bottom: 5px;
+}
+.p-b-xs {
+    padding-bottom: 5px;
+}
+.p-xs {
+    padding: 10px;
+}
+
+.p-l-xs {
+    padding-left: 10px;
+}
+
+.p-r-xs {
+    padding-right: 10px;
+}
+
+.p-sm {
+    padding: 15px;
+}
+
+.p-l-sm {
+    padding-left: 15px;
+}
+
+.p-r-sm {
+    padding-right: 15px;
+}
+.p-t-xs {
+    padding-top: 10px;
+}
+.p-t-sm {
+    padding-top: 15px;
+}
+
+.p-b-sm {
+    padding-bottom: 15px;
+}
+
+.p-l-md {
+    padding-left: 20px;
+}
+.p-l-lg {
+    padding-left: 30px;
+}
+.p-r-lg {
+    padding-right: 30px;
+}
+.p-b-lg {
+    padding-bottom: 30px;
+}
+.p-t-md {
+    padding-top: 20px;
+}
+
+.p-t-lg {
+    padding-top: 30px;
+}
+
+.p-b-md {
+    padding-bottom: 20px;
+}
+
+.p-md {
+    padding: 20px;
+}
+
+.p-lg {
+    padding: 30px;
+}
+
+.p-xl {
+    padding: 40px;
+}
+
+/*--------背景颜色-----------------end-------------*/
+
+/*---------自定义滚动条-------start--*/
+.scroll-content-wrapper {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.scroll-content-wrapper::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+.scroll-content-wrapper::-webkit-scrollbar-track-piece {
+    background-color: #eaeaea;
+    -webkit-border-radius: 5px;
+}
+
+.scroll-content-wrapper::-webkit-scrollbar-thumb:vertical {
+    height: 5px;
+    background-color: #bbb;
+    -webkit-border-radius: 5px;
+}
+
+/*---------自定义滚动条-------end--*/
+/*-------flex-box------------start------*/
+.flex {
+    display: flex;
+    displey: -webkit-flex;
+    display: -ms-flex;
+}
+
+.flex-between {
+    display: flex;
+    displey: -webkit-flex;
+    display: -ms-flex;
+    justify-content: space-between;
+}
+.flex-between-r {
+    display: flex;
+    displey: -webkit-flex;
+    display: -ms-flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.flex-between-n {
+    display: flex;
+    display: -ms-flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+.flex-around-w {
+    display: flex;
+    displey: -webkit-flex;
+    display: -ms-flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.flex-center {
+    display: flex;
+    displey: -webkit-flex;
+    display: -ms-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* // 换行 */
+.flex-between-w {
+    display: flex;
+    displey: -webkit-flex;
+    display: -ms-flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.flex-between-c {
+    display: flex;
+    displey: -webkit-flex;
+    display: -ms-flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex-around {
+    display: flex;
+    displey: -webkit-flex;
+    display: -ms-flex;
+    justify-content: space-around;
+}
+
+.flex-around-c {
+    display: flex;
+    displey: -webkit-flex;
+    display: -ms-flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-around;
+    /* align-items: center; */
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex-2 {
+    flex: 2;
+}
+
+.flex-3 {
+    flex: 3;
+}
+
+.flex-row {
+    display: flex;
+    displey: -webkit-flex;
+    display: -ms-flex;
+    flex-direction: row;
+}
+
+/*------and-modal-------end--------*/
+/*-------文本------------start-----*/
+
+.opacity-8 {
+    opacity: 0.8;
+}
+
+.opacity-6 {
+    opacity: 0.6;
+}
+
+.text-ellipsis-1 {
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: bottom;
+}
+
+.text-ellipsis-2 {
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.text-ellipsis-3 {
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-justify {
+    text-align: justify;
+    text-align-last: justify;
+    text-justify: inter-ideograph;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.tip-text {
+    opacity: 0.9;
+    font-size: 12px;
+}
+
+.font-26 {
+    font-size: 26px;
+}
+
+.font-14 {
+    font-size: 14px;
+}
+
+.font-16 {
+    font-size: 16px;
+}
+
+.font-18 {
+    font-size: 18px;
+}
+
+.font-20 {
+    font-size: 20px;
+}
+
+.font-22 {
+    font-size: 22px;
+}
+
+.font-23 {
+    font-size: 24px;
+}
+
+.font-12 {
+    font-size: 12px;
+}
+
+.font-13 {
+    font-size: 13px;
+}
+
+.font-32 {
+    font-size: 32px;
+}
+
+.font-38 {
+    font-size: 38px;
+}
+
+.font-40 {
+    font-size: 40px;
+}
+
+.font-46 {
+    font-size: 46px;
+}
+
+.font-bold {
+    font-weight: bold;
+}
+
+.no-wrap {
+    white-space: nowrap;
+}
+
+/* 强制换行 */
+.force-to-newline {
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+/*-------文本------------end-----*/
+
+.cover {
+    object-fit: cover;
+}
+
+.store-title {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.store-logo {
+    border-radius: 130px;
+    width: 130px;
+    height: 130px;
+    position: relative;
+    left: 50%;
+    margin-left: -75px;
+    margin-top: 20px;
+}
+
+.table-fixed {
+    table-layout: fixed;
+}
+
+/*----antd---样式重置-----end---*/
+
+/*----float-----start---*/
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
+.clear {
+    clear: both;
+}
+
+/*----float-----end---*/
+
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.color-tip {
+    color: #ccc;
+}
+.color-detail {
+    color: #525252;
+}
+.color-theme {
+    color: rgb(21, 79, 174);
+}
+.color-success {
+    color: #009688;
+}
+
+.text-indent-2 {
+    text-indent: 2em;
+}
+.link-hover:hover {
+    cursor: pointer;
+    color: rgb(21, 79, 174);
+}
+.border {
+    border: 1px solid #dedede;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+}
+.border-left {
+    border-left: 1px solid #dedede;
+}
+.border-right {
+    border-right: 1px solid #dedede;
+}
+.border-bottom {
+    border-bottom: 1px solid #dedede;
+}
+.border-top {
+    border-top: 1px solid #dedede;
+}

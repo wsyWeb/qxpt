@@ -1,0 +1,75 @@
+*{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    text-decoration: none;
+    outline: none;
+}
+.search{
+    width: 100%;
+    display: inline-block;
+    height: 100px;
+    display: flex;
+    background-image: url(../images/科宣搜索.jpg);
+    background-size: cover;
+    z-index: 1;
+}
+.search .wrap{
+    width: 1000px;
+    margin: 0 auto;
+}
+.searchIptBox{
+    /* color: white; */
+    position: relative;
+    color: white;
+    margin-top: 26px;
+    display: inline-block;
+}
+.searchDiv{
+    z-index: 1;
+}
+.searchIpt{
+    width: 800px;
+    padding: 8px 14px;
+    border-radius: 4px;
+    background-color: white;
+    border: rgb(20,83,177,0.5) 1px solid;
+    z-index: 1;
+}
+.searchIcon{
+    font-size:20px;
+    padding-right: 20px;
+    position: relative;
+    cursor: pointer;
+    right: 40px;
+    top: 2px;
+    color: rgb(20,83,177);
+    z-index: 1;
+}
+.searchWord{
+    position: absolute;
+    left: 0;
+    bottom: -28px;
+}
+.searchIptBox .searchWord ul{
+    display: inline-block;
+    /* background-color: red; */
+}
+.searchIptBox .searchWord ul li{
+    font-size: 14px;
+    display: inline-block;
+    margin-left: 16px;
+    cursor: pointer;
+}
+.searchBtn{
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+    padding: 6px 12px;
+    border: 1px solid rgb(20,83,177,0.5);
+    background-color: white;
+    color: rgb(20,83,177);
+}
+.searchBtn a{
+    color: rgb(20,83,177);
+}

@@ -1,0 +1,53 @@
+<form class="layui-form m-t-md register_expert_form m-md" lay-filter="login_form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户名</label>
+        <div class="layui-input-block">
+            <div class="m-b-xs">
+                <input type="text" name="loginName" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" />
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码</label>
+        <div class="layui-input-block">
+            <div class="m-b-xs">
+                <input type="password" name="loginPass" lay-verify="required" autocomplete="off" placeholder="" class="layui-input" />
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item text-center">
+        <button class="layui-btn" lay-submit lay-filter="submit_login">登录</button>
+    </div>
+</form>
+
+<link rel="stylesheet" href="lib/layui/css/layui.css" />
+<link rel="stylesheet" href="css/runnet_common.css" />
+<script src="lib/layui/layui.all.js"></script>
+<script src="lib/jquery.js"></script>
+<script src="js/base.js"></script>
+
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form
+        form.on('submit(submit_login)', function (data) {
+            $.ajax({
+                type: 'post',
+                url: baseUrl + '/account/account_login',
+                // async: false,
+                data: JSON.stringify(data.field),
+                contentType: 'application/json;charset=UTF-8',
+                success: function (res) {
+                    if (res.code == 200) {
+                        sessionStorage.setItem('token', res.data.loginName)
+                        sessionStorage.removeItem('verificationCode')
+                        window.parent.layer.closeAll()
+                        parent.layer.msg('欢迎' + res.data.loginName)
+                    } else {
+                        parent.layer.msg('用户名或密码错误')
+                    }
+                },
+            })
+            return false
+        })
+    })
+</script>

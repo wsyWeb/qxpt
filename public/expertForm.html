@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+        <link rel="stylesheet" href="lib/layui/css/layui.css" />
+        <link rel="stylesheet" href="css/font/iconfont.css" />
+        <link rel="stylesheet" href="css/runnet_common.css" />
+        <link rel="stylesheet" href="css/runnet_page.css" />
+        <title>注册专家</title>
+        <style>
+            .invitation_code_wrap {
+                width: 400px;
+                margin: auto;
+                padding-top: 100px;
+                text-align: center;
+            }
+            .code_input_wrap {
+                width: 100%;
+                height: 100px;
+                padding: 30px;
+            }
+            .code_input_wrap .layui-input {
+                /* width: 100px; */
+                /* background-color: rgb(242, 242, 242); */
+                border-color: transparent;
+            }
+            .code_input_wrap .layui-input:hover,
+            .code_input_wrap .layui-input:focus {
+                border-color: transparent !important;
+            }
+            .register_expert_form {
+                /* padding: 20px 50px; */
+                display: none;
+            }
+            .register_expert_form .layui-input {
+                /* width: 80%; */
+            }
+            .basic-info .layui-form-label {
+                width: 120px;
+            }
+            .basic-info .layui-input-block {
+                margin-left: 120px;
+            }
+            .register_expert_form .achievement .layui-form-label {
+                padding: 0;
+                width: 100%;
+                text-align: left;
+            }
+            .register_expert_form .achievement .layui-input-block {
+                margin-left: 0;
+            }
+            .layui-col-md6 {
+                margin-bottom: 15px;
+            }
+            .upload-img {
+                width: 100px;
+                height: 120px;
+                position: relative;
+            }
+            .not-image {
+                /* background-color: #ccc; */
+                /* border: 1px solid #ccc; */
+                cursor: pointer;
+            }
+            .not-image::before {
+                content: '+';
+                color: #ccc;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 60px;
+            }
+            .file-lists li {
+                width: 500px;
+                margin-bottom: 10px;
+                position: relative;
+            }
+            .file-lists i {
+                position: absolute;
+                right: 0;
+            }
+            .file-lists i:hover {
+                color: red;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="headDiv"></div>
+        <div class="searchDiv"></div>
+
+        <div class="runnet_main_body">
+            <div class="wrap">
+                <div class="runnut_head">
+                    <span class="borderl"></span>
+                    <span class="layui-breadcrumb" lay-separator=">">
+                        <a href="index.html">首页</a>
+                        <a href="runnet_crowdCreate.html">众创平台</a>
+                        <a href="runnet_createLeague.html">科创联盟</a>
+                        <a><cite>专家入驻</cite></a>
+                    </span>
+                </div>
+                <div class="invitation_code_wrap">
+                    <div class="border code_input_wrap border m-b-lg">
+                        <input type="text" placeholder="请输入邀请码" autocomplete="off" class="layui-input" />
+                    </div>
+                    <button class="layui-btn" onclick="validateCode()">验证</button>
+                </div>
+                <form class="layui-form m-t-md register_expert_form" lay-filter="register_expert_form">
+                    <div class="font-15 font-bold m-b-md">基本信息</div>
+                    <div class="block p-md">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">头像</label>
+                            <div class="layui-input-block">
+                                <div class="m-b-xs upload-img not-image border" id="upload_img_btn"></div>
+                                <img id="headPortrait-img" width="100px" height="120px" style="display: none" />
+                            </div>
+                        </div>
+                        <div class="layui-row basic-info">
+                            <div class="layui-col-md6">
+                                <label class="layui-form-label required">姓名</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="name" class="layui-input" lay-verify="required" />
+                                </div>
+                            </div>
+                            <div class="layui-col-md6">
+                                <label class="layui-form-label">性别</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="gender" value="男" title="男" checked="" />
+                                    <input type="radio" name="gender" value="女" title="女" />
+                                </div>
+                            </div>
+                            <div class="layui-col-md6">
+                                <label class="layui-form-label required">电子邮箱</label>
+                                <div class="layui-input-block">
+                                    <input
+                                        type="text"
+                                        name="eamil"
+                                        lay-verify="required|email"
+                                        autocomplete="off"
+                                        placeholder=""
+                                        class="layui-input"
+                                    />
+                                </div>
+                            </div>
+                            <div class="layui-col-md6">
+                                <label class="layui-form-label required">手机号</label>
+                                <div class="layui-input-block">
+                                    <input
+                                        type="text"
+                                        name="mobilePhone"
+                                        lay-verify="required|phone"
+                                        autocomplete="off"
+                                        placeholder=""
+                                        class="layui-input"
+                                    />
+                                </div>
+                            </div>
+                            <div class="layui-col-md6">
+                                <label class="layui-form-label required">入驻领域</label>
+                                <div class="layui-input-block">
+                                    <div id="entryField"></div>
+                                </div>
+                            </div>
+                            <div class="layui-col-md6">
+                                <label class="layui-form-label">出生日期</label>
+                                <div class="layui-input-block">
+                                    <input
+                                        type="text"
+                                        name="birthDay"
+                                        id="birth_day"
+                                        lay-verify=""
+                                        placeholder=""
+                                        autocomplete="off"
+                                        class="layui-input"
+                                    />
+                                </div>
+                            </div>
+                            <div class="layui-col-md6">
+                                <label class="layui-form-label">政治面貌</label>
+                                <div class="layui-input-block">
+                                    <select name="politis" lay-verify="">
+                                        <option value="党员">党员</option>
+                                        <option value="团员">团员</option>
+                                        <option value="群众">群众</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="layui-col-md6">
+                                <label class="layui-form-label">工作单位</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="workUnit" lay-verify="" autocomplete="off" placeholder="" class="layui-input" />
+                                </div>
+                            </div>
+                            <div class="layui-col-md6">
+                                <label class="layui-form-label">参工时间</label>
+                                <div class="layui-input-block">
+                                    <input
+                                        type="text"
+                                        name="workingTime"
+                                        id="working_time"
+                                        lay-verify=""
+                                        autocomplete="off"
+                                        placeholder=""
+                                        class="layui-input"
+                                    />
+                                </div>
+                            </div>
+                            <div class="layui-col-md6">
+                                <label class="layui-form-label">岗位级别</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="positionLevel" lay-verify="" autocomplete="off" placeholder="" class="layui-input" />
+                                </div>
+                            </div>
+                            <div class="layui-col-md6">
+                                <label class="layui-form-label">从事专业</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="professional" lay-verify="" autocomplete="off" placeholder="" class="layui-input" />
+                                </div>
+                            </div>
+
+                            <div class="layui-col-md6">
+                                <label class="layui-form-label">职称</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="positionTitle" lay-verify="" autocomplete="off" placeholder="" class="layui-input" />
+                                </div>
+                            </div>
+                            <div class="layui-col-md6">
+                                <label class="layui-form-label">职务</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="positionJob" lay-verify="" autocomplete="off" placeholder="" class="layui-input" />
+                                </div>
+                            </div>
+                            <div class="layui-col-md6">
+                                <label class="layui-form-label">毕业学校</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="graduateSchool" lay-verify="" autocomplete="off" placeholder="" class="layui-input" />
+                                </div>
+                            </div>
+                            <div class="layui-col-md6">
+                                <label class="layui-form-label">最高学历</label>
+                                <div class="layui-input-block">
+                                    <select name="highestEducation" lay-verify="" multiple>
+                                        <option value="硕士">硕士</option>
+                                        <option value="小学">小学</option>
+                                        <option value="中学">中学</option>
+                                        <option value="高中">高中</option>
+                                        <option value="大专">大专</option>
+                                        <option value="本科">本科</option>
+                                        <option value="博士及以上">博士及以上</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="layui-col-md6">
+                                <label class="layui-form-label">通讯地址</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="postalAddress" lay-verify="" autocomplete="off" placeholder="" class="layui-input" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="font-15 font-bold m-b-md m-t-md">其它说明</div>
+                    <div class="achievement block p-md">
+                        <div class="defaultExpertParams"></div>
+                        <div class="layui-form-item">
+                            <a class="layui-btn layui-btn-primary" id="upload_attachment_btn">上传打扫件</a>
+                            <ul class="file-lists p-t-md"></ul>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block m-t-md text-center">
+                            <a class="layui-btn layui-btn-primary save-btn" lay-submit lay-filter="sav_expert">保存</a>
+                            <a class="layui-btn layui-btn-primary" lay-submit lay-filter="download">下载</a>
+                            <a class="layui-btn submit-btn" lay-submit lay-filter="submit_expert">提交审核</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="lib/layui/layui.all.js"></script>
+<script src="lib/jquery.js"></script>
+<script src="lib/layui/xm-select.js"></script>
+<script src="js/base.js"></script>
+<script>
+    var headPortrait,
+        resumeAddress = [],
+        periodical = null,
+        referrerCode = null,
+        resFormData = {},
+        fieldOneArr = [],
+        fieldTwoArr = [],
+        entryFields = []
+    $('.headDiv').load('templates/header.html')
+    $('.searchDiv').load('templates/search.html')
+    for (var i = 0; i < defaultExpertParams.length; i++) {
+        $('.defaultExpertParams').append(
+            '<div class="layui-form-item">' +
+                '<label class="layui-form-label"> ' +
+                defaultExpertParams[i].title +
+                '</label>' +
+                '<div class="layui-input-block"><textarea class="layui-textarea"></textarea></div>' +
+                '</div>'
+        )
+    }
+    var fieldOneSelect = xmSelect.render({
+        el: '#entryField',
+        language: 'zn',
+        layVerify: 'required',
+        layVerType: 'msg',
+        prop: {
+            name: 'title',
+            value: 'id',
+        },
+        data: [],
+        on: function (selectObj) {
+            ;(fieldTwoArr = []), (fieldOneArr = [])
+            selectObj.arr.forEach(function (i) {
+                var exitNode = fieldOneArr.find(function (o) {
+                    return o.id === i.parentId
+                })
+                if (!exitNode) {
+                    var parantNode = entryFields.find(function (j) {
+                        return j.id === i.parentId
+                    })
+                    fieldOneArr.push({
+                        id: parantNode.id,
+                        title: parantNode.title,
+                    })
+                }
+
+                fieldTwoArr.push({
+                    id: i.id,
+                    title: i.title,
+                })
+            })
+        },
+    })
+    $(function () {
+        $.get(baseUrl + '/expert/queryExpertByUserId?user_name=' + sessionStorage.getItem('token'), function (res) {
+            if (res.code == 200) {
+                if (res.data) {
+                    fieldOneArr = res.data.fieldOneArr
+                    fieldTwoArr = res.data.fieldTwoArr
+                    resFormData = res.data
+                    setFormDefaultValue()
+                    resetForm()
+                }
+                $.get(baseUrl + '/entryField/queryEntryFieldList', function (resEntryFields) {
+                    if (resEntryFields.code === 200) {
+                        var mapRes = resEntryFields.data.filter(function (i) {
+                            return i.children && i.children.length > 0
+                        })
+                        entryFields = mapRes
+                        if (resFormData.fieldTwoArr && resFormData.fieldTwoArr.length > 0) {
+                            for (var j = 0; j < resFormData.fieldTwoArr.length; j++) {
+                                var item = resFormData.fieldTwoArr[j]
+                                for (var o = 0; o < mapRes.length; o++) {
+                                    mapRes[o].children.forEach(function (i) {
+                                        if (i.id === item.id) i.selected = true
+                                    })
+                                }
+                            }
+                        }
+
+                        fieldOneSelect.update({ data: mapRes })
+                    }
+                })
+            }
+        })
+        if (sessionStorage.getItem('verificationCode')) {
+            $('.invitation_code_wrap').hide()
+            $('.register_expert_form').show()
+        }
+        $('.file-lists').on('click', '.del-btn', function (e) {
+            var oldFileName = $(e.target).attr('name')
+            $(e.target).parent().remove()
+            resumeAddress = resumeAddress.filter(function (i) {
+                return i.oldFileName != oldFileName
+            })
+        })
+    })
+    function setFormDefaultValue() {
+        if (resFormData.headPortrait) {
+            $('#upload_img_btn').hide()
+            $('#headPortrait-img').show()
+            document.getElementById('headPortrait-img').setAttribute('src', imageUrl + resFormData.headPortrait)
+        }
+        for (var i = 0; i < resFormData.resumeAddressArr.length; i++) {
+            var item = resFormData.resumeAddressArr[i]
+            $('.file-lists').append(
+                '<li> <a class="color-theme " target="_blank" href=' +
+                    imageUrl +
+                    item.newFileName +
+                    '>' +
+                    item.oldFileName +
+                    "</a><i class='del-btn layui-icon layui-icon-close cursor-pointer' name=" +
+                    item.oldFileName +
+                    '></i></li>'
+            )
+            resumeAddress.push(item)
+        }
+        form.val('register_expert_form', {
+            id: resFormData.id,
+            userName: resFormData.userName,
+            name: resFormData.name,
+            headPortrait: resFormData.headPortrait,
+            birthDay: resFormData.birthDay,
+            gender: resFormData.gender,
+            politis: resFormData.politis,
+            workUnit: resFormData.workUnit,
+            workingTime: resFormData.workingTime,
+            positionLevel: resFormData.positionLevel,
+            professional: resFormData.professional,
+            graduateSchool: resFormData.graduateSchool,
+            highestEducation: resFormData.highestEducation,
+            positionTitle: resFormData.positionTitle,
+            eamil: resFormData.eamil,
+            mobilePhone: resFormData.mobilePhone,
+            positionJob: resFormData.positionJob,
+            postalAddress: resFormData.postalAddress,
+            abroadGroup: resFormData.abroadGroup,
+            threeYearsActivity: resFormData.threeYearsActivity,
+            threeYearsReward: resFormData.threeYearsReward,
+            majorMajors: resFormData.majorMajors,
+            publishPaper: resFormData.publishPaper,
+            acquirePatent: resFormData.acquirePatent,
+            sceneOperation: resFormData.sceneOperation,
+            entryField: resFormData.entryField,
+            scorereadonly: resFormData.score,
+            evaluatereadonly: resFormData.evaluate,
+        })
+    }
+    function validateCode() {
+        var token = sessionStorage.getItem('token')
+        console.log(token)
+        if (!token) {
+            return layer.msg('请先登录')
+        }
+        var code = $('.code_input_wrap input').val()
+
+        if (!code) {
+            return layer.msg('邀请码不能为空')
+        }
+        $.ajax({
+            type: 'get',
+            url: baseUrl + '/invitationCode/verificationCode?code=' + code + '&username=' + token,
+            contentType: 'application/json;charset=UTF-8',
+            success: function (res) {
+                if (res.code == 200) {
+                    // layer.msg("验证成功");
+                    periodical = res.data.periodical
+                    referrerCode = res.data.code
+                    sessionStorage.setItem('verificationCode', code)
+                    sessionStorage.setItem('periodical', periodical)
+                    $('.invitation_code_wrap').hide()
+                    $('.register_expert_form').show()
+                } else {
+                    layer.msg('验证失败，请重新输入邀请码')
+                }
+            },
+        })
+    }
+
+    layui.use(['upload', 'laydate', 'form'], function () {
+        var upload = layui.upload,
+            laydate = layui.laydate
+        form = layui.form
+
+        //执行实例
+        upload.render({
+            elem: '#upload_img_btn', //绑定元素
+            url: baseUrl + '/upload/fileUpload', //上传接口
+            accept: 'images',
+            acceptMime: 'image/*',
+            done: function (res) {
+                if (res.code != 200) {
+                    layer.msg('上传失败')
+                } else {
+                    headPortrait = res.data.newFileName
+                    $('#upload_img_btn').hide()
+                    $('#headPortrait-img').show()
+                    document.getElementById('headPortrait-img').setAttribute('src', imageUrl + res.data.newFileName)
+                }
+                //上传完毕回调
+            },
+            error: function () {
+                layer.msg('上传失败')
+            },
+        })
+        upload.render({
+            elem: '#upload_attachment_btn', //绑定元素
+            url: baseUrl + '/upload/fileUpload', //上传接口
+            accept: 'file',
+            exts: 'xls|pdf|doc|docx|jpg|png|gif|bmp|jpeg',
+            done: function (res) {
+                if (res.code == 200) {
+                    var eixtFile = resumeAddress.find(function (i) {
+                        return i.oldFileName === res.data.oldFileName
+                    })
+                    if (!eixtFile) {
+                        $('.file-lists').append(
+                            '<li> <a class="color-theme " target="_blank" href=' +
+                                imageUrl +
+                                res.data.newFileName +
+                                '>' +
+                                res.data.oldFileName +
+                                "</a><i class='del-btn layui-icon layui-icon-close cursor-pointer' name=" +
+                                res.data.oldFileName +
+                                '></i></li>'
+                        )
+                        resumeAddress.push(res.data)
+                    }
+                }
+                //上传完毕回调
+            },
+            error: function () {
+                layer.msg('上传失败')
+            },
+        })
+        var date = new Date()
+        laydate.render({
+            elem: '#birth_day',
+            showBottom: false,
+            max: date.toLocaleDateString(),
+        })
+        laydate.render({
+            elem: '#working_time',
+            showBottom: false,
+            max: date.toLocaleDateString(),
+        })
+        form.on('submit(submit_expert)', function (data) {
+            if (resumeAddress.length == 0) {
+                return layer.msg('请先下载模板，由单位签字盖章后，回传打扫件再提交')
+            }
+            submitFun(data, 'submit', '/expert/saveExpert')
+            return false
+        })
+        form.on('submit(sav_expert)', function (data) {
+            layer.confirm(
+                '你确定保存个人信息吗？保存后不可修改',
+                {
+                    title: '提示',
+                    closeBtn: 0,
+                    btn: ['确定', '取消'], //按钮
+                },
+                function () {
+                    submitFun(data, 'save', '/expert/saveExpertDraft')
+                }
+            )
+            return false
+        })
+        form.on('submit(download)', function (data) {
+            if (!resFormData.id) {
+                return layer.msg('请保存之后再下载')
+            } else {
+                window.location.href = baseUrl + '/expert/download/' + sessionStorage.getItem('token')
+            }
+        })
+    })
+    function submitFun(data, type, url) {
+        var formData = Object.assign(data.field, resFormData)
+        formData.userName = sessionStorage.getItem('token')
+        formData.headPortrait = headPortrait || resFormData.headPortrait
+        formData.resumeAddressArr = resumeAddress || resFormData.resumeAddress
+        formData.periodical = resFormData.periodical || sessionStorage.getItem('periodical')
+        formData.referrerCode = resFormData.code || sessionStorage.getItem('verificationCode')
+        formData.fieldOneArr = fieldOneArr
+        formData.fieldTwoArr = fieldTwoArr
+        console.log(JSON.stringify(formData))
+        $.ajax({
+            type: 'post',
+            url: baseUrl + url,
+            data: JSON.stringify(formData),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (res) {
+                resFormData = res.data
+                if (res.code == 200) {
+                    if (type == 'submit') {
+                        window.location.href = 'expertApproveResult.html'
+                    } else if (type == 'download') {
+                        downloadFun()
+                    } else {
+                        layer.msg('保存成功')
+                        resetForm()
+                    }
+                } else {
+                    layer.msg(res.message)
+                }
+            },
+        })
+    }
+    function resetForm() {
+        $('.register_expert_form input:not(.layui-upload-file)').attr('disabled', true).addClass('layui-disabled')
+        $('.register_expert_form textarea').attr('disabled', true).addClass('layui-disabled')
+        $('.register_expert_form select').attr('disabled', true).addClass('layui-disabled')
+        if (Number(resFormData.examineStatus) == 0) {
+            $('.save-btn').remove()
+            $('.submit-btn').remove()
+            $('.file-lists .del-btn').remove()
+            $('#upload_attachment_btn').hide()
+            fieldOneSelect.update({ disabled: true })
+        }
+    }
+</script>

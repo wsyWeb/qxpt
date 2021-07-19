@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+        <!-- 导入 layui 的样式表 -->
+        <link rel="stylesheet" href="lib/layui/css/layui.css" />
+        <!-- 导入自己的样式表 -->
+        <link rel="stylesheet" href="css/font/iconfont.css" />
+        <link rel="stylesheet" href="css/runnet_common.css" />
+        <link rel="stylesheet" href="css/runnet_page.css" />
+        <title>众创平台</title>
+        <style>
+            .title {
+                height: 30px;
+                line-height: 30px;
+                padding: 0 30px;
+            }
+
+            .section_1 .memo {
+                bottom: 14px;
+                font-size: 16px;
+                left: 10px;
+                color: #fff;
+                height: 40px;
+                line-height: 40px;
+                padding-left: 20px;
+                color: #fff;
+            }
+            #roll_wrap {
+                overflow: hidden;
+                height: 20px;
+                /* width: 80%; */
+                text-align: center;
+                padding-left: 25px;
+            }
+            #roll_wrap li {
+                padding-bottom: 0;
+                line-height: 24px;
+                text-align: left;
+            }
+            .msg-header .iconfont {
+                position: absolute;
+                left: 0;
+                top: 5px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="headDiv"></div>
+        <div class="searchDiv"></div>
+
+        <div class="runnet_main_body">
+            <div class="wrap">
+                <div class="runnut_head flex-between block p-xs">
+                    <div class="relative msg-header">
+                        <i class="iconfont icon-message color-theme"></i>
+                        <div id="roll_wrap">
+                            <div id="roll_msg_wrap"></div>
+                            <div id="clone_roll_msg_wrap"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <a class="link-hover" href="notifyList.html">更多 >></a>
+                    </div>
+                </div>
+
+                <div class="page-nav m-b-md">
+                    <i class="iconfont icon-xinwen color-icon"></i>
+                    <span>新闻动态 >></span>
+                </div>
+                <div class="section_1">
+                    <div style="width: 800px" class="height300 block p-xs relative float-left">
+                        <img src="images/crowdCreate/1.png" style="height: 100%; width: 100%" />
+                        <div class="absolute memo">中国科技期刊卓越行动计划工作交流会推进会在京召开</div>
+                    </div>
+                    <script id="news_demo" type="text/html">
+                        {{# layui.each(newsLists , function(index, item){ }}
+                        <li class="overflow-hidden p-b-sm">
+                            <div class="float-left">
+                                <img src="images/incubator/5.png" height="80ox;" width="100px" />
+                            </div>
+                            <div style="width: 240px;" class="float-right text-ellipsis-3   text-indent-2">
+                                <a href="" class="link-hover">{{item}}</a>
+                            </div>
+                        </li>
+                        {{# }); }}
+                    </script>
+                    <ul style="width: 380px" class="height300 block p-sm overflow-hidden float-right" id="news_wrap"></ul>
+                </div>
+                <div class="clear">
+                    <div style="width: 800px" class="float-left">
+                        <div class="page-nav">
+                            <i class="iconfont icon-zhengce color-icon"></i>
+                            <span>政策宣讲 >></span>
+                        </div>
+                        <script id="policy_demo" type="text/html">
+                            {{# layui.each(policyLists, function(index, item){ }}
+                            <li class="flex-between p-b-md">
+                                <div class="text-ellipsis-1 link-hover" style="width: 60%;">{{item.memo}}</div>
+                                <div>{{item.name}}</div>
+                            </li>
+                            {{# }); }}
+                        </script>
+                        <ul class="block height300 p-md" id="policy_wrap"></ul>
+                    </div>
+                    <div style="width: 380px" class="float-right">
+                        <div class="page-nav">
+                            <i class="iconfont icon-tongzhi color-icon"></i>
+                            <span><a class="link-hover" href="notifyList.html">通知公告 >></a></span>
+                        </div>
+                        <script id="notify_demo" type="text/html">
+                            {{# layui.each(notifyLists, function(index, item){ }}
+                            <li class="p-b-md text-ellipsis-1 link-hover">{{item}}</li>
+                            {{# }); }}
+                        </script>
+                        <ul class="block height300 p-md" id="notify-wrap"></ul>
+                    </div>
+                </div>
+                <div class="page-nav clear">
+                    <i class="iconfont icon-chengjiu color-icon"></i>
+                    <span>成果展示 >></span>
+                </div>
+                <ul class="block p-md">
+                    <li class="overflow-hidden p-b-md">
+                        <div class="float-left img-box" style="height: 100px; width: 150px">
+                            <img src="images/crowdCreate/2.png" />
+                        </div>
+                        <div class="text-indent-2 float-right" style="width: 1000px">a重庆气象部门多个智慧气象发展成果亮相本次展会，吸引众多观众驻足观看。本次博览会为期4天，主题是“智能化：为经济赋能，为生活添彩”，将突出国际化、专业性、体验感，向广大企业和观众展示新技术、新动能、新前景。</div>
+                    </li>
+                    <li class="overflow-hidden p-b-md">
+                        <div class="float-left img-box" style="height: 100px; width: 150px">
+                            <img src="images/crowdCreate/3.png" />
+                        </div>
+                        <div class="text-indent-2 float-right" style="width: 1000px">a重庆气象部门多个智慧气象发展成果亮相本次展会，吸引众多观众驻足观看。本次博览会为期4天，主题是“智能化：为经济赋能，为生活添彩”，将突出国际化、专业性、体验感，向广大企业和观众展示新技术、新动能、新前景。</div>
+                    </li>
+                    <li class="overflow-hidden p-b-md">
+                        <div class="float-left img-box" style="height: 100px; width: 150px">
+                            <img src="images/crowdCreate/4.png" />
+                        </div>
+                        <div class="text-indent-2 float-right" style="width: 1000px">a重庆气象部门多个智慧气象发展成果亮相本次展会，吸引众多观众驻足观看。本次博览会为期4天，主题是“智能化：为经济赋能，为生活添彩”，将突出国际化、专业性、体验感，向广大企业和观众展示新技术、新动能、新前景。</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </body>
+</html>
+<!-- 导入 layui 的JS文件 -->
+<script src="lib/layui/layui.all.js"></script>
+<!-- 导入 jQuery -->
+<script src="lib/jquery.js"></script>
+<script>
+    $('.headDiv').load('templates/header.html')
+    $('.searchDiv').load('templates/search.html')
+    var newsLists = [
+        '"4月19日，“科创中国”咨询委员会第一次全体会议在京召开"',
+        '"科创中国”在行动——山东省日照市2021年中国科协专利信息平台应用培训会举办"',
+        '"山东省科协党组深入学习习近平总书记在庆祝中国共产党成立95周年大会上的讲话"',
+        '4月20日，中国科技期刊卓越行动计划工作交流推进会在京召开。中国科协党组书记、常务副主席、书记处第一书记怀进鹏院士，世界一流科技期刊建设专家委员会主任杨卫院士出席会议并致辞，',
+    ]
+    var notifyLists = [
+        '关于国家科技成果转化引导基金转让退出天津天创盈鑫创业投资合伙企业（有限合伙）子基金的公告',
+        '科技部办公厅 国家卫生健康委办公厅 军委后勤保障部办公厅 药监局综合司 关于开展第五批国家临床医学研究中心申报工作的通知',
+        '关于征集2021年度科技评估国家标准制修订计划项目的通知',
+        '2021年度科技部国外人才研究中心公开招聘应届毕业生拟聘人员公示',
+        '科技部高技术研究发展中心博士后科研工作站2021年博士后研究人员招收简章',
+        '中国人类遗传资源管理办公室关于恢复行政许可受理窗口现场服务有关事宜的通知',
+        '科技部信息中心关于2021年度公开招聘高校应届毕业生笔试名单及考试安排的通知',
+    ]
+    var policyLists = [
+        {
+            memo: '科技部办公厅关于印发《科技部 落实国家科技计划管理监督 主体责任实施方案》的通知',
+            name: '国科发政〔2016〕79号',
+        },
+        {
+            memo: '科技部 中央军委科学技术委员会关于印发《“十三五”科技军民融合发展专项规划》的通知',
+            name: '国科发资〔2017〕85号',
+        },
+        {
+            memo: '科技部 财政部 发展改革委关于印发《科技评估工作规定（试行）》的通知',
+            name: '国科发政〔2016〕382号 ',
+        },
+        {
+            memo: '科技部关于印发《科技监督和评估体系 建设工作方案》的通知',
+            name: '国科发政〔2016〕79号',
+        },
+        {
+            memo: '科技部关于开展2018年度全国科技统计调查工作的通知',
+            name: '国科发规〔2019〕11号',
+        },
+        {
+            memo: '市科委关于印发天津市科技计划管理办法的通知',
+            name: '津科计〔2017〕27号',
+        },
+        {
+            memo: '北京市深化市级财政科技计划(专项、基金等)管理改革实施方案》',
+            name: '北京市科委 ',
+        },
+    ]
+    layui.use(['laytpl'], function () {
+        var laytpl = layui.laytpl
+
+        var notifyTpl = notify_demo.innerHTML,
+            policyTpl = policy_demo.innerHTML,
+            newsTpl = news_demo.innerHTML
+
+        var notifyView = document.getElementById('notify-wrap'),
+            policyView = document.getElementById('policy_wrap')
+        newsView = document.getElementById('news_wrap')
+        rollMsgView = document.getElementById('roll_msg_wrap')
+        laytpl(notifyTpl).render(notifyLists, function (html) {
+            notifyView.innerHTML = html
+            rollMsgView.innerHTML = html
+        })
+
+        laytpl(policyTpl).render(policyLists, function (html) {
+            policyView.innerHTML = html
+        })
+
+        laytpl(newsTpl).render(newsLists, function (html) {
+            newsView.innerHTML = html
+        })
+    })
+
+    var speed = 80 // 可自行设置文字滚动的速度
+
+    var wrapper = document.getElementById('roll_wrap')
+    var demo1 = document.getElementById('roll_msg_wrap')
+    var demo2 = document.getElementById('clone_roll_msg_wrap')
+    demo2.innerHTML = demo1.innerHTML //克隆demo1为demo2
+    function Marquee() {
+        if (demo2.offsetHeight - wrapper.scrollTop <= 0)
+            //当滚动至demo1与demo2交界时
+            wrapper.scrollTop -= demo1.offsetHeight
+        //demo跳到最顶端
+        else {
+            wrapper.scrollTop++
+        }
+    }
+    var MyMar = setInterval(Marquee, speed) //设置定时器
+    wrapper.onmouseover = function () {
+        clearInterval(MyMar)
+    } //鼠标移上时清除定时器达到滚动停止的目的
+
+    wrapper.onmouseout = function () {
+        MyMar = setInterval(Marquee, speed)
+    } //鼠标移开时重设定时器
+</script>

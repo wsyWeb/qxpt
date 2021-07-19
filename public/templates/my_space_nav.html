@@ -1,0 +1,28 @@
+<ul class="layui-nav layui-nav-tree" lay-filter="test">
+    <li class="layui-nav-item"><a>个人信息</a></li>
+    <li class="layui-nav-item">
+        <a href="notifyManage.html">通知管理</a>
+    </li>
+    <li class="layui-nav-item">
+        <a href="expertDomainSetting.html">专家领域设置</a>
+    </li>
+    <li class="layui-nav-item layui-nav-itemed">
+        <a href="expertList.html">专家评分列表</a>
+    </li>
+    <li class="layui-nav-item">
+        <a href="expertScoreStatistics.html">专家评分结果统计</a>
+    </li>
+</ul>
+<script>
+    var pathname = window.location.pathname
+    var menus = $('.layui-nav-tree a')
+    for (var i = 0; i < menus.length; i++) {
+        var path = $(menus[i]).attr('href')
+        if (pathname.includes(path)) {
+            $(menus[i]).parent().addClass('layui-this')
+        }
+    }
+    layui.use('element', function () {
+        var element = layui.element //导航的hover效果、二级菜单等功能，需要依赖element模块
+    })
+</script>
