@@ -1,18 +1,3 @@
-<!-- <table class="layui-table" lay-data="{height:315, url:'/demo/table/user/', page:true, id:'test'}" lay-filter="test">
-    <thead>
-      <tr>
-        <th lay-data="{field:'id', width:80, sort: true}">ID</th>
-        <th lay-data="{field:'username', width:80}">用户名</th>
-        <th lay-data="{field:'sex', width:80, sort: true}">性别</th>
-        <th lay-data="{field:'city'}">城市</th>
-        <th lay-data="{field:'sign'}">签名</th>
-        <th lay-data="{field:'experience', sort: true}">积分</th>
-        <th lay-data="{field:'score', sort: true}">评分</th>
-        <th lay-data="{field:'classify'}">职业</th>
-        <th lay-data="{field:'wealth', sort: true}">财富</th>
-      </tr>
-    </thead>
-  </table> -->
 <!DOCTYPE html>
 <html>
     <head>
@@ -25,12 +10,7 @@
         <link rel="stylesheet" href="./css/runnet_common.css" />
         <link rel="stylesheet" href="./css/runnet_page.css" />
         <title>评分结果确认</title>
-        <style lang="">
-            /* .laytable-cell-checkbox .layui-icon {
-                    position: relative;
-                    top: 6px;
-                } */
-        </style>
+        <style lang=""></style>
     </head>
 
     <body>
@@ -38,57 +18,40 @@
         <div class="searchDiv"></div>
 
         <div class="runnet_main_body">
-            <div class="wrap p-t-lg flex">
-                <div id="my_space_nav" class="m-r-md" style="width: 200px"></div>
-                <div id="my_space_content" style="width: 1000px">
-                    <!-- <div class="search-wrap m-b-lg">
-                        当前评选请况:
-                        <div class="layui-inline">
-                            <input type="text" class="layui-input" />
-                        </div>
+            <div class="wrap">
+                <div class="runnut_head">
+                    <span class="borderl"></span>
+                    <span class="layui-breadcrumb" lay-separator=">">
+                        <a href="expertScoreStatistics.html">专家评分结果统计</a>
+                        <a><cite>发布</cite></a>
+                    </span>
+                </div>
+                <div class="search-wrap m-b-md m-t-md">
+                    当前评选请况:
+                    <div class="layui-inline">
+                        <form class="layui-form search_form" action="" lay-filter="search_form">
+                            <div class="layui-inline">
+                                <select class="search-condition" lay-verify="" lay-filter="type">
+                                    <option value="1">按领域</option>
+                                    <option value="2">按单位</option>
+                                </select>
+                            </div>
+                            <div class="layui-inline work_unit_wrap" style="display: none">
+                                <select class="search-condition work_unit_select" lay-verify="" lay-filter="work_unit"></select>
+                            </div>
+                        </form>
                     </div>
-                    <table class="layui-table">
-                        <colgroup>
-                            <col width="150" />
-                            <col width="150" />
-                            <col width="200" />
-                            <col />
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th>领域</th>
-                                <th>申请人数</th>
-                                <th>一级专家数</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>观测类</td>
-                                <td>180</td>
-                                <td>30</td>
-                            </tr>
-                        </tbody>
-                    </table> -->
-                    <!-- <div class="border-bottom m-t-lg m-b-lg"></div> -->
-                    <table class="layui-hide" id="expert_table" lay-filter="expert_table">
-                        <tbody id="expert_tbody"></tbody>
-                    </table>
-
-                    <!-- <script type="text/html" id="operate_wrap">
-                            <input
-                                lay-filter="check_level"
-                                type="checkbox"
-                                name=""
-                                lay-skin="primary"
-                                checked
-                            />
-                        </script> -->
-                    <div class="text-center" style="margin-top: 50px">
-                        <a class="layui-btn layui-btn-primary load-more-btn" onclick="loadMore()">加载更多...</a>
-                        <a class="layui-btn layui-btn-primary" onclick="saveFun()">保存</a>
-                        <a class="layui-btn" onclick="releaseFun()">发布</a>
-                        （已选择<span id="expert_num" class="color-theme"></span>位专家）
-                    </div>
+                </div>
+                <table class="layui-hide" id="entry_table"></table>
+                <div class="border-bottom m-t-lg m-b-lg"></div>
+                <table class="layui-hide" id="expert_table" lay-filter="expert_table">
+                    <tbody id="expert_tbody"></tbody>
+                </table>
+                <div class="text-center" style="margin-top: 50px">
+                    <a class="layui-btn layui-btn-primary load-more-btn" onclick="loadMore()">加载更多...</a>
+                    <a class="layui-btn layui-btn-primary" onclick="saveFun()">保存</a>
+                    <a class="layui-btn" onclick="releaseFun()">发布</a>
+                    （已选择<span id="expert_num" class="color-theme"></span>位专家）
                 </div>
             </div>
         </div>
@@ -100,7 +63,6 @@
 <script>
     $('.headDiv').load('./templates/header.html')
     $('.searchDiv').load('./templates/search.html')
-    $('#my_space_nav').load('templates/my_space_nav.html')
 
     var expertObj = JSON.parse(sessionStorage.getItem('expertObj'))
     var limit = Number(expertObj.limit)
@@ -108,9 +70,11 @@
     var datagrid = [],
         showGrid = [],
         selectExpert = [],
-        table = null
-    $(function () {
-        $.get(baseUrl + '/expert/queryExperyList?examineStatus=1&score=desc&page=1&periodical=' + expertObj.periodical + '&limit=' + limit, function (res) {
+        table = null,
+        searchCondition = 1
+    $.get(
+        baseUrl + '/expert/queryExperyList?examineStatus=1&score=desc&page=1&periodical=' + expertObj.periodical + '&limit=' + limit,
+        function (res) {
             if (res.code == 200) {
                 datagrid = res.data.data
                 //获取已经选择过的专家
@@ -128,11 +92,39 @@
                 }
                 setList()
             }
-        })
-    })
+        }
+    )
     function setList() {
-        layui.use(['table'], function () {
-            table = layui.table
+        layui.use(['table', 'form'], function () {
+            var table = layui.table,
+                form = layui.form
+            $.get(baseUrl + '/expert/getExpertWorlkUnit ', function (res) {
+                if (res.code === 200) {
+                    for (var i = 0; i < res.data.length; i++) {
+                        $('.work_unit_select').append('<option value="' + res.data[i] + '">' + res.data[i] + '</option>')
+                    }
+                    form.render('select')
+                }
+            })
+            var renderStatisticTable = function (type, workUnit) {
+                $.get(baseUrl + '/expert/queryExpertEntryFieldCensus?type=' + type + '&work_unit=' + (workUnit || ''), function (res) {
+                    if (res.code === 200) {
+                        table.render({
+                            elem: '#entry_table',
+                            height: 280,
+                            cols: [
+                                [
+                                    { field: 'fieldName', title: '领域' },
+                                    { field: 'joinNums', title: '申请人数' },
+                                    { field: 'oneLeveNums', title: '一级专家数' },
+                                ],
+                            ],
+                            data: res.data,
+                        })
+                    }
+                })
+            }
+            renderStatisticTable(searchCondition)
             table.render({
                 elem: '#expert_table',
                 data: showGrid,
@@ -182,6 +174,18 @@
                     return Number(i.isCheked) == 1
                 })
                 $('#expert_num').html(selectExpert.length)
+            })
+            form.on('select(type)', function (obj) {
+                if (Number(obj.value) === 2) {
+                    $('.work_unit_wrap').show()
+                } else {
+                    $('.work_unit_wrap').hide()
+                }
+                searchCondition = obj.value
+                renderStatisticTable(obj.value)
+            })
+            form.on('select(work_unit)', function (obj) {
+                renderStatisticTable(searchCondition, obj.value)
             })
         })
     }

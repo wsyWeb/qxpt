@@ -1,111 +1,193 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
-        <link rel="stylesheet" href="./lib/layui/css/layui.css" />
-        <link rel="stylesheet" href="./css/runnet_common.css" />
-        <link rel="stylesheet" href="./css/runnet_page.css" />
-        <title>专家领域设置</title>
-        <style>
-            #tree-wrap ul {
-                padding-left: 40px;
-            }
-            #tree-wrap li {
-                line-height: 38px;
-            }
-            #tree-wrap li i {
-                cursor: pointer;
-                padding-left: 10px;
-            }
-        </style>
-    </head>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="http://10.168.0.218:8086/rsp-group-innovation/static/css/common.css"/>
 
-    <body>
-        <div class="headDiv"></div>
-        <div class="searchDiv"></div>
+    <link rel="stylesheet" href="./lib/layui/css/layui.css" />
+    <link rel="stylesheet" href="./css/runnet_common.css" />
+    <link rel="stylesheet" href="./css/runnet_page.css" />
+    <title>专家领域设置</title>
+    <style>
+        #treeWrap .layui-colla-title .layui-btn-group {
+            position: absolute;
+            right: 15px;
+            top: 0;
+        }
+        #treeWrap .item {
+            border: 1px solid #c9c9c9;
+            padding: 5px 0 5px 10px;
+        }
+        #treeWrap .item .layui-btn {
+            border-color: transparent;
+        }
+        #treeWrap .item .layui-btn {
+            border-left: 1px solid #c9c9c9;
+        }
+        #expertFormSetting .register_expert_form {
+            margin: 0;
+        }
+    </style>
+</head>
 
-        <div class="runnet_main_body">
-            <div class="wrap p-t-lg flex">
-                <div id="my_space_nav" class="m-r-md" style="width: 200px"></div>
-                <div id="my_space_content" style="width: 1000px">
-                    <a onclick="showAddForm(1)" class="layui-btn layui-btn-sm">新增</a>
-                    <ul id="tree-wrap"></ul>
-                </div>
+<body>
+<div id="headDiv"></div>
+<div id="searchDiv"></div>
+
+<div class="runnet_main_body">
+    <div class="wrap p-t-lg overflow-hidden" id="expertFormSetting">
+        <div id="my_space_nav" class="m-r-md float-left" style="width: 180px"></div>
+        <div id="my_space_content" class="float-left" style="width: 1000px">
+            <div class="m-b-md">
+                <span class="font-15 font-bold">领域设置</span>
+                <a onclick="addFun(this, 1)" class="layui-btn layui-btn-sm">新增</a>
             </div>
+            <!-- <ul id="tree-wrap"></ul> -->
+            <div class="layui-collapse" id="treeWrap"></div>
+            <script id="tree" type="text/html">
+                {{# layui.each(d, function(idx1, item){ }}
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">
+                        {{item.title}}
+                        <div class="layui-btn-group">
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-xs" id="{{item.id}}" onclick="addFun(this)">
+                                <i class="layui-icon">&#xe654;</i>
+                            </button>
+                            <button
+                                    type="button"
+                                    class="layui-btn layui-btn-primary layui-btn-xs"
+                                    name="{{item.title}}"
+                                    id="{{item.id}}"
+                                    onclick="updateFun(this)"
+                            >
+                                <i class="layui-icon">&#xe642;</i>
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-xs" id="{{item.id}}" onclick="deleteFun(this)">
+                                <i class="layui-icon">&#xe640;</i>
+                            </button>
+                        </div>
+                    </h2>
+                    <div class="layui-colla-content layui-show">
+                        {{# layui.each(item.children, function(idx2, work){ }}
+                        <div class="layui-inline item position-relative">
+                            <span>{{work.title}}</span>
+                            <div class="layui-btn-group">
+                                <button
+                                        type="button"
+                                        class="layui-btn layui-btn-primary layui-btn-xs"
+                                        name="{{work.title}}"
+                                        id="{{work.id}}"
+                                        onclick="updateFun(this)"
+                                >
+                                    <i class="layui-icon">&#xe642;</i>
+                                </button>
+                                <button
+                                        type="button"
+                                        class="layui-btn layui-btn-primary layui-btn-xs"
+                                        id="{{work.id}}"
+                                        onclick="deleteFun(this)"
+                                >
+                                    <i class="layui-icon">&#xe640;</i>
+                                </button>
+                            </div>
+                        </div>
+                        {{# }); }}
+                    </div>
+                </div>
+
+                {{# }); }}
+            </script>
+            <div class="font-15 font-bold m-t-lg">表单设置</div>
+            <div id="expert_form" class="m-t-lg"></div>
         </div>
-    </body>
+    </div>
+</div>
+</body>
 </html>
 <script src="lib/layui/layui.all.js"></script>
 <script src="lib/jquery.js"></script>
 <script src="js/base.js"></script>
 
-<script>
-    $('.headDiv').load('./templates/header.html')
-    $('.searchDiv').load('./templates/search.html')
-    $('#my_space_nav').load('templates/my_space_nav.html')
-    var treeLists = []
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/js/common.js"></script>
 
-    $(function () {
-        init()
-        $('#tree-wrap').on('click', '.layui-icon-addition', function (e) {
-            showAddForm()
-        })
-        $('#tree-wrap').on('click', '.layui-icon-edit', function (e) {
-            layer.prompt(
-                {
-                    title: '编辑',
-                    value: $(e.target).parent().find('span').html(),
-                },
-                function (val, index) {
-                    if (!val) return false
-                    var submitForm = {
-                        id: $(e.target).parent().attr('id'),
-                        title: val,
-                    }
-                    updateFun(submitForm)
-                    layer.close(index)
-                }
-            )
-        })
-        $('#tree-wrap').on('click', '.layui-icon-delete', function (e) {
-            layer.confirm(
-                '你确定要删除吗？',
-                {
-                    title: '提示',
-                },
-                function () {
-                    delFun($(e.target).parent().attr('id'))
-                }
-            )
-        })
+<script>
+
+    $('#my_space_nav').load('templates/my_space_nav.html')
+
+    $('#expert_form').load('./expertDetail.html', function () {
+        $('.commnt-wrap').hide()
     })
-    function init() {
-        $.get(baseUrl + '/entryField/queryEntryFieldList', function (res) {
-            treeLists = res.data
-            renderTree(treeLists)
-        })
-    }
-    function renderTree(data) {
-        for (var i = 0; i < data.length; i++) {
-            var item = data[i]
-            var parentId = item.parentId
-            if (parentId) {
-                if (item.children && item.children.length > 0) {
-                    $('#' + parentId).append('<ul><li id=' + item.id + '><span>' + item.title + '</span>' + '<i class="layui-icon layui-icon-addition"></i>' + '<i class="layui-icon layui-icon-edit"></i>' + '<i class="layui-icon layui-icon-delete"></i>' + '</li></ul>')
-                } else {
-                    $('#' + parentId).append('<ul><li id=' + item.id + '><span>' + item.title + '</span>' + '<i class="layui-icon layui-icon-edit"></i>' + '<i class="layui-icon layui-icon-delete"></i>' + '</li></ul>')
+    var treeLists = [],
+        renderTree
+    layui.use(['laytpl', 'element'], function () {
+        var laytpl = layui.laytpl,
+            element = layui.element
+        var tpl = tree.innerHTML
+        var view = document.getElementById('treeWrap')
+        renderTree = function () {
+            $.get(baseUrl + '/entryField/queryEntryFieldList', function (res) {
+                if (res.code === 200) {
+                    laytpl(tpl).render(res.data, function (html) {
+                        view.innerHTML = html
+                    })
                 }
-            } else {
-                $('#tree-wrap').append('<li id=' + item.id + '><span>' + item.title + '</span>' + '<i class="layui-icon layui-icon-addition"></i>' + '<i class="layui-icon layui-icon-edit"></i>' + '<i class="layui-icon layui-icon-delete"></i>' + '</li>')
-            }
-            if (item.children && item.children.length > 0) {
-                renderTree(item.children)
-            }
+            })
         }
+
+        renderTree()
+    })
+    function deleteFun(target) {
+        layer.confirm(
+            '你确定要删除吗？',
+            {
+                title: '提示',
+            },
+            function () {
+                $.get(baseUrl + '/entryField/delentryField?id=' + $(target).attr('id'), function (res) {
+                    if (res.code == 200) {
+                        renderTree()
+                        layer.msg('删除成功')
+                    } else {
+                        layer.msg(res.message)
+                    }
+                })
+            }
+        )
     }
-    function showAddForm(level) {
+    function updateFun(target) {
+        layer.prompt(
+            {
+                title: '编辑',
+                value: $(target).attr('name'),
+            },
+            function (val, index) {
+                if (!val) return false
+                var submitForm = {
+                    id: $(target).attr('id'),
+                    title: val,
+                }
+                $.ajax({
+                    type: 'post',
+                    url: baseUrl + '/entryField/updateEntryFieldById',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: JSON.stringify(submitForm),
+                    success: function (res) {
+                        if (res.code == 200) {
+                            renderTree()
+                            layer.close(index)
+                            layer.msg('修改成功')
+                        } else {
+                            layer.msg(res.message)
+                        }
+                    },
+                })
+            }
+        )
+    }
+
+    function addFun(target, level) {
         layer.prompt(
             {
                 title: '新增',
@@ -114,57 +196,25 @@
             function (val, index) {
                 if (!val) return false
                 var submitForm = {
-                    parentId: level == 1 ? '' : $(e.target).parent().attr('id'),
+                    parentId: level == 1 ? '' : $(target).attr('id'),
                     title: val,
                 }
-                addFun(submitForm)
-                layer.close(index)
+                $.ajax({
+                    type: 'post',
+                    url: baseUrl + '/entryField/saveentryField',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: JSON.stringify(submitForm),
+                    success: function (res) {
+                        if (res.code == 200) {
+                            renderTree()
+                            layer.close(index)
+                            layer.msg('新增成功')
+                        } else {
+                            layer.msg(res.message)
+                        }
+                    },
+                })
             }
         )
-    }
-    function addFun(v) {
-        $.ajax({
-            type: 'post',
-            url: baseUrl + '/entryField/saveentryField',
-            contentType: 'application/json;charset=UTF-8',
-            data: JSON.stringify(v),
-            success: function (res) {
-                if (res.code == 200) {
-                    $('#tree-wrap').empty()
-                    init()
-                    layer.msg('新增成功')
-                } else {
-                    layer.msg(res.message)
-                }
-            },
-        })
-    }
-    function updateFun(v) {
-        $.ajax({
-            type: 'post',
-            url: baseUrl + '/entryField/updateEntryFieldById',
-            contentType: 'application/json;charset=UTF-8',
-            data: JSON.stringify(v),
-            success: function (res) {
-                if (res.code == 200) {
-                    $('#tree-wrap').empty()
-                    init()
-                    layer.msg('修改成功')
-                } else {
-                    layer.msg(res.message)
-                }
-            },
-        })
-    }
-    function delFun(v) {
-        $.get(baseUrl + '/entryField/delentryField?id=' + v, function (res) {
-            if (res.code == 200) {
-                $('#tree-wrap').empty()
-                init()
-                layer.msg('删除成功')
-            } else {
-                layer.msg(res.message)
-            }
-        })
     }
 </script>

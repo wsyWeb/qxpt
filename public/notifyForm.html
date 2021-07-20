@@ -32,6 +32,30 @@
             .prize_setting {
                 display: none;
             }
+            #awardType .layui-colla-title {
+                padding: 0 15px;
+            }
+            #awardType .layui-colla-title input {
+                background-color: transparent !important;
+                border-color: transparent !important;
+                width: 200px;
+                border-bottom: 1px solid #c9c9c9 !important;
+            }
+            #awardType .item {
+                width: 200px;
+            }
+            #awardType .del-award-btn {
+                position: absolute;
+                right: 20px;
+                top: 0px;
+            }
+            #awardType .item .del-work-btn {
+                position: absolute;
+                right: 0;
+                top: 0;
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+            }
         </style>
     </head>
     <body>
@@ -39,6 +63,13 @@
         <div class="searchDiv"></div>
         <div class="runnet_main_body">
             <div class="wrap">
+                <div class="runnut_head">
+                    <span class="borderl"></span>
+                    <span class="layui-breadcrumb" lay-separator=">">
+                        <a href="notifyManage.html">通知管理</a>
+                        <a><cite>新增通知</cite></a>
+                    </span>
+                </div>
                 <form class="layui-form m-t-md notyfy_form" action="" lay-filter="notyfy_form">
                     <div class="font-15 font-bold p-b-md basic-setting">基本信息设置</div>
                     <div class="block p-md basic-setting">
@@ -51,17 +82,17 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label required">摘要</label>
                             <div class="layui-input-block">
-                                <script id="editor" type="text/plain" style="width: 1040px; height: 400px"></script>
-                                <!-- <textarea placeholder="请输入内容" rows="8" name="summary" lay-verify="required" class="layui-textarea"></textarea> -->
+                                <!-- <script id="editor" type="text/plain" style="width: 1040px; height: 400px"></script> -->
+                                <textarea placeholder="请输入内容" name="summary" lay-verify="required" class="layui-textarea"></textarea>
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">类别</label>
                             <div class="layui-input-block">
                                 <select name="type" lay-verify="" lay-filter="type">
-                                    <option value="0">短视频大赛</option>
-                                    <option value="1">好新闻评选</option>
-                                    <option value="2">观摩交流活动</option>
+                                    <option value="1">短视频大赛</option>
+                                    <option value="2">好新闻评选</option>
+                                    <option value="3">观摩交流活动</option>
                                 </select>
                             </div>
                         </div>
@@ -77,18 +108,9 @@
                                 <input type="text" name="shortName" lay-verify="" placeholder="" class="layui-input" />
                             </div>
                         </div>
+
                         <div class="layui-form-item">
-                            <label class="layui-form-label">奖项类别</label>
-                            <div class="layui-input-block">
-                                <select id="awordType" lay-verify="">
-                                    <option value="0">报刊类</option>
-                                    <option value="1">网络类</option>
-                                    <option value="2">新媒体融合类</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">导入</label>
+                            <label class="layui-form-label required">导入</label>
                             <div class="layui-input-block">
                                 <a class="layui-btn layui-btn-primary" id="upload_word"><i class="layui-icon">&#xe67c;</i>上传word文档</a>
                                 <div class="layui-inline word_wrap"></div>
@@ -119,16 +141,60 @@
                     <div class="font-15 font-bold p-b-md collection-setting">线上作品收集设置</div>
                     <div class="block collection-setting p-md">
                         <div class="layui-form-item">
+                            <label class="layui-form-label">奖项类别</label>
+                            <div class="layui-input-block">
+                                <div class="layui-collapse" id="awardType"></div>
+                                <i
+                                    style="position: relative; top: 8px"
+                                    class="layui-icon-add-circle layui-icon font-18 cursor-pointer p-t-md"
+                                    title="新增"
+                                    onclick="addAwardTypeNode(this)"
+                                ></i>
+                                <script id="award_type" type="text/html">
+                                    {{# layui.each(d, function(idx1, item){ }}
+                                    <div class="layui-colla-item">
+                                        <h2 class="layui-colla-title">
+                                            <input type="text" class="layui-input" value="{{item.name}}" />
+                                            <i
+                                                class="layui-icon-reduce-circle layui-icon font-18 cursor-pointer del-award-btn"
+                                                title="删除"
+                                                onclick="removeAwardTypeNode(this)"
+                                            ></i>
+                                        </h2>
+                                        <div class="layui-colla-content layui-show">
+                                            {{# layui.each(item.worksTypes, function(idx2, work){ }}
+                                            <div class="layui-inline item position-relative">
+                                                <input type="text" class="layui-input" value="{{work.name}}" />
+                                                <a class="layui-btn layui-btn-primary del-work-btn" onclick="removeAwardItemNode(this)">
+                                                    <i class="layui-icon-delete layui-icon "></i>
+                                                </a>
+                                            </div>
+                                            {{# }); }}
+                                            <i
+                                                class="layui-icon-add-circle layui-icon font-18 cursor-pointer"
+                                                title="新增"
+                                                onclick="addAwardItemNode(this)"
+                                            ></i>
+                                        </div>
+                                    </div>
+
+                                    {{# }); }}
+                                </script>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
                             <label class="layui-form-label">作品信息</label>
-                            <div class="layui-input-block"></div>
+                            <div class="layui-input-block">
+                                <table class="layui-hide" id="worksInfoTable" lay-filter="works_info_table"></table>
+                            </div>
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">提交期限</label>
                             <div class="layui-input-block">
                                 <input
                                     type="text"
-                                    name="birthDay"
-                                    id="birth_day"
+                                    name="submitDate"
+                                    id="submit_date"
                                     lay-verify=""
                                     placeholder=""
                                     autocomplete="off"
@@ -139,18 +205,43 @@
                         <div class="prize_setting">
                             <div class="layui-form-item">
                                 <label class="layui-form-label">奖项设定</label>
-                                <div class="layui-input-block"></div>
+                                <div class="layui-input-block" id="awardSetting">
+                                    <script id="award_setting" type="text/html">
+                                        {{# layui.each(d, function(idx1, item){ }}
+                                        <div class="item">
+                                            <div class="layui-inline">
+                                                <input type="text" class="layui-input label" value="{{item.level}}" />
+                                            </div>
+                                            <div class="layui-inline">
+                                                <input type="number" class="layui-input content" value="{{item.value}}" />
+                                            </div>
+                                            个
+                                            <i
+                                                class="layui-icon-reduce-circle layui-icon font-18 cursor-pointer del-level-btn p-l-md"
+                                                title="删除"
+                                                onclick="removeAwardLevelNode(this)"
+                                            ></i>
+                                        </div>
+                                        {{# }); }}
+                                        <i
+                                            style="position: relative; top: 8px"
+                                            class="layui-icon-add-circle layui-icon font-18 cursor-pointer"
+                                            title="新增"
+                                            onclick="addAwardLevelNode(this)"
+                                        ></i>
+                                    </script>
+                                </div>
                             </div>
                             <div class="layui-form-item">
                                 <label class="layui-form-label">专家反馈模式</label>
                                 <div class="layui-input-block">
-                                    <!-- <input type="radio" name="distMethod" value="0" title="作品打分" checked />
-                                    <input type="radio" name="distMethod" value="1" title="作品排序" />
-                                    <input type="radio" name="distMethod" value="2" title="投票" /> -->
+                                    <input type="radio" name="feedBack" value="1" title="作品打分" checked />
+                                    <input type="radio" name="feedBack" value="2" title="作品排序" />
+                                    <input type="radio" name="feedBack" value="3" title="投票" />
                                 </div>
                                 <div class="layui-input-block">
-                                    <!-- <input type="radio" name="distMethod" value="0" title="去最高分" checked />
-                                    <input type="radio" name="distMethod" value="1" title="不去最高分" /> -->
+                                    <input type="radio" name="score" value="0" title="去最高分" checked />
+                                    <input type="radio" name="score" value="1" title="不去最高分" />
                                 </div>
                             </div>
                             <div class="layui-form-item">
@@ -222,183 +313,14 @@
 <script src="lib/layui/xm-select.js"></script>
 <script src="lib/jquery.js"></script>
 <script src="js/base.js"></script>
+<script src="js/js_notifyForm.js"></script>
 
-<script src="lib/ueditor/ueditor.config.js"></script>
+<!-- <script src="lib/ueditor/ueditor.config.js"></script>
 <script src="lib/ueditor/ueditor.all.min.js"></script>
-<script src="lib/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script src="lib/ueditor/lang/zh-cn/zh-cn.js"></script> -->
 
 <script>
-    var ue = UE.getEditor('editor')
+    // var ue = UE.getEditor('editor')
     $('.headDiv').load('templates/header.html')
     $('.searchDiv').load('templates/search.html')
-    var resFormData = {},
-        enclosureParams = [],
-        expertMebers = null
-    $('.attachment_list').on('click', '.del-btn', function (e) {
-        var oldFileName = $(e.target).attr('name')
-        $(e.target).parent().remove()
-        enclosureParams = enclosureParams.filter(function (i) {
-            return i.name !== oldFileName
-        })
-    })
-    $.get(baseUrl + '/expert/queryExperyList?examineStatus=2&page=1&limit=10000&expertLevel=1', function (res) {
-        expertMebers.update({ data: res.data.data })
-    })
-    layui.use(['upload', 'laydate', 'form'], function () {
-        var upload = layui.upload,
-            laydate = layui.laydate,
-            laydate = layui.laydate
-        ;(laydate = layui.laydate), (form = layui.form)
-
-        expertMebers = xmSelect.render({
-            el: '#expert_members',
-            language: 'zn',
-            // layVerify: 'required',
-            // layVerType: 'msg',
-            prop: {
-                name: 'name',
-                value: 'id',
-            },
-            on: function (obj) {
-                $('#expert_leader').empty()
-                for (var i = 0; i < obj.arr.length; i++) {
-                    $('#expert_leader').append('<option value="' + obj.arr[i].id + '">' + obj.arr[i].name + '</option>')
-                }
-                form.render('select')
-            },
-        })
-        //执行实例
-        form.on('radio(workCollection)', function (obj) {
-            if (Number(obj.value) === 1) {
-                $('input[name="isEnter"]').prop('checked', false)
-                $('#isEnter_true').prop('checked', true)
-                $('input[name="isEnter"]').prop('disabled', true)
-                $('a[lay-filter="next"]').show()
-                $('a[lay-filter="release"]').hide()
-                $('.prize_setting').show()
-            } else {
-                var isEnter = form.val('notyfy_form').isEnter
-                $('input[name="isEnter"]').prop('disabled', false)
-                $('.prize_setting').hide()
-                if (Number(isEnter) !== 1) {
-                    $('a[lay-filter="next"]').hide()
-                    $('a[lay-filter="release"]').show()
-                }
-            }
-            form.render('radio')
-        })
-        form.on('radio(activityRegistration)', function (obj) {
-            if (Number(obj.value) === 1) {
-                $('a[lay-filter="next"]').show()
-                $('a[lay-filter="release"]').hide()
-            } else {
-                $('a[lay-filter="next"]').hide()
-                $('a[lay-filter="release"]').show()
-            }
-        })
-        form.on('submit(next)', function (obj) {
-            $('.collection-setting').show()
-            $('.basic-setting').hide()
-            $('a[lay-filter="next"]').hide()
-            $('a[lay-filter="prev"]').show()
-            $('a[lay-filter="release"]').show()
-        })
-        form.on('submit(prev)', function (obj) {
-            $('.collection-setting').hide()
-            $('.basic-setting').show()
-            $('a[lay-filter="next"]').show()
-            $('a[lay-filter="prev"]').hide()
-            $('a[lay-filter="release"]').hide()
-        })
-        form.on('submit(draft)', function (obj) {
-            submitFun(obj, 'draft')
-        })
-        form.on('submit(release)', function (obj) {
-            submitFun(obj, 'release')
-        })
-        laydate.render({
-            elem: '#birth_day',
-            showBottom: false,
-        })
-        upload.render({
-            elem: '#upload_word', //绑定元素
-            url: baseUrl + '/upload/fileUpload', //上传接口
-            accept: 'file',
-            exts: 'doc|docx|pdf',
-            done: function (res) {
-                if (res.code != 200) {
-                    layer.msg('上传失败')
-                } else {
-                    resFormData.fileName = res.data.oldFileName
-                    resFormData.filePath = res.data.newFileName
-                    $('.word_wrap').empty()
-                    $('.word_wrap').append(
-                        '<a class="color-theme " target="_blank" href=' + imageUrl + res.data.newFileName + '>' + res.data.oldFileName + '</a>'
-                    )
-                }
-                //上传完毕回调
-            },
-            error: function () {
-                layer.msg('上传失败')
-            },
-        })
-        upload.render({
-            elem: '#upload_attachment', //绑定元素
-            url: baseUrl + '/upload/fileUpload', //上传接口
-            accept: 'file',
-            // exts: 'doc|docx|pdf',
-            done: function (res) {
-                if (res.code != 200) {
-                    layer.msg('上传失败')
-                } else {
-                    var eixtFile = enclosureParams.find(function (i) {
-                        return i.name === res.data.oldFileName
-                    })
-                    if (!eixtFile) {
-                        $('.attachment_list').append(
-                            '<li> <a class="color-theme " target="_blank" href=' +
-                                imageUrl +
-                                res.data.newFileName +
-                                '>' +
-                                res.data.oldFileName +
-                                "</a><i class='del-btn layui-icon layui-icon-close cursor-pointer' name=" +
-                                res.data.oldFileName +
-                                '></i></li>'
-                        )
-                        enclosureParams.push({
-                            name: res.data.oldFileName,
-                            url: res.data.newFileName,
-                        })
-                    }
-                }
-                //上传完毕回调
-            },
-            error: function () {
-                layer.msg('上传失败')
-            },
-        })
-    })
-    function submitFun(obj, type) {
-        var formData = Object.assign(obj.field, {})
-        formData.state = type === 'draft' ? 0 : 1
-        formData.type = Number(formData.type)
-        formData.isEnter = Number(formData.isEnter)
-        formData.isCollection = Number(formData.isCollection)
-        formData.enclosureParams = enclosureParams
-        $.ajax({
-            type: 'post',
-            url: baseUrl + '/notice/saveNotice',
-            data: JSON.stringify(formData),
-            contentType: 'application/json;charset=UTF-8',
-            success: function (res) {
-                resFormData = res.data
-                if (res.code == 200) {
-                    layer.msg('提交成功')
-                    window.location.href = 'notifyManage.html'
-                } else {
-                    layer.msg(res.message)
-                }
-            },
-        })
-    }
 </script>

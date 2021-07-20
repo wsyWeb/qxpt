@@ -4,15 +4,16 @@
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
-        <link rel="stylesheet" href="lib/layui/css/layui.css" />
+        <link rel="stylesheet" type="text/css" href="http://10.168.0.218:8086/rsp-group-innovation/static/css/common.css" />
+        <link rel="stylesheet" href="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/css/layui.css" />
         <link rel="stylesheet" href="css/runnet_common.css" />
         <link rel="stylesheet" href="css/runnet_page.css" />
         <title>专家列表</title>
         <style></style>
     </head>
     <body>
-        <div class="headDiv"></div>
-        <div class="searchDiv"></div>
+        <div id="headDiv"></div>
+        <div id="searchDiv"></div>
         <div class="runnet_main_body">
             <div class="wrap p-t-md">
                 <div id="my_space_nav" class="float-left" style="width: 200px"></div>
@@ -32,8 +33,9 @@
         </div>
     </body>
 </html>
-<script src="lib/layui/layui.all.js"></script>
-<script src="lib/jquery.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/jquery.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/js/common.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
 <script src="js/base.js"></script>
 <script>
     $('.headDiv').load('templates/header.html')
@@ -49,10 +51,7 @@
             skin: 'line',
             method: 'post',
             url: baseUrl + '/notice/pageList',
-            where: {
-                pageNum: 1,
-                pageSize: 20,
-            },
+            contentType: 'application/json',
             limits: [20, 50, 80, 100],
             response: {
                 statusCode: 200, //重新规定成功的状态码为 200，table 组件默认为 0

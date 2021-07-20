@@ -4,8 +4,8 @@
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
-        <!-- 导入 layui 的样式表 -->
-        <link rel="stylesheet" href="lib/layui/css/layui.css" />
+        <link rel="stylesheet" type="text/css" href="http://10.168.0.218:8086/rsp-group-innovation/static/css/common.css" />
+        <link rel="stylesheet" href="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/css/layui.css" />
         <!-- 导入自己的样式表 -->
         <link rel="stylesheet" href="css/runnet_common.css" />
         <link rel="stylesheet" href="css/runnet_page.css" />
@@ -14,8 +14,8 @@
     </head>
 
     <body>
-        <div class="headDiv"></div>
-        <div class="searchDiv"></div>
+        <div id="headDiv"></div>
+        <div id="searchDiv"></div>
 
         <div class="runnet_main_body">
             <div class="wrap">
@@ -29,7 +29,7 @@
                 </div>
                 <div class="block p-md m-t-lg">
                     <script id="notify_demo" type="text/html">
-                        {{# layui.each(datagrid, function(index, item){ }}
+                        {{# layui.each(datagrid.data, function(index, item){ }}
                         <li class="flex-between">
                             <div class="text-ellipsis-1 " style="width: 60%;">
                                 <i></i>
@@ -46,17 +46,16 @@
         </div>
     </body>
 </html>
-<script src="lib/layui/layui.all.js"></script>
-<script src="lib/jquery.js"></script>
+
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/jquery.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/js/common.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
 <script src="js/base.js"></script>
 <script>
-    $('.headDiv').load('templates/header.html')
-    $('.searchDiv').load('templates/search.html')
-    console.log('in notifu list')
     var datagrid = []
     var params = {
-        pageNum: 1,
-        pageSize: 20,
+        page: 1,
+        limit: 20,
     }
     $(function () {
         init()
@@ -73,7 +72,7 @@
             })
             laypage.render({
                 elem: 'page-wrap',
-                count: datagrid.length, //总条数
+                count: datagrid.count, //总条数
                 limit: 20, //每页显示的数据条数
                 limits: [10, 20, 50, 100],
                 layout: ['prev', 'page', 'next', 'count', 'limit'], //自定义排版

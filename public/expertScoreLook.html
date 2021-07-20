@@ -21,15 +21,18 @@
     <body>
         <div class="headDiv"></div>
         <div class="searchDiv"></div>
-
         <div class="runnet_main_body">
-            <div class="wrap p-t-lg flex">
-                <div id="my_space_nav" class="m-r-md" style="width: 200px"></div>
-                <div id="my_space_content" style="width: 1000px">
-                    <table class="layui-hide" id="expert_table" lay-filter="expert_table"></table>
-                    <div class="text-center m-t-lg">
-                        <a class="layui-btn" onclick="exportFun()">导出</a>
-                    </div>
+            <div class="wrap">
+                <div class="runnut_head">
+                    <span class="borderl"></span>
+                    <span class="layui-breadcrumb" lay-separator=">">
+                        <a href="expertScoreStatistics.html">专家评分结果统计</a>
+                        <a><cite>详情查看</cite></a>
+                    </span>
+                </div>
+                <table class="layui-hide" id="expert_table" lay-filter="expert_table"></table>
+                <div class="text-center m-t-lg">
+                    <a class="layui-btn" onclick="exportFun()">导出</a>
                 </div>
             </div>
         </div>
@@ -42,7 +45,7 @@
 <script>
     $('.headDiv').load('./templates/header.html')
     $('.searchDiv').load('./templates/search.html')
-    $('#my_space_nav').load('templates/my_space_nav.html')
+    // $('#my_space_nav').load('templates/my_space_nav.html')
     var expertObj = JSON.parse(sessionStorage.getItem('expertObj'))
     var dataGrid = []
     layui.use('table', function () {

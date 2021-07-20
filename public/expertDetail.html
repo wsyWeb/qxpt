@@ -150,48 +150,7 @@
         </div>
     </div>
     <div class="achievement">
-        <div class="layui-form-item">
-            <label class="layui-form-label">国内外相关团体认知情况</label>
-            <div class="layui-input-block">
-                <textarea readonly name="abroadGroup" class="layui-textarea"></textarea>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">近三年参加的科普活动</label>
-            <div class="layui-input-block">
-                <textarea readonly name="threeYearsActivity" class="layui-textarea"></textarea>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">近三年获得的奖励和荣誉</label>
-            <div class="layui-input-block">
-                <textarea readonly name="threeYearsReward" class="layui-textarea"></textarea>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">主要专业技术工作经历（含主持或参与的课题项目、撰写的报告、规划、标志规范等。填写信息包括项目来源、经费、本人排名等信息）</label>
-            <div class="layui-input-block">
-                <textarea readonly rows="12" name="majorMajors" class="layui-textarea"></textarea>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">发表的相关论文、专著、教材等</label>
-            <div class="layui-input-block">
-                <textarea readonly name="publishPaper" class="layui-textarea"></textarea>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">获得相关的专利</label>
-            <div class="layui-input-block">
-                <textarea readonly name="acquirePatent" class="layui-textarea"></textarea>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">对气象科普工作的认识和未来的工作设想</label>
-            <div class="layui-input-block">
-                <textarea readonly name="sceneOperation" class="layui-textarea"></textarea>
-            </div>
-        </div>
+        <div class="defaultExpertParams"></div>
         <div class="layui-form-item">
             <label class="layui-form-label">单位推荐意见</label>
             <div class="layui-input-block p-md" id="unit-opinion"></div>
@@ -223,13 +182,15 @@
     <div class="layui-row m-t-md">
         <label class="layui-form-label required">评价</label>
         <div class="layui-input-block">
-            <textarea name="evaluate" placeholder="请输入评价，限500字" maxlength="500" class="layui-textarea comment-input" lay-verify="required"></textarea>
+            <textarea
+                name="evaluate"
+                placeholder="请输入评价，限500字"
+                maxlength="500"
+                class="layui-textarea comment-input"
+                lay-verify="required"
+            ></textarea>
         </div>
     </div>
-    <!-- <div class="m-t-lg text-center">
-        <button class="layui-btn submit-comment-btn" onclick="sumitComment()">提交</button>
-        <button class="layui-btn layui-btn-primary" onclick="closeFun()">关闭</button>
-    </div> -->
 </div>
 <script src="lib/jquery.js"></script>
 <script src="lib/layui/layui.all.js"></script>
@@ -241,19 +202,40 @@
         $.get(baseUrl + '/expert/queryExpertByUserId?user_name=' + v.userName, function (res) {
             if (res.code == 200) {
                 formData = res.data
-                setForm()
+                setDefaultValue()
             }
         })
     }
-    function setForm() {
+    function setDefaultValue() {
         document.getElementById('headPortrait-img').setAttribute('src', imageUrl + formData.headPortrait)
         for (var i = 0; i < formData.resumeAddressArr.length; i++) {
             var item = formData.resumeAddressArr[i]
-            $('#unit-opinion').append('<div class="p-b-xs"><span>附件' + (i + 1) + '：</span><a class="color-theme" target="_blak" href=' + imageUrl + item.newFileName + '>' + item.oldFileName + '</a></div>')
+            $('#unit-opinion').append(
+                '<div class="p-b-xs"><span>附件' +
+                    (i + 1) +
+                    '：</span><a class="color-theme" target="_blak" href=' +
+                    imageUrl +
+                    item.newFileName +
+                    '>' +
+                    item.oldFileName +
+                    '</a></div>'
+            )
         }
         if (formData.examineStatus == 1) {
             $('.comment-wrap-readonly').show()
             $('.commnt-wrap').hide()
+        }
+        for (var i = 0; i < formData.dataArr.length; i++) {
+            $('.defaultExpertParams').append(
+                '<div class="layui-form-item">' +
+                    '<label class="layui-form-label"> ' +
+                    formData.dataArr[i].title +
+                    '</label>' +
+                    '<div class="layui-input-block"><textarea class="layui-textarea content">' +
+                    formData.dataArr[i].value +
+                    '</textarea></div>' +
+                    '</div>'
+            )
         }
         layui.use(['form', 'layer'], function () {
             var form = layui.form //只有执行了这一步，部分表单元素才会自动修饰成功
