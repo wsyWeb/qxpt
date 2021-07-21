@@ -4,8 +4,8 @@
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
-        <link rel="stylesheet" href="lib/layui/css/layui.css" />
-        <link rel="stylesheet" href="css/font/iconfont.css" />
+        <link rel="stylesheet" type="text/css" href="http://10.168.0.218:8086/rsp-group-innovation/static/css/common.css"/>
+        <link rel="stylesheet" href="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/css/layui.css" />
         <link rel="stylesheet" href="css/runnet_common.css" />
         <link rel="stylesheet" href="css/runnet_page.css" />
         <title>注册专家</title>
@@ -59,8 +59,8 @@
         </style>
     </head>
     <body>
-        <div class="headDiv"></div>
-        <div class="searchDiv"></div>
+        <div id="headDiv"></div>
+        <div id="searchDiv"></div>
         <div class="runnet_main_body">
             <div class="wrap">
                 <div class="runnut_head">
@@ -108,38 +108,6 @@
                                 <input type="text" name="shortName" lay-verify="" placeholder="" class="layui-input" />
                             </div>
                         </div>
-
-                        <div class="layui-form-item">
-                            <label class="layui-form-label required">导入</label>
-                            <div class="layui-input-block">
-                                <a class="layui-btn layui-btn-primary" id="upload_word"><i class="layui-icon">&#xe67c;</i>上传word文档</a>
-                                <div class="layui-inline word_wrap"></div>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">附件</label>
-                            <div class="layui-input-block">
-                                <a class="layui-btn layui-btn-primary" id="upload_attachment"><i class="layui-icon">&#xe67c;</i>上传附件</a>
-                                <div class="attachment_list"></div>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">线上作品收集</label>
-                            <div class="layui-input-block">
-                                <input type="radio" name="isCollection" value="0" title="否" checked lay-filter="workCollection" />
-                                <input type="radio" name="isCollection" value="1" title="是" lay-filter="workCollection" />
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">线上活动报名</label>
-                            <div class="layui-input-block">
-                                <input type="radio" name="isEnter" value="0" title="否" checked lay-filter="activityRegistration" />
-                                <input type="radio" name="isEnter" value="1" title="是" id="isEnter_true" lay-filter="activityRegistration" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="font-15 font-bold p-b-md collection-setting">线上作品收集设置</div>
-                    <div class="block collection-setting p-md">
                         <div class="layui-form-item">
                             <label class="layui-form-label">奖项类别</label>
                             <div class="layui-input-block">
@@ -182,6 +150,37 @@
                                 </script>
                             </div>
                         </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">导入</label>
+                            <div class="layui-input-block">
+                                <a class="layui-btn layui-btn-primary" id="upload_word"><i class="layui-icon">&#xe67c;</i>上传word文档</a>
+                                <div class="layui-inline word_wrap"></div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">附件</label>
+                            <div class="layui-input-block">
+                                <a class="layui-btn layui-btn-primary" id="upload_attachment"><i class="layui-icon">&#xe67c;</i>上传附件</a>
+                                <div class="attachment_list"></div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">线上作品收集</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="isCollection" value="0" title="否" checked lay-filter="workCollection" />
+                                <input type="radio" name="isCollection" value="1" title="是" lay-filter="workCollection" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">线上活动报名</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="isEnter" value="0" title="否" checked lay-filter="activityRegistration" />
+                                <input type="radio" name="isEnter" value="1" title="是" id="isEnter_true" lay-filter="activityRegistration" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="font-15 font-bold p-b-md collection-setting">线上作品收集设置</div>
+                    <div class="block collection-setting p-md">
                         <div class="layui-form-item">
                             <label class="layui-form-label">作品信息</label>
                             <div class="layui-input-block">
@@ -309,9 +308,11 @@
         </div>
     </body>
 </html>
-<script src="lib/layui/layui.all.js"></script>
-<script src="lib/layui/xm-select.js"></script>
-<script src="lib/jquery.js"></script>
+
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/jquery.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/js/common.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
+<script type="text/javascript" src="lib/layui/xm-select.js"></script>
 <script src="js/base.js"></script>
 <script src="js/js_notifyForm.js"></script>
 
@@ -320,7 +321,5 @@
 <script src="lib/ueditor/lang/zh-cn/zh-cn.js"></script> -->
 
 <script>
-    // var ue = UE.getEditor('editor')
-    $('.headDiv').load('templates/header.html')
-    $('.searchDiv').load('templates/search.html')
+
 </script>

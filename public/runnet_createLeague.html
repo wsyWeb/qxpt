@@ -5,7 +5,8 @@
         <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
         <!-- 导入 layui 的样式表 -->
-        <link rel="stylesheet" href="./lib/layui/css/layui.css" />
+        <link rel="stylesheet" type="text/css" href="http://10.168.0.218:8086/rsp-group-innovation/static/css/common.css"/>
+        <link rel="stylesheet" href="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/css/layui.css" />
         <!-- 导入自己的样式表 -->
         <link rel="stylesheet" href="css/font/iconfont.css" />
         <link rel="stylesheet" href="css/runnet_common.css" />
@@ -31,8 +32,8 @@
     </head>
 
     <body>
-        <div class="headDiv"></div>
-        <div class="searchDiv"></div>
+        <div id="headDiv"></div>
+        <div id="searchDiv"></div>
 
         <div class="runnet_main_body">
             <div class="wrap">
@@ -236,17 +237,12 @@
         </div>
     </body>
 </html>
-<script src="./lib/layui/layui.all.js"></script>
-<script src="./lib/jquery.js"></script>
-<script src="./js/createLeague.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/jquery.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/js/common.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
+<script src="js/createLeague.js"></script>
 <script src="js/base.js"></script>
-
 <script>
-    $(function () {
-        //提公共部分
-        $('.headDiv').load('templates/header.html')
-        $('.searchDiv').load('templates/search.html')
-    })
     function registerExpertFun() {
         $.get(baseUrl + '/expert/queryExpertByUserId?user_name=' + sessionStorage.getItem('token'), function (res) {
             if (res.code == 200) {
