@@ -17,6 +17,15 @@
             .notify-content p {
                 line-height: 28px;
             }
+            .attachments li {
+                line-height: 32px;
+            }
+            .message_form .layui-form-label {
+                width: 150px;
+            }
+            .message_form .layui-input-block {
+                margin-left: 150px;
+            }
         </style>
     </head>
 
@@ -47,23 +56,9 @@
                         <p class="text-indent-2">
                             7月2日，中共中央政治局常委、国务院总理、党组书记李克强主持召开国务院党组会议，学习贯彻习近平总书记在庆祝中国共产党成立100周年大会上的重要讲话精神，研究做好下一步工作。
                         </p>
-                        <p class="text-indent-2">
-                            会议指出，中国共产党在接续奋斗中迎来百年华诞，习近平总书记在庆祝大会上的重要讲话，全面回顾一百年来我们党围绕实现中华民族伟大复兴，团结带领中国人民开辟的伟大道路、创造的伟大事业、取得的伟大成就，庄严宣告我们实现了第一个百年奋斗目标，在中华大地上全面建成了小康社会，深刻总结了伟大建党精神，系统阐述了以史为鉴、开创未来的“九个必须”，是一篇马克思主义的纲领性文献，为全党全国各族人民向第二个百年奋斗目标迈进指明了前进方向、提供了根本遵循。国务院党组和政府系统要深入学习领会，全面贯彻到政府各项工作中。
-                        </p>
-                        <p class="text-indent-2">
-                            要坚持党的全面领导。以习近平新时代中国特色社会主义思想为指导，进一步增强“四个意识”、坚定“四个自信”、做到“两个维护”，坚持马克思主义基本原理，坚持和发展中国特色社会主义，坚持党的基本理论、基本路线、基本方略，统筹推进“五位一体”总体布局、协调推进“四个全面”战略布局，全面做好改革发展稳定各项工作。
-                        </p>
-                        <p class="text-indent-2">
-                            要全面深化改革开放，立足新发展阶段，贯彻新发展理念，构建新发展格局，推动高质量发展。坚持实事求是，从中国实际出发，着力办好自己的事。持续推进改革，更大激发市场主体活力和社会创造力，推进高水平对外开放，学习借鉴人类文明的一切有益成果，提高科技创新能力，加快发展方式绿色转型，保持经济社会持续健康发展，向着全面建成社会主义现代化强国的目标迈进，协同推进人民富裕、国家强盛、中国美丽。
-                        </p>
                     </div>
                     <h3 class="font-16 m-t-lg">附件:</h3>
-                    <ul style="line-height: 32px">
-                        <li>1、中国气象报</li>
-                        <li>2、中国气象报</li>
-                        <li>3、中国自然资源报社</li>
-                        <li>4、刘胡兰的弟弟用上了煤改电</li>
-                    </ul>
+                    <ul class="attachments"></ul>
                     <div class="flex-between font-16 m-t-lg">
                         <div>上一篇：<a class="link-hover">魏凤和同德国国防部长视频通话</a></div>
                         <div>下一篇：<a class="link-hover">刘鹤出席天问一号探测器着陆火星首批科学影像图揭幕仪式</a></div>
@@ -81,14 +76,17 @@
                         {{# }); }}
                     </script>
                     <ul id="notify-wrap" class="runnet_lists"></ul>
+                    <div class="text-center m-t-lg">
+                        <button class="layui-btn layui-btn-primary">点击报名</button>
+                    </div>
                     <div class="font-15 font-bold m-t-lg">在线留言</div>
-                    <form class="layui-form m-t-md border p-md" action="" lay-filter="message_form">
+                    <form class="layui-form m-t-md border p-md message_form" action="" lay-filter="message_form">
                         <div class="layui-form-item">
-                            <label class="layui-form-label">用户名</label>
+                            <label class="layui-form-label required">用户名</label>
                             <div class="layui-input-block" style="width: 500px">
                                 <input
                                     type="text"
-                                    name="username"
+                                    name="name"
                                     lay-verify="required"
                                     autocomplete="off"
                                     placeholder="请输入用户名"
@@ -97,7 +95,7 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">邮箱</label>
+                            <label class="layui-form-label required">邮箱</label>
                             <div class="layui-input-block" style="width: 500px">
                                 <input
                                     type="text"
@@ -110,12 +108,12 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">电话</label>
+                            <label class="layui-form-label required">电话</label>
                             <div class="layui-input-block" style="width: 500px">
                                 <input
                                     type="text"
-                                    name="telephone"
-                                    lay-verify="required|phone|number"
+                                    name="phone"
+                                    lay-verify="required|phone"
                                     autocomplete="off"
                                     placeholder="请输入电话"
                                     class="layui-input"
@@ -123,80 +121,83 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">留言内容</label>
+                            <label class="layui-form-label required">留言内容</label>
                             <div class="layui-input-block">
                                 <textarea placeholder="请输入内容" name="content" lay-verify="required" class="layui-textarea"></textarea>
                             </div>
                         </div>
                         <div class="layui-form-item">
                             <div class="layui-input-block">
-                                <button type="submit" class="layui-btn" lay-submit="" lay-filter="submit_message">提交留言</button>
+                                <a class="layui-btn" lay-submit lay-filter="submit_message">提交留言</a>
                             </div>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-
-        <!-- 导入 layui 的JS文件 -->
-        <script src="lib/layui/layui.all.js"></script>
-        <!-- 导入 jQuery -->
-        <script src="lib/jquery.js"></script>
-        <script>
-            $('.headDiv').load('templates/header.html')
-            $('.searchDiv').load('templates/search.html')
-            var notifyLists = [
-                {
-                    memo: '科技部办公厅关于印发《科技部 落实国家科技计划管理监督 主体责任实施方案》的通知',
-                    name: '2012-02-12',
-                },
-                {
-                    memo: '科技部 中央军委科学技术委员会关于印发《“十三五”科技军民融合发展专项规划》的通知',
-                    name: '2012-02-12',
-                },
-                {
-                    memo: '科技部 财政部 发展改革委关于印发《科技评估工作规定（试行）》的通知',
-                    name: '2012-02-12',
-                },
-                {
-                    memo: '科技部关于印发《科技监督和评估体系 建设工作方案》的通知',
-                    name: '2012-02-12',
-                },
-                {
-                    memo: '科技部关于开展2018年度全国科技统计调查工作的通知',
-                    name: '2012-02-12',
-                },
-                {
-                    memo: '市科委关于印发天津市科技计划管理办法的通知',
-                    name: '2012-02-12',
-                },
-                {
-                    memo: '北京市深化市级财政科技计划(专项、基金等)管理改革实施方案》',
-                    name: '2012-02-12',
-                },
-            ]
-            layui.use(['laytpl', 'form'], function () {
-                var laytpl = layui.laytpl
-                var form = layui.form
-
-                var notifyTpl = notify_demo.innerHTML
-                var notifyView = document.getElementById('notify-wrap')
-                laytpl(notifyTpl).render(notifyLists, function (html) {
-                    notifyView.innerHTML = html
-                })
-                form.on('submit(submit_message)', function (data) {
-                    layer.alert(JSON.stringify(data.field), {
-                        title: '最终的提交信息',
-                    })
-                    form.val('message_form', {
-                        username: '', // 'name': 'value'
-                        email: '',
-                        telephone: '',
-                        content: '',
-                    })
-                    return false
-                })
-            })
-        </script>
     </body>
 </html>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/jquery.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/js/common.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
+<script src="js/base.js"></script>
+<script>
+    $('.headDiv').load('templates/header.html')
+    $('.searchDiv').load('templates/search.html')
+    var notifyLists = [
+        {
+            memo: '科技部办公厅关于印发《科技部 落实国家科技计划管理监督 主体责任实施方案》的通知',
+            name: '2012-02-12',
+        },
+        {
+            memo: '科技部 中央军委科学技术委员会关于印发《“十三五”科技军民融合发展专项规划》的通知',
+            name: '2012-02-12',
+        },
+    ]
+    var notifyId = sessionStorage.getItem('notifyId'),
+        notifyDetail = {}
+    layui.use(['laytpl', 'form'], function () {
+        var laytpl = layui.laytpl
+        var form = layui.form
+
+        var notifyTpl = notify_demo.innerHTML
+        var notifyView = document.getElementById('notify-wrap')
+        laytpl(notifyTpl).render(notifyLists, function (html) {
+            notifyView.innerHTML = html
+        })
+        $.get(baseUrl + '/notice/detail?noticeId=' + notifyId, function (res) {
+            if (res.code === 200) {
+                notifyDetail = res.data
+                setAttachement()
+            }
+        })
+        form.on('submit(submit_message)', function (data) {
+            $.post({
+                url: baseUrl + '/message/saveMessage',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify(data.field),
+                success: function (res) {
+                    if (res.code === 200) {
+                        layer.msg('留言成功')
+                        form.val('message_form', {
+                            name: '', // 'name': 'value'
+                            email: '',
+                            phone: '',
+                            content: '',
+                        })
+                    }
+                },
+            })
+        })
+    })
+    function setAttachement() {
+        var files = notifyDetail.enclosures || []
+        if (files.length) {
+            for (var i = 0; i < files.length; i++) {
+                $('.attachments').append(
+                    '<li><a class="cursor-pointer color-theme" href="' + imageUrl + files[i].url + '">' + files[i].name + '</a></li>'
+                )
+            }
+        }
+    }
+</script>

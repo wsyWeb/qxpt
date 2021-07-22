@@ -112,8 +112,8 @@
                             <span><a class="link-hover" href="notifyList.html">通知公告 >></a></span>
                         </div>
                         <script id="notify_demo" type="text/html">
-                            {{# layui.each(notifyLists, function(index, item){ }}
-                            <li class="p-b-md text-ellipsis-1 link-hover">{{item}}</li>
+                            {{# layui.each(d, function(index, item){ }}
+                            <li class="p-b-md text-ellipsis-1 link-hover" id="{{item.id}}" onclick="toNotifyDetail(this)">{{item.title}}</li>
                             {{# }); }}
                         </script>
                         <ul class="block height300 p-md" id="notify-wrap"></ul>
@@ -128,19 +128,25 @@
                         <div class="float-left img-box" style="height: 100px; width: 150px">
                             <img src="images/crowdCreate/2.png" />
                         </div>
-                        <div class="text-indent-2 float-right" style="width: 1000px">a重庆气象部门多个智慧气象发展成果亮相本次展会，吸引众多观众驻足观看。本次博览会为期4天，主题是“智能化：为经济赋能，为生活添彩”，将突出国际化、专业性、体验感，向广大企业和观众展示新技术、新动能、新前景。</div>
+                        <div class="text-indent-2 float-right" style="width: 1000px">
+                            a重庆气象部门多个智慧气象发展成果亮相本次展会，吸引众多观众驻足观看。本次博览会为期4天，主题是“智能化：为经济赋能，为生活添彩”，将突出国际化、专业性、体验感，向广大企业和观众展示新技术、新动能、新前景。
+                        </div>
                     </li>
                     <li class="overflow-hidden p-b-md">
                         <div class="float-left img-box" style="height: 100px; width: 150px">
                             <img src="images/crowdCreate/3.png" />
                         </div>
-                        <div class="text-indent-2 float-right" style="width: 1000px">a重庆气象部门多个智慧气象发展成果亮相本次展会，吸引众多观众驻足观看。本次博览会为期4天，主题是“智能化：为经济赋能，为生活添彩”，将突出国际化、专业性、体验感，向广大企业和观众展示新技术、新动能、新前景。</div>
+                        <div class="text-indent-2 float-right" style="width: 1000px">
+                            a重庆气象部门多个智慧气象发展成果亮相本次展会，吸引众多观众驻足观看。本次博览会为期4天，主题是“智能化：为经济赋能，为生活添彩”，将突出国际化、专业性、体验感，向广大企业和观众展示新技术、新动能、新前景。
+                        </div>
                     </li>
                     <li class="overflow-hidden p-b-md">
                         <div class="float-left img-box" style="height: 100px; width: 150px">
                             <img src="images/crowdCreate/4.png" />
                         </div>
-                        <div class="text-indent-2 float-right" style="width: 1000px">a重庆气象部门多个智慧气象发展成果亮相本次展会，吸引众多观众驻足观看。本次博览会为期4天，主题是“智能化：为经济赋能，为生活添彩”，将突出国际化、专业性、体验感，向广大企业和观众展示新技术、新动能、新前景。</div>
+                        <div class="text-indent-2 float-right" style="width: 1000px">
+                            a重庆气象部门多个智慧气象发展成果亮相本次展会，吸引众多观众驻足观看。本次博览会为期4天，主题是“智能化：为经济赋能，为生活添彩”，将突出国际化、专业性、体验感，向广大企业和观众展示新技术、新动能、新前景。
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -151,6 +157,7 @@
 <script src="lib/layui/layui.all.js"></script>
 <!-- 导入 jQuery -->
 <script src="lib/jquery.js"></script>
+<script src="js/base.js"></script>
 <script>
     $('.headDiv').load('templates/header.html')
     $('.searchDiv').load('templates/search.html')
@@ -159,15 +166,6 @@
         '"科创中国”在行动——山东省日照市2021年中国科协专利信息平台应用培训会举办"',
         '"山东省科协党组深入学习习近平总书记在庆祝中国共产党成立95周年大会上的讲话"',
         '4月20日，中国科技期刊卓越行动计划工作交流推进会在京召开。中国科协党组书记、常务副主席、书记处第一书记怀进鹏院士，世界一流科技期刊建设专家委员会主任杨卫院士出席会议并致辞，',
-    ]
-    var notifyLists = [
-        '关于国家科技成果转化引导基金转让退出天津天创盈鑫创业投资合伙企业（有限合伙）子基金的公告',
-        '科技部办公厅 国家卫生健康委办公厅 军委后勤保障部办公厅 药监局综合司 关于开展第五批国家临床医学研究中心申报工作的通知',
-        '关于征集2021年度科技评估国家标准制修订计划项目的通知',
-        '2021年度科技部国外人才研究中心公开招聘应届毕业生拟聘人员公示',
-        '科技部高技术研究发展中心博士后科研工作站2021年博士后研究人员招收简章',
-        '中国人类遗传资源管理办公室关于恢复行政许可受理窗口现场服务有关事宜的通知',
-        '科技部信息中心关于2021年度公开招聘高校应届毕业生笔试名单及考试安排的通知',
     ]
     var policyLists = [
         {
@@ -205,14 +203,28 @@
         var notifyTpl = notify_demo.innerHTML,
             policyTpl = policy_demo.innerHTML,
             newsTpl = news_demo.innerHTML
-
         var notifyView = document.getElementById('notify-wrap'),
-            policyView = document.getElementById('policy_wrap')
-        newsView = document.getElementById('news_wrap')
-        rollMsgView = document.getElementById('roll_msg_wrap')
-        laytpl(notifyTpl).render(notifyLists, function (html) {
-            notifyView.innerHTML = html
-            rollMsgView.innerHTML = html
+            policyView = document.getElementById('policy_wrap'),
+            newsView = document.getElementById('news_wrap'),
+            rollMsgView = document.getElementById('roll_msg_wrap')
+
+        var renderNotify = function (v) {
+            laytpl(notifyTpl).render(v, function (html) {
+                notifyView.innerHTML = html
+                rollMsgView.innerHTML = html
+            })
+        }
+        $.ajax({
+            type: 'post',
+            url: baseUrl + '/notice/pageList',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({ page: 1, limit: 7 }),
+            success: function (res) {
+                if (res.code == 200) {
+                    renderNotify(res.data.data)
+                    showAnimation()
+                }
+            },
         })
 
         laytpl(policyTpl).render(policyLists, function (html) {
@@ -224,27 +236,33 @@
         })
     })
 
-    var speed = 80 // 可自行设置文字滚动的速度
+    function showAnimation() {
+        var speed = 80 // 可自行设置文字滚动的速度
 
-    var wrapper = document.getElementById('roll_wrap')
-    var demo1 = document.getElementById('roll_msg_wrap')
-    var demo2 = document.getElementById('clone_roll_msg_wrap')
-    demo2.innerHTML = demo1.innerHTML //克隆demo1为demo2
-    function Marquee() {
-        if (demo2.offsetHeight - wrapper.scrollTop <= 0)
-            //当滚动至demo1与demo2交界时
-            wrapper.scrollTop -= demo1.offsetHeight
-        //demo跳到最顶端
-        else {
-            wrapper.scrollTop++
+        var wrapper = document.getElementById('roll_wrap'),
+            demo1 = document.getElementById('roll_msg_wrap'),
+            demo2 = document.getElementById('clone_roll_msg_wrap')
+        demo2.innerHTML = demo1.innerHTML //克隆demo1为demo2
+        var Marquee = function () {
+            if (demo2.offsetHeight - wrapper.scrollTop <= 0)
+                //当滚动至demo1与demo2交界时
+                wrapper.scrollTop -= demo1.offsetHeight
+            //demo跳到最顶端
+            else {
+                wrapper.scrollTop++
+            }
         }
-    }
-    var MyMar = setInterval(Marquee, speed) //设置定时器
-    wrapper.onmouseover = function () {
-        clearInterval(MyMar)
-    } //鼠标移上时清除定时器达到滚动停止的目的
+        var MyMar = setInterval(Marquee, speed) //设置定时器
+        wrapper.onmouseover = function () {
+            clearInterval(MyMar)
+        } //鼠标移上时清除定时器达到滚动停止的目的
 
-    wrapper.onmouseout = function () {
-        MyMar = setInterval(Marquee, speed)
-    } //鼠标移开时重设定时器
+        wrapper.onmouseout = function () {
+            MyMar = setInterval(Marquee, speed)
+        } //鼠标移开时重设定时器
+    }
+    function toNotifyDetail(target) {
+        sessionStorage.setItem('notifyId', $(target).attr('id'))
+        window.location.href = 'notifyDetail.html'
+    }
 </script>

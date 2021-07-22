@@ -1,6 +1,16 @@
 var resFormData = {},
     enclosureParams = [],
-    expertMebers = null
+    expertMebers = null,
+    id = sessionStorage.getItem('notifyId'),
+    allLeaders = [],
+    allExperts = []
+
+var awardTypeTpl = award_type.innerHTML,
+    awardTypeView = document.getElementById('awardType')
+
+var awardSettingTpl = award_setting.innerHTML,
+    awardSettingView = document.getElementById('awardSetting')
+
 $('.attachment_list').on('click', '.del-btn', function (e) {
     var oldFileName = $(e.target).attr('name')
     $(e.target).parent().remove()
@@ -9,6 +19,7 @@ $('.attachment_list').on('click', '.del-btn', function (e) {
     })
 })
 $.get(baseUrl + '/expert/queryExperyList?examineStatus=2&page=1&limit=10000&expertLevel=1', function (res) {
+    allExperts = res.data.data
     expertMebers.update({ data: res.data.data })
 })
 layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function () {
@@ -18,12 +29,7 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
         laydate = layui.laydate,
         form = layui.form,
         table = layui.table,
-        element = layui.element,
-        awardSettingTpl = award_setting.innerHTML,
-        awardSettingView = document.getElementById('awardSetting')
-    laytpl(awardSettingTpl).render(awardLevel, function (html) {
-        awardSettingView.innerHTML = html
-    })
+        element = layui.element
 
     expertMebers = xmSelect.render({
         el: '#expert_members',
@@ -36,7 +42,15 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             value: 'id',
         },
         on: function (obj) {
+            console.log(obj.arr, 'sd')
             $('#expert_leader').empty()
+            allLeaders = obj.arr
+            resFormData.finalExperts = obj.arr.map(function (i) {
+                return {
+                    expertId: i.id,
+                    expertName: i.name,
+                }
+            })
             for (var i = 0; i < obj.arr.length; i++) {
                 $('#expert_leader').append('<option value="' + obj.arr[i].id + '">' + obj.arr[i].name + '</option>')
             }
@@ -63,15 +77,25 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
     var getAwardType = function (v) {
         $.get(baseUrl + '/worksType/findListById?id=' + v, function (res) {
             if (res.code === 200 && res.data) {
-                var awardTypeTpl = award_type.innerHTML
-                var awardTypeView = document.getElementById('awardType')
-                laytpl(awardTypeTpl).render(res.data, function (html) {
-                    awardTypeView.innerHTML = html
-                })
+                resFormData.worksTypes = res.data
+                setAwardValue(laytpl, element)
             }
         })
     }
-    getAwardType(1)
+    if (!!id) {
+        $('#curTitle').html('编辑公告')
+        $.get(baseUrl + '/notice/detail?noticeId=' + id, function (res) {
+            if (res.code === 200) {
+                resFormData = res.data || {}
+                enclosureParams = res.data.enclosures
+                setFormDefaultValue(form)
+                setAwardValue(laytpl, element)
+                updateExpertMemberSelectStatus()
+            }
+        })
+    } else {
+        getAwardType(1)
+    }
     renderTable()
     //执行实例
     form.on('select(type)', function (obj) {
@@ -105,7 +129,13 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             $('a[lay-filter="release"]').show()
         }
     })
+    form.on('select(expertLeader)', function (obj) {
+        console.log(obj)
+    })
     form.on('submit(next)', function (obj) {
+        if (!resFormData.filePath) {
+            return layer.msg('请先导入公告正文')
+        }
         $('.collection-setting').show()
         $('.basic-setting').hide()
         $('a[lay-filter="next"]').hide()
@@ -124,6 +154,9 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
         submitFun(obj, 'draft')
     })
     form.on('submit(release)', function (obj) {
+        if (!resFormData.filePath) {
+            return layer.msg('请先导入公告正文')
+        }
         submitFun(obj, 'release')
     })
     laydate.render({
@@ -134,7 +167,7 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
         elem: '#upload_word', //绑定元素
         url: baseUrl + '/upload/fileUpload', //上传接口
         accept: 'file',
-        exts: 'doc|docx|pdf',
+        exts: 'doc|docx',
         done: function (res) {
             if (res.code != 200) {
                 layer.msg('上传失败')
@@ -188,13 +221,76 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
         },
     })
 })
+function updateExpertMemberSelectStatus() {
+    var finalExperts = resFormData.finalExperts || []
+    for (var i = 0; i < allExperts.length; i++) {
+        for (var j = 0; j < finalExperts.length; j++) {
+            if (allExperts[i].id === finalExperts[j].expertId) {
+                allExperts[i].selected = true
+            }
+        }
+    }
+    expertMebers.update({ data: allExperts })
+}
+function setFormDefaultValue(form) {
+    form.val('notyfy_form', {
+        id: resFormData.id,
+        title: resFormData.title,
+        summary: resFormData.summary,
+        type: resFormData.type,
+        tag: resFormData.tag,
+        shortName: resFormData.shortName,
+        isCollection: resFormData.isCollection,
+        isEnter: resFormData.isEnter,
+        submitDate: resFormData.submitDate,
+        feedBack: resFormData.feedBack,
+        score: resFormData.score,
+        distMethod: resFormData.distMethod,
+        vote: resFormData.vote,
+        voteLinks: resFormData.voteLinks,
+        expertWeight: resFormData.expertWeight,
+        voteWeight: resFormData.voteWeight,
+        link: resFormData.link,
+    })
+    $('.word_wrap').html(resFormData.fileName)
+    for (var i = 0; i < resFormData.enclosures.length; i++) {
+        $('.attachment_list').append(
+            '<li> <a class="color-theme " target="_blank" href=' +
+                imageUrl +
+                resFormData.enclosures[i].url +
+                '>' +
+                resFormData.enclosures[i].name +
+                "</a><i class='del-btn layui-icon layui-icon-close cursor-pointer' name=" +
+                resFormData.enclosures[i].name +
+                '></i></li>'
+        )
+    }
+    if (resFormData.leaderId) {
+        $('#expert_leader').append('<option value="' + resFormData.leaderId + '">' + resFormData.leaderName + '</option>')
+        form.render('select')
+    }
+}
+function setAwardValue(laytpl, element) {
+    laytpl(awardTypeTpl).render(resFormData.worksTypes || [], function (html) {
+        awardTypeView.innerHTML = html
+    })
+    var awardSetting = awardLevel
+    if (resFormData.awardSetting) {
+        awardSetting = JSON.parse(resFormData.awardSetting)
+    }
+    laytpl(awardSettingTpl).render(awardSetting, function (html) {
+        awardSettingView.innerHTML = html
+    })
+    element.render()
+}
 function submitFun(obj, type) {
-    var formData = Object.assign(obj.field, {})
+    var formData = Object.assign(obj.field, resFormData)
     formData.state = type === 'draft' ? 0 : 1
     formData.type = Number(formData.type)
     formData.isEnter = Number(formData.isEnter)
     formData.isCollection = Number(formData.isCollection)
     formData.enclosureParams = enclosureParams //附件
+    formData.leaderName = $('#expert_leader option:selected').text() // 获取组长名字
     formData.awardSetting = JSON.stringify(formatAwardSetting()) //奖项设定
     formData.worksTypes = formatWorksTypes() //奖项类别
     console.log(JSON.stringify(formData))
