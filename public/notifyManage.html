@@ -33,8 +33,10 @@ i<!DOCTYPE html>
                     </script>
                     <script type="text/html" id="operate_wrap">
                         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-                        <a class="layui-btn layui-btn-xs" lay-event="top">置顶</a>
-                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
+                        <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
+                        <a class="layui-btn layui-btn-xs" lay-event="top">
+                            {{# if(d.isTop === 0){ }} 置顶 {{# } }} {{# if(d.isTop === 1){ }} 取消置顶 {{# } }}
+                        </a>
                     </script>
                 </div>
             </div>
@@ -124,7 +126,7 @@ i<!DOCTYPE html>
                     {
                         field: 'sign',
                         title: '操作',
-                        width: 160,
+                        width: 180,
                         toolbar: '#operate_wrap',
                     },
                 ],
@@ -142,13 +144,19 @@ i<!DOCTYPE html>
                 sessionStorage.setItem('notifyId', data.id)
                 window.location.href = 'notifyForm.html'
             } else if (obj.event === 'top') {
-                layer.confirm('你确定置顶该公告吗', { title: '提示' }, function () {
-                    // $.get(baseUrl + '/notice/deleteNotice?noticeId=' + data.id, function (res) {
-                    //     if (res.code === 200) {
-                    //         layer.msg('删除成功')
-                    //         table.reload('notify_table', {})
-                    //     }
-                    // })
+                layer.confirm(data.isTop === 1 ? '你确认取消置顶该公告吗？' : '你确定置顶该公告吗？', { title: '提示' }, function () {
+                    var isTop = data.isTop === 1 ? 0 : 1
+                    var currpage = $('.layui-laypage-em').next().text()
+                    $.get(baseUrl + '/notice/isTop?noticeId=' + data.id + '&isTop=' + isTop, function (res) {
+                        if (res.code === 200) {
+                            layer.msg(data.isTop === 1 ? '取消置顶成功' : '置顶成功')
+                            table.reload('notify_table', {
+                                page: {
+                                    curr: currpage,
+                                },
+                            })
+                        }
+                    })
                 })
             } else if (obj.event === 'delete') {
                 layer.confirm('你确定删除该公告吗', { title: '提示' }, function () {
