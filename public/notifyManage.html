@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+i<!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8" />
@@ -8,8 +8,15 @@
         <link rel="stylesheet" href="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/css/layui.css" />
         <link rel="stylesheet" href="css/runnet_common.css" />
         <link rel="stylesheet" href="css/runnet_page.css" />
-        <title>专家列表</title>
-        <style></style>
+        <title>公告管理</title>
+        <style>
+            .release {
+                color: green;
+            }
+            .draft {
+                color: red;
+            }
+        </style>
     </head>
     <body>
         <div id="headDiv"></div>
@@ -17,7 +24,7 @@
         <div class="runnet_main_body">
             <div class="wrap p-t-md">
                 <div id="my_space_nav" class="float-left" style="width: 200px"></div>
-                <div id="my_space_content" style="width: 1000px" class="float-right p-l-md">
+                <div id="my_space_content" style="width: 1000px" class="float-right">
                     <table class="layui-hide" id="notify_table" lay-filter="notify_table"></table>
                     <script type="text/html" id="header_toolbar_wrap">
                         <div class="layui-btn-container">
@@ -26,6 +33,7 @@
                     </script>
                     <script type="text/html" id="operate_wrap">
                         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                        <a class="layui-btn layui-btn-xs" lay-event="top">置顶</a>
                         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="delete">删除</a>
                     </script>
                 </div>
@@ -41,6 +49,7 @@
     $('.headDiv').load('templates/header.html')
     $('.searchDiv').load('templates/search.html')
     $('#my_space_nav').load('templates/my_space_nav.html')
+    sessionStorage.removeItem('notifyId')
     layui.use(['table', 'element'], function () {
         var table = layui.table
 
@@ -68,17 +77,54 @@
                 [
                     // { type: 'numbers' },
                     // { field: 'map', title: '推荐' },
-                    { field: 'top', title: '置顶' },
+                    {
+                        field: 'top',
+                        title: '置顶',
+                        // width: '80',
+                        templet: function (d) {
+                            if (d.isTop === 1) {
+                                return '<i class="layui-icon layui-icon-rate-solid" style="color:FF5722"></i>'
+                            }
+                            return '<i class="layui-icon layui-icon-rate"></i>'
+                        },
+                    },
                     { field: 'title', title: '标题' },
                     { field: 'updateTime', title: '更新时间' },
-                    { field: 'label', title: '类别' },
-                    { field: 'clickNum', title: '点击数量' },
-                    { field: 'commentNum', title: '评论数量' },
-                    { field: 'state', title: '状态' },
+                    {
+                        field: 'type',
+                        title: '类别',
+                        templet: function (d) {
+                            switch (Number(d.type)) {
+                                case 1:
+                                    return '短视频大赛'
+                                    break
+                                case 2:
+                                    return '好新闻评选'
+                                    break
+                                case 3:
+                                    return '观摩交流活动'
+                                    break
+                                default:
+                                    return '--'
+                            }
+                        },
+                    },
+                    { field: 'click', title: '点击数量' },
+                    { field: 'comments', title: '评论数量' },
+                    {
+                        field: 'state',
+                        title: '状态',
+                        templet: function (d) {
+                            if (Number(d.state) === 1) {
+                                return '<i class="layui-icon-ok-circle layui-icon release"></i>'
+                            }
+                            return '<i class="layui-icon-reduce-circle layui-icon draft"></i>'
+                        },
+                    },
                     {
                         field: 'sign',
                         title: '操作',
-                        width: 120,
+                        width: 160,
                         toolbar: '#operate_wrap',
                     },
                 ],
@@ -86,33 +132,33 @@
             page: true,
         })
         table.on('toolbar(notify_table)', function (obj) {
-            console.log(obj.event, 'aa')
             if (obj.event === 'add') {
                 window.location.href = 'notifyForm.html'
-                // layer.open({
-                //     type: 2,
-                //     title: '新增通知消息',
-                //     area: ['1200px', '90%'],
-                //     fixed: true, //不固定
-                //     btn: ['提交', '关闭'],
-                //     // maxmin: true,
-                //     content: 'notifyForm.html',
-                // })
             }
         })
         table.on('tool(notify_table)', function (obj) {
             var data = obj.data
-            console.log(obj)
             if (obj.event === 'edit') {
-                layer.open({
-                    type: 2,
-                    title: '新增通知消息',
-                    area: ['1200px', '90%'],
-                    fixed: true, //不固定
-                    // maxmin: true,
-                    content: 'notifyForm.html',
+                sessionStorage.setItem('notifyId', data.id)
+                window.location.href = 'notifyForm.html'
+            } else if (obj.event === 'top') {
+                layer.confirm('你确定置顶该公告吗', { title: '提示' }, function () {
+                    // $.get(baseUrl + '/notice/deleteNotice?noticeId=' + data.id, function (res) {
+                    //     if (res.code === 200) {
+                    //         layer.msg('删除成功')
+                    //         table.reload('notify_table', {})
+                    //     }
+                    // })
                 })
             } else if (obj.event === 'delete') {
+                layer.confirm('你确定删除该公告吗', { title: '提示' }, function () {
+                    $.get(baseUrl + '/notice/deleteNotice?noticeId=' + data.id, function (res) {
+                        if (res.code === 200) {
+                            layer.msg('删除成功')
+                            table.reload('notify_table', {})
+                        }
+                    })
+                })
             }
         })
     })

@@ -5,7 +5,8 @@ var headPortrait,
     resFormData = {},
     fieldOneArr = [],
     fieldTwoArr = [],
-    entryFields = []
+    entryFields = [],
+    defaultExpertParams = []
 
 var fieldOneSelect = xmSelect.render({
     el: '#entryField',
@@ -58,9 +59,15 @@ $.get(baseUrl + '/expert/queryExpertByUserId?user_name=' + sessionStorage.getIte
         resFormData = res.data || {}
         fieldOneArr = resFormData.fieldOneArr || []
         fieldTwoArr = resFormData.fieldTwoArr || []
-        defaultExpertParams = resFormData.dataArr || defaultExpertParams
+        // defaultExpertParams = resFormData.dataArr || defaultExpertParams
         setFormDefaultValue()
-        if (res.data) resetForm()
+        if (res.data) {
+            defaultExpertParams = resFormData.dataArr
+            setDefaultParams()
+            resetForm()
+        } else {
+            getDefineParams()
+        }
 
         $.get(baseUrl + '/entryField/queryEntryFieldList', function (resEntryFields) {
             if (resEntryFields.code === 200) {
@@ -84,7 +91,14 @@ $.get(baseUrl + '/expert/queryExpertByUserId?user_name=' + sessionStorage.getIte
         })
     }
 })
-
+function getDefineParams() {
+    $.get(baseUrl + '/template/queryTemplateList', function (res) {
+        if (res.code === 200) {
+            defaultExpertParams = res.data.dataArr
+            setDefaultParams()
+        }
+    })
+}
 function setFormDefaultValue() {
     if (resFormData.headPortrait) {
         $('#upload_img_btn').hide()
@@ -107,21 +121,7 @@ function setFormDefaultValue() {
             resumeAddress.push(item)
         }
     }
-    for (var i = 0; i < defaultExpertParams.length; i++) {
-        $('.defaultExpertParams').append(
-            '<div class="layui-form-item">' +
-                '<div class="label"> ' +
-                '<input class="layui-input title" value="' +
-                defaultExpertParams[i].title +
-                '"/>' +
-                '<i class="layui-icon layui-icon-reduce-circle  del-btn"></i>' +
-                '</div>' +
-                '<div class="layui-input-block"><textarea class="layui-textarea content" maxlength="500" placeholder="限填500字符">' +
-                defaultExpertParams[i].value +
-                '</textarea></div>' +
-                '</div>'
-        )
-    }
+
     form.val('register_expert_form', {
         id: resFormData.id,
         userName: resFormData.userName,
@@ -153,7 +153,22 @@ function setFormDefaultValue() {
         evaluatereadonly: resFormData.evaluate,
     })
 }
-
+function setDefaultParams() {
+    for (var i = 0; i < defaultExpertParams.length; i++) {
+        $('.defaultExpertParams').append(
+            '<div class="layui-form-item " disable="' +
+                defaultExpertParams[i].disable +
+                '">' +
+                '<label class="title">' +
+                defaultExpertParams[i].title +
+                '</label>' +
+                '<div class="layui-input-block m-t-xs"><textarea class="layui-textarea content" maxlength="500" placeholder="限填500字符">' +
+                defaultExpertParams[i].value +
+                '</textarea></div>' +
+                '</div>'
+        )
+    }
+}
 layui.use(['upload', 'laydate', 'form'], function () {
     var upload = layui.upload,
         laydate = layui.laydate
@@ -261,7 +276,6 @@ function submitFun(data, type, url) {
     formData.fieldTwoArr = fieldTwoArr
     formData.dataArr = defineExpertParam()
     console.log(JSON.stringify(formData))
-    // debugger
     $.ajax({
         type: 'post',
         url: baseUrl + url,
@@ -289,10 +303,9 @@ function resetForm() {
     $('.register_expert_form textarea').attr('disabled', true).addClass('layui-disabled')
     $('.register_expert_form select').attr('disabled', true).addClass('layui-disabled')
     $('.define-node-add').hide()
-    $('.defaultExpertParams .del-btn').remove()
     fieldOneSelect.update({ disabled: true })
     form.render('select')
-    if (Number(resFormData.examineStatus) == 0) {
+    if (Number(resFormData.examineStatus) === 0 || Number(resFormData.examineStatus) == 1) {
         $('.save-btn').remove()
         $('.submit-btn').remove()
         $('.file-lists .del-btn').remove()
@@ -300,25 +313,14 @@ function resetForm() {
     }
 }
 
-function addNode() {
-    $('.defaultExpertParams').append(
-        '<div class="layui-form-item">' +
-            '<div class="label"> ' +
-            '<input class="layui-input title" value=""/>' +
-            '<i class="layui-icon layui-icon-reduce-circle del-btn"></i>' +
-            '</div>' +
-            '<div class="layui-input-block"><textarea class="layui-textarea content" maxlength="500" placeholder="限填500字符"></textarea></div>' +
-            '</div>'
-    )
-}
-
 function defineExpertParam() {
     var params = []
     var els = $('.defaultExpertParams').find('.layui-form-item') || []
     for (var o = 0; o < els.length; o++) {
         params.push({
-            title: $(els[o]).find('.title').val(),
+            title: $(els[o]).find('.title').text(),
             value: $(els[o]).find('.content').val(),
+            disable: $(els[o]).attr('disable'),
         })
     }
     return params
