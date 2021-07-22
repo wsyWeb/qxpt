@@ -36,9 +36,6 @@
                                     <option value="2">按单位</option>
                                 </select>
                             </div>
-                            <div class="layui-inline work_unit_wrap" style="display: none">
-                                <select class="search-condition work_unit_select" lay-verify="" lay-filter="work_unit"></select>
-                            </div>
                         </form>
                     </div>
                 </div>
@@ -70,8 +67,7 @@
     var datagrid = [],
         showGrid = [],
         selectExpert = [],
-        table = null,
-        searchCondition = 1
+        table = null
     $.get(
         baseUrl + '/expert/queryExperyList?examineStatus=1&score=desc&page=1&periodical=' + expertObj.periodical + '&limit=' + limit,
         function (res) {
@@ -98,33 +94,32 @@
         layui.use(['table', 'form'], function () {
             var table = layui.table,
                 form = layui.form
-            $.get(baseUrl + '/expert/getExpertWorlkUnit ', function (res) {
-                if (res.code === 200) {
-                    for (var i = 0; i < res.data.length; i++) {
-                        $('.work_unit_select').append('<option value="' + res.data[i] + '">' + res.data[i] + '</option>')
-                    }
-                    form.render('select')
+
+            var renderStatisticTable = function (type) {
+                var cols = [
+                    { field: 'fieldName', title: '领域' },
+                    { field: 'joinNums', title: '申请人数' },
+                    { field: 'oneLeveNums', title: '一级专家数' },
+                ]
+                if (Number(type) === 2) {
+                    cols = [
+                        { field: 'workUnit', title: '单位' },
+                        { field: 'joinNums', title: '申请人数' },
+                        { field: 'oneLeveNums', title: '一级专家数' },
+                    ]
                 }
-            })
-            var renderStatisticTable = function (type, workUnit) {
-                $.get(baseUrl + '/expert/queryExpertEntryFieldCensus?type=' + type + '&work_unit=' + (workUnit || ''), function (res) {
+                $.get(baseUrl + '/expert/queryExpertEntryFieldCensus?type=' + type, function (res) {
                     if (res.code === 200) {
                         table.render({
                             elem: '#entry_table',
                             height: 280,
-                            cols: [
-                                [
-                                    { field: 'fieldName', title: '领域' },
-                                    { field: 'joinNums', title: '申请人数' },
-                                    { field: 'oneLeveNums', title: '一级专家数' },
-                                ],
-                            ],
+                            cols: [cols],
                             data: res.data,
                         })
                     }
                 })
             }
-            renderStatisticTable(searchCondition)
+            renderStatisticTable(1)
             table.render({
                 elem: '#expert_table',
                 data: showGrid,
@@ -135,10 +130,6 @@
                         { field: 'workUnit', title: '单位' },
                         { field: 'positionJob', title: '职务' },
                         { field: 'score', title: '得分' },
-                        // {
-                        //     field: "btn",
-                        //     title: "操作",
-                        // },
                     ],
                 ],
                 done: function (res, page, count) {
@@ -181,11 +172,7 @@
                 } else {
                     $('.work_unit_wrap').hide()
                 }
-                searchCondition = obj.value
                 renderStatisticTable(obj.value)
-            })
-            form.on('select(work_unit)', function (obj) {
-                renderStatisticTable(searchCondition, obj.value)
             })
         })
     }

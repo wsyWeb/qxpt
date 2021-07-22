@@ -81,21 +81,13 @@
             .defaultExpertParams .layui-icon-reduce-circle:hover {
                 color: red;
             }
-            .defaultExpertParams .layui-icon-reduce-circle {
-                position: absolute;
-                right: -30px;
-                top: 10px;
-                font-size: 18px;
-                cursor: pointer;
-            }
-            .defaultExpertParams .label {
-                margin-bottom: 5px;
-                width: 90%;
-                position: relative;
-            }
+
             .defaultExpertParams .layui-form-item:not(:first-child) {
                 border-top: 1px dashed #ccc;
                 padding-top: 15px;
+            }
+            .defaultExpertParams .layui-form-item[disable='1'] .layui-input-block {
+                display: none;
             }
         </style>
     </head>
@@ -279,10 +271,6 @@
                     <div class="font-15 font-bold m-b-md m-t-md">其它说明</div>
                     <div class="achievement block p-md">
                         <div class="defaultExpertParams"></div>
-                        <a class="layui-btn layui-btn-primary layui-btn-sm define-node-add" onclick="addNode()"
-                            ><i class="layui-icon-add-1 layui-icon"></i> 自定义节点</a
-                        >
-                        <div class="border-top m-b-lg m-t-md"></div>
                         <div class="layui-form-item">
                             <a class="layui-btn layui-btn-primary" id="upload_attachment_btn">上传打扫件</a>
                             <ul class="file-lists p-t-md"></ul>

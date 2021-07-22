@@ -9,11 +9,11 @@
     }
     .register_expert_form .layui-form-label {
         text-align: center;
-        width: 120px;
+        width: 150px;
         color: #999999;
+        border-right: 1px solid #dedede;
     }
     .register_expert_form .layui-input-block {
-        border-left: 1px solid #dedede;
         margin-left: 150px;
     }
     .register_expert_form .layui-form-item {
@@ -38,6 +38,9 @@
     .register_expert_form .layui-textarea:focus {
         border-color: transparent !important;
     }
+    .achievement .layui-form-label {
+        min-height: 100px;
+    }
     .upload-img {
         width: 100px;
     }
@@ -48,7 +51,7 @@
             <img id="headPortrait-img" width="100px" height="120px" />
         </div>
     </div>
-    <div class="layui-row">
+    <div class="layui-row basic-info">
         <div class="layui-col-md6">
             <label class="layui-form-label">姓名</label>
             <div class="layui-input-block">
@@ -151,10 +154,6 @@
     </div>
     <div class="achievement">
         <div class="defaultExpertParams"></div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">单位推荐意见</label>
-            <div class="layui-input-block p-md" id="unit-opinion"></div>
-        </div>
         <div class="comment-wrap-readonly" style="display: none">
             <div class="layui-form-item">
                 <label class="layui-form-label">评分</label>
@@ -208,10 +207,31 @@
     }
     function setDefaultValue() {
         document.getElementById('headPortrait-img').setAttribute('src', imageUrl + formData.headPortrait)
+
+        if (formData.examineStatus == 1) {
+            $('.comment-wrap-readonly').show()
+            $('.commnt-wrap').hide()
+        }
+        for (var i = 0; i < formData.dataArr.length; i++) {
+            $('.defaultExpertParams').append(
+                '<div class="layui-form-item" disable="' +
+                    formData.dataArr[i].disable +
+                    '">' +
+                    '<label class="layui-form-label"> ' +
+                    formData.dataArr[i].title +
+                    '</label>' +
+                    '<div class="layui-input-block"><textarea readonly class="layui-textarea content">' +
+                    formData.dataArr[i].value +
+                    '</textarea></div>' +
+                    '</div>'
+            )
+        }
+        var node = $('.layui-form-item[disable="1"]').find('.layui-input-block') //获取单位节点
+        node.empty()
         for (var i = 0; i < formData.resumeAddressArr.length; i++) {
             var item = formData.resumeAddressArr[i]
-            $('#unit-opinion').append(
-                '<div class="p-b-xs"><span>附件' +
+            node.append(
+                '<div class="p-b-md p-t-sm p-l-md"><span>附件' +
                     (i + 1) +
                     '：</span><a class="color-theme" target="_blak" href=' +
                     imageUrl +
@@ -219,22 +239,6 @@
                     '>' +
                     item.oldFileName +
                     '</a></div>'
-            )
-        }
-        if (formData.examineStatus == 1) {
-            $('.comment-wrap-readonly').show()
-            $('.commnt-wrap').hide()
-        }
-        for (var i = 0; i < formData.dataArr.length; i++) {
-            $('.defaultExpertParams').append(
-                '<div class="layui-form-item">' +
-                    '<label class="layui-form-label"> ' +
-                    formData.dataArr[i].title +
-                    '</label>' +
-                    '<div class="layui-input-block"><textarea class="layui-textarea content">' +
-                    formData.dataArr[i].value +
-                    '</textarea></div>' +
-                    '</div>'
             )
         }
         layui.use(['form', 'layer'], function () {
@@ -293,22 +297,6 @@
             user_name: sessionStorage.getItem('token'),
             id: formData.id,
         }
-        // $.ajax({
-        //     type: 'post',
-        //     url: baseUrl + '/expert/updateByExpert',
-        //     contentType: 'application/json;charset=UTF-8',
-        //     data: JSON.stringify(submitForm),
-        //     success: function (res) {
-        //         if (res.code == 200) {
-        //             parent.layer.close(index)
-        //             parent.layer.msg('评分成功')
-        //             parent.updateScore(score)
-        //             // window.parent.location.reload()
-        //         } else {
-        //             parent.layer.msg(res.message)
-        //         }
-        //     },
-        // })
         return submitForm
     }
 </script>

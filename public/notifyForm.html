@@ -32,9 +32,6 @@
             .prize_setting {
                 display: none;
             }
-            #awardType .layui-colla-title {
-                padding: 0 15px;
-            }
             #awardType .layui-colla-title input {
                 background-color: transparent !important;
                 border-color: transparent !important;
@@ -66,8 +63,8 @@
                 <div class="runnut_head">
                     <span class="borderl"></span>
                     <span class="layui-breadcrumb" lay-separator=">">
-                        <a href="notifyManage.html">通知管理</a>
-                        <a><cite>新增通知</cite></a>
+                        <a href="notifyManage.html">公告管理</a>
+                        <a><cite id="curTitle">新增公告</cite></a>
                     </span>
                 </div>
                 <form class="layui-form m-t-md notyfy_form" action="" lay-filter="notyfy_form">
@@ -80,10 +77,10 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label required">摘要</label>
+                            <label class="layui-form-label">摘要</label>
                             <div class="layui-input-block">
                                 <!-- <script id="editor" type="text/plain" style="width: 1040px; height: 400px"></script> -->
-                                <textarea placeholder="请输入内容" name="summary" lay-verify="required" class="layui-textarea"></textarea>
+                                <textarea placeholder="请输入内容" name="summary" lay-verify="" class="layui-textarea"></textarea>
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -94,12 +91,6 @@
                                     <option value="2">好新闻评选</option>
                                     <option value="3">观摩交流活动</option>
                                 </select>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">标签</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="tag" lay-verify="" placeholder="" class="layui-input" />
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -161,7 +152,7 @@
                                                 onclick="removeAwardTypeNode(this)"
                                             ></i>
                                         </h2>
-                                        <div class="layui-colla-content layui-show">
+                                        <div class="layui-colla-content">
                                             {{# layui.each(item.worksTypes, function(idx2, work){ }}
                                             <div class="layui-inline item position-relative">
                                                 <input type="text" class="layui-input" value="{{work.name}}" />
@@ -262,7 +253,7 @@
                                     <div class="layui-inline" id="expert_members" style="width: 200px"></div>
                                     组长
                                     <div class="layui-inline" style="width: 200px">
-                                        <select name="" id="expert_leader"></select>
+                                        <select id="expert_leader" name="leaderId" lay-filter="expertLeader"></select>
                                     </div>
                                 </div>
                             </div>
@@ -292,6 +283,12 @@
                                 <div class="layui-inline">
                                     <input type="text" name="voteWeight" style="width: 100px" class="layui-input" />
                                 </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">网页连接</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="link" class="layui-input" />
                             </div>
                         </div>
                     </div>
