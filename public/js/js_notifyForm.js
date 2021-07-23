@@ -3,7 +3,8 @@ var resFormData = {},
     expertMebers = null,
     id = sessionStorage.getItem('notifyId'),
     allLeaders = [],
-    allExperts = []
+    allExperts = [],
+    workInfos = []
 
 var awardTypeTpl = award_type.innerHTML,
     awardTypeView = document.getElementById('awardType')
@@ -18,6 +19,18 @@ $('.attachment_list').on('click', '.del-btn', function (e) {
         return i.name !== oldFileName
     })
 })
+
+$('body').on('blur', 'input[lay-filter="work_type_input"]', function (e) {
+    var id = $(e.target).parent().parent().attr('id')
+
+    for (var i = 0; i < workInfos.length; i++) {
+        if (workInfos[i].id === id) {
+            workInfos[i].type = this.value
+        }
+    }
+    renderTable()
+})
+
 $.get(baseUrl + '/expert/queryExperyList?examineStatus=2&page=1&limit=10000&expertLevel=1', function (res) {
     allExperts = res.data.data
     expertMebers.update({ data: res.data.data })
@@ -57,21 +70,20 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             form.render('select')
         },
     })
-    var renderTable = function () {
+    renderTable = function () {
         table.render({
             elem: '#worksInfoTable',
             cols: [
                 [
                     { field: 'type', title: '作品类型' },
-                    { field: 'qe1', title: '格式限制' },
-                    { field: 'cxc2', title: '作品格式' },
-                    { field: 'sd3', title: '大小限制' },
-                    { field: 'na4me', title: '作品格式' },
-                    { field: 'namde', title: '数量限制' },
-                    { field: 'namdwe', title: '推荐表模板' },
+                    { field: 'format', title: '作品格式', edit: 'text' },
+                    { field: 'big', title: '大小限制', edit: 'text' },
+                    { field: 'count', title: '数量限制', edit: 'text' },
+                    { field: 'model', title: '推荐表模板', edit: 'text' },
+                    { field: '', title: '操作', toolbar: '#work_format_btn' },
                 ],
             ],
-            data: [{ type: 'asd' }],
+            data: workInfos,
         })
     }
     var getAwardType = function (v) {
@@ -79,6 +91,17 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             if (res.code === 200 && res.data) {
                 resFormData.worksTypes = res.data
                 setAwardValue(laytpl, element)
+                workInfos = res.data.map(function (item) {
+                    return {
+                        id: item.id,
+                        type: item.name,
+                        format: '',
+                        big: '',
+                        count: '',
+                        model: '',
+                    }
+                })
+                renderTable()
             }
         })
     }
@@ -88,16 +111,21 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             if (res.code === 200) {
                 resFormData = res.data || {}
                 enclosureParams = res.data.enclosures
+                workInfos = resFormData.workInfos || [] // 作品信息
                 setFormDefaultValue(form)
                 setAwardValue(laytpl, element)
                 updateExpertMemberSelectStatus()
+                renderTable()
             }
         })
     } else {
-        getAwardType(1)
+        getAwardType(2)
     }
-    renderTable()
+    // renderTable()
     //执行实例
+    table.on('tool(works_info_table)', function (obj) {
+        debugger
+    })
     form.on('select(type)', function (obj) {
         getAwardType(Number(obj.value))
     })
@@ -129,6 +157,20 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             $('a[lay-filter="release"]').show()
         }
     })
+    form.on('radio(vote)', function (obj) {
+        if (Number(obj.value) === 1) {
+            $('.vote-wrap').show()
+        } else {
+            $('.vote-wrap').hide()
+        }
+    })
+    form.on('radio(feedBack)', function (obj) {
+        if (Number(obj.value) === 1) {
+            $('.score-wrap').show()
+        } else {
+            $('.score-wrap').hide()
+        }
+    })
     form.on('select(expertLeader)', function (obj) {
         console.log(obj)
     })
@@ -156,6 +198,9 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
     form.on('submit(release)', function (obj) {
         if (!resFormData.filePath) {
             return layer.msg('请先导入公告正文')
+        }
+        if (Number(obj.field.isEnter) === 1 && !obj.field.shortName) {
+            return layer.msg('请输入活动简称')
         }
         submitFun(obj, 'release')
     })
@@ -250,7 +295,6 @@ function setFormDefaultValue(form) {
         voteLinks: resFormData.voteLinks,
         expertWeight: resFormData.expertWeight,
         voteWeight: resFormData.voteWeight,
-        link: resFormData.link,
     })
     $('.word_wrap').html(resFormData.fileName)
     for (var i = 0; i < resFormData.enclosures.length; i++) {
@@ -269,6 +313,18 @@ function setFormDefaultValue(form) {
         $('#expert_leader').append('<option value="' + resFormData.leaderId + '">' + resFormData.leaderName + '</option>')
         form.render('select')
     }
+    if (Number(resFormData.isEnter) === 1) {
+        $('a[lay-filter="next"]').show()
+        $('a[lay-filter="release"]').hide()
+    }
+    if (Number(resFormData.isCollection) === 1) {
+        $('.prize_setting').show()
+        $('input[name="isEnter"]').prop('disabled', true)
+        form.render('radio')
+    }
+    if (Number(resFormData.vote) === 1) {
+        $('.vote-wrap').show()
+    }
 }
 function setAwardValue(laytpl, element) {
     laytpl(awardTypeTpl).render(resFormData.worksTypes || [], function (html) {
@@ -284,16 +340,21 @@ function setAwardValue(laytpl, element) {
     element.render()
 }
 function submitFun(obj, type) {
-    var formData = Object.assign(obj.field, resFormData)
+    console.log(workInfos)
+    var formData = Object.assign(resFormData, obj.field)
     formData.state = type === 'draft' ? 0 : 1
     formData.type = Number(formData.type)
     formData.isEnter = Number(formData.isEnter)
     formData.isCollection = Number(formData.isCollection)
+    formData.vote = Number(formData.vote)
     formData.enclosureParams = enclosureParams //附件
     formData.leaderName = $('#expert_leader option:selected').text() // 获取组长名字
     formData.awardSetting = JSON.stringify(formatAwardSetting()) //奖项设定
     formData.worksTypes = formatWorksTypes() //奖项类别
     console.log(JSON.stringify(formData))
+    debugger
+    return
+
     $.ajax({
         type: 'post',
         url: baseUrl + '/notice/saveNotice',
@@ -352,9 +413,13 @@ function addAwardItemNode(target) {
 }
 function addAwardTypeNode(target) {
     $('#awardType').append(
-        '<div class="layui-colla-item">' +
+        '<div class="layui-colla-item" id="' +
+            (workInfos.length + 999) +
+            '">' +
             '<h2 class="layui-colla-title">' +
-            '<input type="text" class="layui-input" />' +
+            '<input lay-filter="work_type_input" type="text" class="layui-input" value="类别' +
+            (workInfos.length + 1) +
+            '"/>' +
             '<i class="layui-icon-reduce-circle layui-icon font-18 cursor-pointer del-award-btn" title="删除" onclick="removeAwardTypeNode(this)"></i>' +
             '</h2>' +
             ' <div class="layui-colla-content layui-show">' +
@@ -362,6 +427,15 @@ function addAwardTypeNode(target) {
             '</div>' +
             '</div>'
     )
+    workInfos.push({
+        id: workInfos.length + 999,
+        type: '类别' + (workInfos.length + 1),
+        format: '',
+        big: '',
+        count: '',
+        model: '',
+    })
+    renderTable()
 }
 function addAwardLevelNode(target) {
     $(target).before(
@@ -377,6 +451,11 @@ function addAwardLevelNode(target) {
     )
 }
 function removeAwardTypeNode(target) {
+    var id = $(target).parent().parent().attr('id')
+    workInfos = workInfos.filter(function (item) {
+        return item.id !== id
+    })
+    renderTable()
     $(target).parent().parent().remove()
 }
 function removeAwardItemNode(target) {

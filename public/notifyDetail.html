@@ -76,8 +76,8 @@
                         {{# }); }}
                     </script>
                     <ul id="notify-wrap" class="runnet_lists"></ul>
-                    <div class="text-center m-t-lg">
-                        <button class="layui-btn layui-btn-primary">点击报名</button>
+                    <div class="text-center m-t-lg activity-rigister-wrap">
+                        <a class="layui-btn layui-btn-primary" onclick="signUp()">点击报名</a>
                     </div>
                     <div class="font-15 font-bold m-t-lg">在线留言</div>
                     <form class="layui-form m-t-md border p-md message_form" action="" lay-filter="message_form">
@@ -134,6 +134,14 @@
                     </form>
                 </div>
             </div>
+        </div>
+        <div id="signUpForm" style="display: none">
+            <form class="layui-form m-t-md notyfy_form" action="" lay-filter="activity_register_form">
+                <div class="p-lg">
+                    <input type="checkbox" name="xxx" lay-skin="primary" checked="" />
+                    我已阅读并同意<a class="color-theme">《活动性用户注册协议》</a>
+                </div>
+            </form>
         </div>
     </body>
 </html>
@@ -198,6 +206,46 @@
                     '<li><a class="cursor-pointer color-theme" href="' + imageUrl + files[i].url + '">' + files[i].name + '</a></li>'
                 )
             }
+        }
+        if (Number(notifyDetail.isEnter !== 1)) {
+            $('.activity-rigister-wrap').hide()
+        }
+    }
+    function signUp() {
+        if (!sessionStorage.getItem('token')) {
+            return layer.msg('请先登录')
+        }
+        layer.open({
+            type: 1,
+            title: '提示',
+            content: $('#signUpForm'),
+            scrollbar: false,
+            btn: ['立即报名', '取消'],
+            yes: function (index) {
+                $.ajax({
+                    type: 'post',
+                    url: baseUrl + '/activeUser/saveOrEditActiveUser',
+                    data: JSON.stringify({
+                        name: sessionStorage.getItem('token'),
+                        provinceId: 111,
+                        province: '四川省',
+                        noticeId: notifyDetail.id,
+                    }),
+                    contentType: 'application/json;charset=UTF-8',
+                    success: function (res) {
+                        if (res.code === 200) {
+                            if (Number(notifyDetail.isCollection) === 1) {
+                                window.location.href = 'workForm.html'
+                            } else {
+                                layer.msg('报名成功')
+                            }
+                            layer.close(index)
+                        }
+                    },
+                })
+            },
+        })
+        if (Number) {
         }
     }
 </script>

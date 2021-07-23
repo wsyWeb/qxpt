@@ -29,7 +29,7 @@
                 </div>
                 <div class="block p-md m-t-lg">
                     <script id="notify_demo" type="text/html">
-                        {{# layui.each(datagrid.data, function(index, item){ }}
+                        {{# layui.each(d, function(index, item){ }}
                         <li class="flex-between">
                             <div class="text-ellipsis-1 " style="width: 60%;">
                                 <i></i>
@@ -52,24 +52,42 @@
 <script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
 <script src="js/base.js"></script>
 <script>
-    var datagrid = []
+    var datagrid = [],
+        exsitPage = false
     var params = {
         page: 1,
         limit: 20,
     }
-    $(function () {
-        init()
-    })
-    function setList() {
-        layui.use(['laytpl', 'laypage'], function () {
-            var laytpl = layui.laytpl,
-                laypage = layui.laypage
 
-            var notifyTpl = notify_demo.innerHTML
-            var notifyView = document.getElementById('notify-wrap')
-            laytpl(notifyTpl).render(datagrid, function (html) {
-                notifyView.innerHTML = html
+    layui.use(['laytpl', 'laypage'], function () {
+        var laytpl = layui.laytpl,
+            laypage = layui.laypage
+
+        var notifyTpl = notify_demo.innerHTML
+        var notifyView = document.getElementById('notify-wrap')
+
+        getList = function () {
+            $.ajax({
+                type: 'post',
+                url: baseUrl + '/notice/pageList',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify(params),
+                success: function (res) {
+                    if (res.code == 200) {
+                        datagrid = res.data
+                        laytpl(notifyTpl).render(res.data.data, function (html) {
+                            notifyView.innerHTML = html
+                        })
+                        if (!exsitPage) {
+                            renderPage()
+                        }
+                    }
+                },
             })
+        }
+        getList()
+        renderPage = function () {
+            exsitPage = true
             laypage.render({
                 elem: 'page-wrap',
                 count: datagrid.count, //总条数
@@ -78,26 +96,16 @@
                 layout: ['prev', 'page', 'next', 'count', 'limit'], //自定义排版
                 jump: function (obj, first) {
                     if (!first) {
-                        layer.msg('第' + obj.curr + '页', { offset: 'b' })
+                        params = {
+                            page: obj.curr,
+                            limit: obj.limit,
+                        }
+                        getList()
                     }
                 },
             })
-        })
-    }
-    function init() {
-        $.ajax({
-            type: 'post',
-            url: baseUrl + '/notice/pageList',
-            contentType: 'application/json;charset=UTF-8',
-            data: JSON.stringify(params),
-            success: function (res) {
-                if (res.code == 200) {
-                    datagrid = res.data
-                    setList()
-                }
-            },
-        })
-    }
+        }
+    })
     function toNotifyDetail(target) {
         sessionStorage.setItem('notifyId', $(target).attr('id'))
         window.location.href = 'notifyDetail.html'
