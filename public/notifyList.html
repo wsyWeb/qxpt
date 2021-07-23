@@ -33,7 +33,7 @@
                         <li class="flex-between">
                             <div class="text-ellipsis-1 " style="width: 60%;">
                                 <i></i>
-                                <a href="notifyDetail.html" class="link-hover">{{item.title}}</a>
+                                <a onclick="toNotifyDetail(this)" id="{{item.id}}" class="link-hover">{{item.title}}</a>
                             </div>
                             <div class="color-tip">{{item.createTime}}</div>
                         </li>
@@ -97,5 +97,9 @@
                 }
             },
         })
+    }
+    function toNotifyDetail(target) {
+        sessionStorage.setItem('notifyId', $(target).attr('id'))
+        window.location.href = 'notifyDetail.html'
     }
 </script>
