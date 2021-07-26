@@ -33,17 +33,18 @@
                     </span>
                 </div>
                 <form class="layui-form m-t-md wrok_form" action="" lay-filter="work_form">
+                    <input name="noticeId" type="hidden" />
                     <div class="block p-md">
                         <div class="layui-form-item">
-                            <label class="layui-form-label">活动名称</label>
+                            <label class="layui-form-label">所属活动</label>
                             <div class="layui-input-block">
                                 <input type="text" name="activityName" readonly class="layui-input activityName" />
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">作品类型</label>
+                            <label class="layui-form-label required">作品类型</label>
                             <div class="layui-input-block">
-                                <select id="work_type" name="worksTypes" lay-filter="worksTypes"></select>
+                                <select id="work_type" name="worksTypes" lay-verify="required" lay-filter="worksTypes"></select>
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -58,15 +59,35 @@
                                 <input type="text" name="worksInfo" lay-verify="" readonly placeholder="" class="layui-input worksInfo" />
                             </div>
                         </div>
+                        <div id="customDefineParmWrap"></div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">作品格式</label>
+                            <div class="layui-input-block">
+                                <select name="" id="workFormat" lay-filter="work_format"></select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item" id="uploadWork">
+                            <label class="layui-form-label required">上传作品</label>
+                            <div class="layui-input-block">
+                                <a class="layui-btn layui-btn-primary" id="workAttachment">点击上传</a>
+                                <div class="layui-inline workList"></div>
+                                <div class="uploadTip"></div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item" id="linkWrap" style="display: none">
+                            <label class="layui-form-label required">网页连接</label>
+                            <div class="layui-input-block">
+                                <input type="text" lay-verify="" placeholder="" class="layui-input" />
+                            </div>
+                        </div>
                     </div>
                     <div class="layui-form-item m-t-lg p-l-md text-center">
                         <div class="layui-input-block">
-                            <a lay-submit class="layui-btn" lay-filter="submit_form">提交</a>
+                            <a lay-submit class="layui-btn" lay-filter="submit_form">保存</a>
                             <a class="layui-btn layui-btn-primary" href="notifyDetail.html">返回</a>
                         </div>
                     </div>
                 </form>
-                <form class="layui-form m-t-md notyfy_form" action="" lay-filter="work_form"></form>
             </div>
         </div>
     </body>
@@ -76,37 +97,5 @@
 <script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
 <script src="lib/layui/xm-select.js"></script>
 <script type="text/javascript" src="js/base.js"></script>
+<script type="text/javascript" src="js/js_workDefaultFormParams.js"></script>
 <script type="text/javascript" src="js/js_workForm.js"></script>
-<script>
-    var defaultForm = {
-        // 报刊类
-        news: [
-            { label: '作品标题', sort: 1, required: true },
-            { label: '参评奖项', sort: 1 },
-            { label: '作者', sort: 1 },
-            { label: ' 责任编辑', sort: 1 },
-            { label: '刊播版面/频道/栏目', sort: 1 },
-            { label: '作品字数/时长', sort: 1 },
-            { label: '刊播单位', sort: 1 },
-            { label: '首发日期', sort: 1, type: 'date' },
-            { label: '作品评价', sort: 2 },
-            { label: '采编过程', sort: 2 },
-            { label: '社会效果', sort: 2 },
-            { label: '单位意见', sort: 0 },
-        ],
-        // 短视频
-        vidio: [
-            { label: '作品标题', sort: 1, required: true },
-            { label: '联系人', sort: 1 },
-            { label: '编导', sort: 1 },
-            { label: ' 摄像', sort: 1 },
-            { label: '剪辑', sort: 1 },
-            { label: '其它演职人员', sort: 1 },
-            { label: '作品时长', sort: 1 },
-            { label: '联系方式（电话及微信）', sort: 1, type: 'date' },
-            { label: '内容简介', sort: 2 },
-            { label: '创意说明', sort: 2 },
-            { label: '选送单位', sort: 3 },
-        ],
-    }
-</script>

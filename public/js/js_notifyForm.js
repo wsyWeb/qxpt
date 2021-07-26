@@ -1,3 +1,13 @@
+var formats = [
+    { name: '.DOC', value: '.DOC' },
+    { name: '.DOCX', value: '.DOCX' },
+    { name: '.TXT', value: '.TXT' },
+    { name: '.PNG', value: '.PNG' },
+    { name: '.JPG', value: '.JPG' },
+    { name: '.MP4', value: '.MP4' },
+    { name: '.MP3', value: '.MP3' },
+    { name: '网页链接', value: '网页链接' },
+]
 var resFormData = {},
     enclosureParams = [],
     expertMebers = null,
@@ -22,10 +32,10 @@ $('.attachment_list').on('click', '.del-btn', function (e) {
 
 $('body').on('blur', 'input[lay-filter="work_type_input"]', function (e) {
     var id = $(e.target).parent().parent().attr('id')
-
     for (var i = 0; i < workInfos.length; i++) {
-        if (workInfos[i].id === id) {
+        if (workInfos[i].worksTypeId === id) {
             workInfos[i].type = this.value
+            break
         }
     }
     renderTable()
@@ -39,11 +49,15 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
     var upload = layui.upload,
         laytpl = layui.laytpl,
         laydate = layui.laydate,
-        laydate = layui.laydate,
         form = layui.form,
         table = layui.table,
         element = layui.element
-
+    workFormat = xmSelect.render({
+        el: '#workFormat',
+        language: 'zn',
+        name: 'format',
+        data: formats,
+    })
     expertMebers = xmSelect.render({
         el: '#expert_members',
         language: 'zn',
@@ -55,7 +69,6 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             value: 'id',
         },
         on: function (obj) {
-            console.log(obj.arr, 'sd')
             $('#expert_leader').empty()
             allLeaders = obj.arr
             resFormData.finalExperts = obj.arr.map(function (i) {
@@ -76,10 +89,31 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             cols: [
                 [
                     { field: 'type', title: '作品类型' },
-                    { field: 'format', title: '作品格式', edit: 'text' },
-                    { field: 'big', title: '大小限制', edit: 'text' },
-                    { field: 'count', title: '数量限制', edit: 'text' },
-                    { field: 'model', title: '推荐表模板', edit: 'text' },
+                    { field: 'format', title: '作品格式' },
+                    { field: 'big', title: '大小限制' },
+                    { field: 'count', title: '数量限制' },
+                    {
+                        field: 'template',
+                        title: '推荐表模板',
+                        templet: function (d) {
+                            switch (d.template) {
+                                case 'newspapers':
+                                    return '报刊类推荐表模板'
+                                    break
+                                case 'television':
+                                    return '广播电视类推荐表模板'
+                                    break
+                                case 'network':
+                                    return '网络类推荐表模板'
+                                    break
+                                case 'media':
+                                    return '媒体融合类推荐表模板'
+                                    break
+                                default:
+                                    return ''
+                            }
+                        },
+                    },
                     { field: '', title: '操作', toolbar: '#work_format_btn' },
                 ],
             ],
@@ -93,12 +127,13 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
                 setAwardValue(laytpl, element)
                 workInfos = res.data.map(function (item) {
                     return {
+                        worksTypeId: item.id,
                         id: item.id,
                         type: item.name,
                         format: '',
                         big: '',
                         count: '',
-                        model: '',
+                        template: item.template,
                     }
                 })
                 renderTable()
@@ -111,7 +146,7 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             if (res.code === 200) {
                 resFormData = res.data || {}
                 enclosureParams = res.data.enclosures
-                workInfos = resFormData.workInfos || [] // 作品信息
+                workInfos = resFormData.worksInfos || [] // 作品信息
                 setFormDefaultValue(form)
                 setAwardValue(laytpl, element)
                 updateExpertMemberSelectStatus()
@@ -124,7 +159,30 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
     // renderTable()
     //执行实例
     table.on('tool(works_info_table)', function (obj) {
-        debugger
+        $('#work_info_form').show()
+        var selectFormats = obj.data.format ? obj.data.format.split(',') : [],
+            selectFormatArr = []
+        for (var i = 0; i < selectFormats.length; i++) {
+            var item = formats.find(function (j) {
+                return j.value === selectFormats[i]
+            })
+            selectFormatArr.push(item)
+        }
+        workFormat.setValue(selectFormatArr)
+        form.val('work_info_form', obj.data)
+        layer.open({
+            type: 1,
+            title: '编辑信息',
+            content: $('#work_info_form'),
+            scrollbar: false,
+            area: ['500px', 'auto'],
+            btn: ['确定', '取消'],
+            yes: function (index) {
+                obj.update(form.val('work_info_form'))
+                $('#work_info_form').hide()
+                layer.close(index)
+            },
+        })
     })
     form.on('select(type)', function (obj) {
         getAwardType(Number(obj.value))
@@ -340,7 +398,6 @@ function setAwardValue(laytpl, element) {
     element.render()
 }
 function submitFun(obj, type) {
-    console.log(workInfos)
     var formData = Object.assign(resFormData, obj.field)
     formData.state = type === 'draft' ? 0 : 1
     formData.type = Number(formData.type)
@@ -353,7 +410,6 @@ function submitFun(obj, type) {
     formData.worksTypes = formatWorksTypes() //奖项类别
     console.log(JSON.stringify(formData))
     debugger
-    return
 
     $.ajax({
         type: 'post',
@@ -365,6 +421,7 @@ function submitFun(obj, type) {
             if (res.code == 200) {
                 layer.msg('提交成功')
                 window.location.href = 'notifyManage.html'
+                sessionStorage.removeItem('notifyId')
             } else {
                 layer.msg(res.message)
             }
@@ -388,7 +445,11 @@ function formatWorksTypes() {
         params = []
     for (var i = 0; i < parentEls.length; i++) {
         var childEls = $(parentEls[i]).find('.item'),
-            types = []
+            id = $(parentEls[i]).attr('id'),
+            types = [],
+            mergeWorkInfo = workInfos.find(function (o) {
+                return o.worksTypeId === id
+            })
         for (var j = 0; j < childEls.length; j++) {
             types.push({
                 name: $(childEls[j]).find('input').val(),
@@ -398,6 +459,10 @@ function formatWorksTypes() {
         params.push({
             name: $(parentEls[i]).find('.layui-colla-title input').val(),
             worksTypes: types,
+            format: mergeWorkInfo.format,
+            big: mergeWorkInfo.big,
+            count: mergeWorkInfo.count,
+            template: mergeWorkInfo.template,
         })
     }
     return params
@@ -428,7 +493,8 @@ function addAwardTypeNode(target) {
             '</div>'
     )
     workInfos.push({
-        id: workInfos.length + 999,
+        worksTypeId: (workInfos.length + 999).toString(),
+        id: (workInfos.length + 999).toString(),
         type: '类别' + (workInfos.length + 1),
         format: '',
         big: '',

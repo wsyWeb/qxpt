@@ -30,7 +30,7 @@
             }
             .collection-setting,
             .prize_setting {
-                /* display: none; */
+                display: none;
             }
             #awardType .layui-colla-title input {
                 background-color: transparent !important;
@@ -312,17 +312,36 @@
                 </form>
             </div>
         </div>
-        <div id="work_info_form">
-            <form class="layui-form m-t-md notyfy_form" action="" lay-filter="work_info_form">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">投票环节</label>
-                    <div class="layui-input-block">
-                        <input type="radio" name="voteLinks" value="0" title="复审" checked lay-filter="vote" />
-                        <input type="radio" name="voteLinks" value="1" title="终审" lay-filter="vote" />
-                    </div>
+        <form class="layui-form p-md notyfy_form" id="work_info_form" action="" lay-filter="work_info_form" style="display: none">
+            <div class="layui-form-item">
+                <label class="layui-form-label">作品格式</label>
+                <div class="layui-input-block" id="workFormat"></div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">大小限制</label>
+                <div class="layui-input-inline">
+                    <input type="number" name="big" class="layui-input" placeholder="512" />
                 </div>
-            </form>
-        </div>
+                <div class="layui-input-inline" style="width: 50px; line-height: 38px">kb</div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">数量限制</label>
+                <div class="layui-input-block">
+                    <input type="number" name="count" class="layui-input" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">推荐表模板</label>
+                <div class="layui-input-block" id="recommendTemplate">
+                    <select name="template" id="">
+                        <option value="newspapers">报刊类推荐表模板</option>
+                        <option value="television">广播电视类推荐表模板</option>
+                        <option value="network">网络类推荐表模板</option>
+                        <option value="media">媒体融合类推荐表模板</option>
+                    </select>
+                </div>
+            </div>
+        </form>
     </body>
 </html>
 <script src="lib/layui/layui.all.js"></script>
