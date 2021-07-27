@@ -61,7 +61,9 @@ layui.use(['form', 'upload', 'laydate'], function () {
             $('#linkWrap').hide()
             $('#uploadWork').show()
         }
-        renderWorkUpload(upload)
+        var exts = selectWorkformat.replaceAll('.', '').toLocaleLowerCase()
+
+        // renderWorkUpload(upload)
 
         $('.uploadTip').html('请上传' + obj.value + '格式的文件，大小不超过' + selectWrokInfo.big + 'kb')
     })
@@ -69,6 +71,8 @@ layui.use(['form', 'upload', 'laydate'], function () {
         var formData = Object.assign(resFormData, obj.field)
         formData.activeUserId = sessionStorage.getItem('token')
         formData.workFields = workFields
+        formData.worksType = $('select[name="worksTypeId"] option:selected').text()
+        formData.worksInfo = notifyDetail.worksInfo
         formData.worksExtends = formatWorksExtends()
         debugger
         $.ajax({
@@ -89,7 +93,7 @@ layui.use(['form', 'upload', 'laydate'], function () {
                             window.location.href = 'workForm.html'
                         },
                         function () {
-                            window.location.href = 'workList.html'
+                            window.location.href = 'workListForUser.html'
                         }
                     )
                 } else {
@@ -125,28 +129,22 @@ function setActivityDefaultValue(form) {
         noticeId: notifyDetail.id,
         // worksTypes: '',
     })
-    if (Number(notifyDetail.type) === 3) {
-        $('.worksInfo_wrap').show()
-    }
+    // if (Number(notifyDetail.type) === 3) {
+    //     $('.worksInfo_wrap').show()
+    // }
 }
 function renderWorkFormats(form) {
-    var formats = selectWrokInfo.format ? selectWrokInfo.format.split(',') : [],
-        options = formats.join('|')
-    var index = formats.findIndex(function (item) {
-        return item === '网页链接'
-    })
-    if (index > -1) {
-        options = [formats.slice(0, index).join('|'), '网页链接']
-    }
-    selectWorkformat = options[0]
+    var formats = selectWrokInfo.format ? selectWrokInfo.format.split(',') : []
+
+    selectWorkformat = formats[0]
     $('#workFormat').empty()
-    for (var i = 0; i < options.length; i++) {
-        $('#workFormat').append('<option value="' + options[i] + '">' + options[i] + '</option>')
+    for (var i = 0; i < formats.length; i++) {
+        $('#workFormat').append('<option value="' + formats[i] + '">' + formats[i] + '</option>')
     }
     form.render('select')
-    $('.uploadTip').html('请上传' + options[0] + '格式的文件，大小不超过' + selectWrokInfo.big + 'kb')
+    $('.uploadTip').html('请上传' + formats[0] + '格式的文件，大小不超过' + selectWrokInfo.big + 'kb')
 }
-function renderWorkUpload(upload, exts) {
+function renderWorkUpload(upload) {
     var exts = selectWorkformat.replaceAll('.', '').toLocaleLowerCase()
     console.log(exts)
     upload.render({
@@ -155,8 +153,13 @@ function renderWorkUpload(upload, exts) {
         accept: 'file',
         exts: exts,
         size: selectWrokInfo.big,
+        before: function (obj) {
+            var files = obj.pushFile()
+            console.log(files)
+            return false
+        },
         done: function (res) {
-            if (res.code != 200) {
+            if (res.code !== 200) {
                 layer.msg('上传失败')
             } else {
                 resFormData.fileName = res.data.oldFileName

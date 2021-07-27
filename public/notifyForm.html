@@ -30,7 +30,7 @@
             }
             .collection-setting,
             .prize_setting {
-                display: none;
+                /* display: none; */
             }
             #awardType .layui-colla-title input {
                 background-color: transparent !important;
@@ -177,12 +177,26 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">作品信息</label>
                             <div class="layui-input-block">
-                                <select name="worksInfo" lay-verify="" lay-filter="type">
+                                <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                                    <ul class="layui-tab-title">
+                                        <li class="layui-this">计划单列市</li>
+                                        <li>气象类高校</li>
+                                        <li>气象局单位</li>
+                                        <li>团体组织（中学、社会性组织）</li>
+                                    </ul>
+                                    <div class="layui-tab-content">
+                                        <div class="layui-tab-item layui-show">内容1</div>
+                                        <div class="layui-tab-item">内容2</div>
+                                        <div class="layui-tab-item">内容3</div>
+                                        <div class="layui-tab-item">内容5</div>
+                                    </div>
+                                </div>
+                                <!-- <select name="worksInfo" lay-verify="" lay-filter="type">
                                     <option value="0">计划单列市</option>
                                     <option value="1">气象类高校</option>
                                     <option value="2">气象局单位</option>
                                     <option value="3">团体组织（中学、社会性组织）</option>
-                                </select>
+                                </select> -->
                             </div>
                             <div class="layui-input-block">
                                 <table class="layui-hide" id="worksInfoTable" lay-filter="works_info_table"></table>

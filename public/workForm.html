@@ -44,7 +44,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label required">作品类型</label>
                             <div class="layui-input-block">
-                                <select id="work_type" name="worksTypes" lay-verify="required" lay-filter="worksTypes"></select>
+                                <select id="work_type" name="worksTypeId" lay-verify="required" lay-filter="worksTypes"></select>
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -53,7 +53,7 @@
                                 <div id="workTheme"></div>
                             </div>
                         </div>
-                        <div class="layui-form-item worksInfo_wrap" style="display: none">
+                        <div class="layui-form-item worksInfo_wrap">
                             <label class="layui-form-label">报送团体性质</label>
                             <div class="layui-input-block">
                                 <input type="text" name="worksInfo" lay-verify="" readonly placeholder="" class="layui-input worksInfo" />
@@ -61,9 +61,21 @@
                         </div>
                         <div id="customDefineParmWrap"></div>
                         <div class="layui-form-item">
+                            <label class="layui-form-label required">作品名称</label>
+                            <div class="layui-input-block">
+                                <input name="name" id="name" lay-verify="required" class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">作者</label>
+                            <div class="layui-input-block">
+                                <input name="author" lay-verify="required" class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
                             <label class="layui-form-label">作品格式</label>
                             <div class="layui-input-block">
-                                <select name="" id="workFormat" lay-filter="work_format"></select>
+                                <select name="format" id="workFormat" lay-filter="work_format"></select>
                             </div>
                         </div>
                         <div class="layui-form-item" id="uploadWork">

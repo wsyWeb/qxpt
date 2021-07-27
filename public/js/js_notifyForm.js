@@ -8,6 +8,25 @@ var formats = [
     { name: '.MP3', value: '.MP3' },
     { name: '网页链接', value: '网页链接' },
 ]
+
+var workInfoList = [
+    {
+        label: '计划单列市',
+        value: 0,
+    },
+    {
+        label: '气象类高校',
+        value: 1,
+    },
+    {
+        label: '气象局单位',
+        value: 2,
+    },
+    {
+        label: '团体组织（中学、社会性组织）',
+        value: 3,
+    },
+]
 var resFormData = {},
     enclosureParams = [],
     expertMebers = null,
@@ -52,6 +71,36 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
         form = layui.form,
         table = layui.table,
         element = layui.element
+
+    var tableCols = [
+        { field: 'type', title: '作品类型' },
+        { field: 'format', title: '作品格式' },
+        { field: 'big', title: '大小限制' },
+        { field: 'count', title: '数量限制' },
+        {
+            field: 'template',
+            title: '推荐表模板',
+            templet: function (d) {
+                switch (d.template) {
+                    case 'newspapers':
+                        return '报刊类推荐表模板'
+                        break
+                    case 'television':
+                        return '广播电视类推荐表模板'
+                        break
+                    case 'network':
+                        return '网络类推荐表模板'
+                        break
+                    case 'media':
+                        return '媒体融合类推荐表模板'
+                        break
+                    default:
+                        return ''
+                }
+            },
+        },
+        { field: '', title: '操作', toolbar: '#work_format_btn' },
+    ]
     workFormat = xmSelect.render({
         el: '#workFormat',
         language: 'zn',
@@ -84,41 +133,13 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
         },
     })
     renderTable = function () {
-        table.render({
-            elem: '#worksInfoTable',
-            cols: [
-                [
-                    { field: 'type', title: '作品类型' },
-                    { field: 'format', title: '作品格式' },
-                    { field: 'big', title: '大小限制' },
-                    { field: 'count', title: '数量限制' },
-                    {
-                        field: 'template',
-                        title: '推荐表模板',
-                        templet: function (d) {
-                            switch (d.template) {
-                                case 'newspapers':
-                                    return '报刊类推荐表模板'
-                                    break
-                                case 'television':
-                                    return '广播电视类推荐表模板'
-                                    break
-                                case 'network':
-                                    return '网络类推荐表模板'
-                                    break
-                                case 'media':
-                                    return '媒体融合类推荐表模板'
-                                    break
-                                default:
-                                    return ''
-                            }
-                        },
-                    },
-                    { field: '', title: '操作', toolbar: '#work_format_btn' },
-                ],
-            ],
-            data: workInfos,
-        })
+        for (var o = 0; o < workInfoList.length; o++) {
+            table.render({
+                elem: '#worksInfoTable',
+                cols: [tableCols],
+                data: workInfos,
+            })
+        }
     }
     var getAwardType = function (v) {
         $.get(baseUrl + '/worksType/findListById?id=' + v, function (res) {

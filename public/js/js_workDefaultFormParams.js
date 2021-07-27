@@ -1,9 +1,7 @@
 var defaultForm = {
     // 报刊类
     newspapers: [
-        { label: '作品标题', sort: 1, required: true, value: '', placeholder: '' },
         { label: '参评奖项', sort: 1, value: '', placeholder: '' },
-        { label: '作者', sort: 1, value: '', placeholder: '' },
         { label: '责任编辑', sort: 1, value: '', placeholder: '' },
         { label: '刊播版面/频道/栏目', sort: 1, value: '', placeholder: '' },
         { label: '作品字数/时长', sort: 1, value: '', placeholder: '' },
@@ -15,9 +13,7 @@ var defaultForm = {
         { label: '单位意见', sort: 0, value: '', placeholder: '' },
     ],
     media: [
-        { label: '作品标题', sort: 1, required: true, value: '', placeholder: '' },
         { label: '参评项目', sort: 1, value: '', placeholder: '' },
-        { label: '主创人员', sort: 1, value: '', placeholder: '' },
         { label: '编辑', sort: 1, value: '', placeholder: '' },
         { label: '主管单位', sort: 1, value: '', placeholder: '' },
         { label: '发布账号（APP）', sort: 1, value: '', placeholder: '' },
@@ -33,7 +29,6 @@ var defaultForm = {
     ],
     // 短视频
     vidio: [
-        { label: '作品标题', sort: 1, required: true, value: '', placeholder: '' },
         { label: '联系人', sort: 1, value: '', placeholder: '' },
         { label: '编导', sort: 1, value: '', placeholder: '' },
         { label: ' 摄像', sort: 1, value: '', placeholder: '' },
