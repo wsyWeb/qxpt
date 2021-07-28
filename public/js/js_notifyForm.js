@@ -6,7 +6,6 @@ var formats = [
     { name: '.JPG', value: '.JPG' },
     { name: '.MP4', value: '.MP4' },
     { name: '.MP3', value: '.MP3' },
-    { name: '网页链接', value: '网页链接' },
 ]
 
 var workInfoList = [
@@ -101,14 +100,17 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
                     case 'newspapers':
                         return '报刊类推荐表模板'
                         break
-                    case 'television':
-                        return '广播电视类推荐表模板'
+                    case 'shortVideo':
+                        return '短视频创作大赛报名表'
                         break
-                    case 'network':
-                        return '网络类推荐表模板'
+                    case 'book':
+                        return '科普作品推荐表'
                         break
                     case 'media':
                         return '媒体融合类推荐表模板'
+                        break
+                    case 'maker':
+                        return '科普创客推荐表'
                         break
                     default:
                         return ''
@@ -362,9 +364,11 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
         }
         submitFun(obj, 'release')
     })
+    var date = new Date()
     laydate.render({
         elem: '#submit_date',
         showBottom: false,
+        min: date.toLocaleDateString(),
     })
     upload.render({
         elem: '#upload_word', //绑定元素

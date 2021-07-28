@@ -20,7 +20,8 @@ var workThemeSelect = xmSelect.render({
     on: function (selectObj) {
         workFields = selectObj.arr.map(function (item) {
             return {
-                name: item.title,
+                fieldId: item.id,
+                fieldName: item.title,
                 type: item.parentId ? 2 : 1,
             }
         })
@@ -66,13 +67,7 @@ layui.use(['form', 'upload', 'laydate'], function () {
     })
     form.on('select(work_format)', function (obj) {
         selectWorkformat = obj.value
-        if (obj.value === '网页链接') {
-            $('#linkWrap').show()
-            $('#uploadWork').hide()
-        } else {
-            $('#linkWrap').hide()
-            $('#uploadWork').show()
-        }
+
         var exts = selectWorkformat.replaceAll('.', '').toLocaleLowerCase()
 
         // renderWorkUpload(upload)
@@ -129,7 +124,7 @@ function renderWorkUpload(upload) {
             if (res.code !== 200) {
                 layer.msg('上传失败')
             } else {
-                resFormData.fileName = res.data.oldFileName
+                resFormData.filename = res.data.oldFileName
                 resFormData.url = res.data.newFileName
                 $('.workList').html(
                     '<a class="color-theme " target="_blank" href=' + imageUrl + res.data.newFileName + '>' + res.data.oldFileName + '</a>'

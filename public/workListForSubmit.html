@@ -66,13 +66,7 @@
 <script src="js/base.js"></script>
 <script>
     $('#my_space_nav').load('templates/my_space_nav.html')
-    var userId = sessionStorage.getItem('token')
-    var activityDataGrid = [
-            { name: '计划单列市', value: 0, data: [] },
-            { name: '气象类高校', value: 1, data: [] },
-            { name: '气象局单位', value: 2, data: [] },
-            { name: '团体组织（中学、社会性组织）', value: 3, data: [] },
-        ],
+    var userId = sessionStorage.getItem('token'),
         formatWorks = []
     layui.use(['table', 'form', 'laytpl'], function () {
         var table = layui.table,
@@ -82,15 +76,25 @@
         var tpl = workTableScript.innerHTML,
             view = document.getElementById('tableWrap')
 
-        form.on('select(activity_search)', function (obj) {
-            getAllWorks(obj.value)
+        // 获取当前登录用户所参加的所有活动
+        $.get(baseUrl + '/notice/findListByUserId?activeUserId=' + userId, function (res) {
+            if (res.code === 200) {
+                for (var i = 0; i < res.data.length; i++) {
+                    $('.activity_search').append('<option value="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
+                }
+                form.render('select')
+                if (res.data.length > 0) {
+                    getAllWorks(res.data[0].id)
+                }
+            }
         })
+
         var getAllWorks = function (id) {
             $.ajax({
                 type: 'post',
                 url: baseUrl + '/works/getList',
                 contentType: 'application/json;charset=UTF-8',
-                data: JSON.stringify({}),
+                data: JSON.stringify({ noticeId: id }),
                 success: function (res) {
                     if (res.code === 200) {
                         renderTable(res.data)
@@ -99,15 +103,21 @@
             })
         }
         renderTable = function (arr) {
+            var defaultList = [
+                { name: '计划单列市', value: 0, data: [] },
+                { name: '气象类高校', value: 1, data: [] },
+                { name: '气象局单位', value: 2, data: [] },
+                { name: '团体组织（中学、社会性组织）', value: 3, data: [] },
+            ]
             for (var i = 0; i < arr.length; i++) {
-                for (var j = 0; j < activityDataGrid.length; j++) {
-                    if (activityDataGrid[j].value === arr[i].worksInfo) {
-                        activityDataGrid[j].data.push(arr[i])
+                for (var j = 0; j < defaultList.length; j++) {
+                    if (defaultList[j].value === arr[i].worksInfo) {
+                        defaultList[j].data.push(arr[i])
                     }
                 }
             }
             var worksInfo = ''
-            formatWorks = activityDataGrid.filter(function (item) {
+            formatWorks = defaultList.filter(function (item) {
                 if (item.data.length > 0) {
                     worksInfo += '+' + item.name
                 }
@@ -143,30 +153,31 @@
                 })
             })
         }
-        // 获取当前登录用户所参加的所有活动
-        $.get(baseUrl + '/notice/findListByUserId?activeUserId=' + userId, function (res) {
-            if (res.code === 200) {
-                for (var i = 0; i < res.data.length; i++) {
-                    $('.activity_search').append('<option value="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
-                }
-                form.render('select')
-                if (res.data.length > 0) {
-                    getAllWorks(res.data[0].id)
-                }
-            }
-        })
-
         table.on('tool(work_table)', function (obj) {
             var data = obj.data
             if (obj.event === 'look_detail') {
             } else if (obj.event === 'edit') {
             } else {
+                layer.confirm('你确定删除该作品吗', { title: '提示' }, function () {
+                    $.get(baseUrl + '/works/deleteWork?workId=' + data.id, function (res) {
+                        if (res.code === 200) {
+                            layer.msg('删除成功')
+                            getAllWorks()
+                        }
+                    })
+                })
             }
         })
         table.on('checkbox(work_table)', function (obj, idx) {
             // obj.update({
             //     isCheked: obj.checked ? 1 : 0,
             // })
+        })
+
+        form.on('select(activity_search)', function (obj) {
+            $('#tableWrap').empty()
+
+            getAllWorks(obj.value)
         })
     })
 

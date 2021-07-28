@@ -1,0 +1,138 @@
+<style>
+    .wrok_form .layui-form-label,
+    .review_form .layui-form-label {
+        width: 130px;
+    }
+    .wrok_form .layui-input-block,
+    .review_form .layui-input-block {
+        margin-left: 130px;
+    }
+    .detailForm .layui-input,
+    .detailForm .layui-textarea {
+        /* width:90%; */
+        cursor: inherit;
+        border-color: transparent !important;
+    }
+</style>
+<div class="layui-form-item">
+    <label class="layui-form-label">所属活动</label>
+    <div class="layui-input-block">
+        <input type="text" name="shortName" readonly class="layui-input" />
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">作品类型</label>
+    <div class="layui-input-block">
+        <input type="text" name="worksType" readonly class="layui-input" />
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">作品主题</label>
+    <div class="layui-input-block">
+        <input type="text" name="workTheme" readonly class="layui-input" />
+    </div>
+</div>
+<div class="layui-form-item worksInfo_wrap">
+    <label class="layui-form-label">报送作品性质</label>
+    <div class="layui-input-block">
+        <input type="text" name="worksInfo" readonly class="layui-input" />
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">作品名称</label>
+    <div class="layui-input-block">
+        <input name="name" id="name" readonly class="layui-input" />
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">作者</label>
+    <div class="layui-input-block">
+        <input name="author" readonly class="layui-input" />
+    </div>
+</div>
+<div class="layui-form-item">
+    <label class="layui-form-label">作品格式</label>
+    <div class="layui-input-block">
+        <input name="format" readonly class="layui-input" />
+    </div>
+</div>
+<div class="layui-form-item" id="uploadWork">
+    <label class="layui-form-label">查看作品</label>
+    <div class="layui-input-block workList" style="line-height: 38px"></div>
+</div>
+<div class="layui-form-item" id="linkWrap" style="display: none">
+    <label class="layui-form-label">网页连接</label>
+    <div class="layui-input-block">
+        <input type="text" readonly placeholder="" class="layui-input" />
+    </div>
+</div>
+<div id="customDefineParmWrap"></div>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form
+        setDefaultValue(form)
+    })
+    function setDefaultValue(form) {
+        var worksInfo = '',
+            workTheme = workDetail.workFields.map(function (item) {
+                return item.fieldName
+            })
+        switch (workDetail.worksInfo) {
+            case 0:
+                worksInfo = '计划单列市'
+                break
+            case 1:
+                worksInfo = '气象类高校'
+                break
+            case 2:
+                worksInfo = '气象局单位'
+                break
+            case 3:
+                worksInfo = '团体组织（中学、社会性组织）'
+                break
+        }
+        form.val('work_form', {
+            shortName: workDetail.shortName,
+            worksType: workDetail.worksType,
+            name: workDetail.name,
+            author: workDetail.author,
+            worksInfo: workDetail.worksInfo,
+            format: workDetail.format,
+            worksInfo,
+            workTheme: workTheme.join('、'),
+        })
+        var formParams = workDetail.worksExtends || []
+        var temp = ''
+        for (var i = 0; i < formParams.length; i++) {
+            var el = '',
+                v = formParams[i].value || ' '
+            if (formParams[i].sort === 1) {
+                el =
+                    '<input class="layui-input item" readonly id="' +
+                    (formParams[i].type || i) +
+                    '" value="' +
+                    v +
+                    '" placeholder="' +
+                    formParams[i].placeholder +
+                    '"/>'
+            } else if (formParams[i].sort === 2) {
+                el = '<textarea class="layui-textarea item" readonly placeholder="' + formParams[i].placeholder + '">' + v + '</textarea>'
+            } else if (formParams[i].sort === 0) {
+                el = '<a class="layui-btn layui-btn-primary" id="companyAttachment">上传打扫件</a>'
+            }
+            temp +=
+                '<div class="layui-form-item" sort="' +
+                formParams[i].sort +
+                '">' +
+                '<label class="layui-form-label">' +
+                formParams[i].name +
+                '</label>' +
+                '<div class="layui-input-block">' +
+                el +
+                '</div></div>'
+        }
+        $('#customDefineParmWrap').append(temp)
+
+        $('.workList').append('<a class="color-theme" blank="_target" href="' + imageUrl + workDetail.url + '">' + workDetail.filename + '</a>')
+    }
+</script>
