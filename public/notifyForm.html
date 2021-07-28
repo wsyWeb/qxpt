@@ -29,8 +29,9 @@
                 color: red;
             }
             .collection-setting,
-            .prize_setting {
-                /* display: none; */
+            .prize_setting,
+            .activityInfoWrap {
+                display: none;
             }
             #awardType .layui-colla-title input {
                 background-color: transparent !important;
@@ -113,7 +114,7 @@
                         </div>
                     </div>
 
-                    <div class="font-15 font-bold p-b-md collection-setting">线上作品收集设置</div>
+                    <div class="font-15 font-bold p-b-md collection-setting">线上活动设置</div>
 
                     <div class="block collection-setting p-md">
                         <div class="layui-form-item">
@@ -133,7 +134,21 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">奖项类别</label>
+                            <label class="layui-form-label">报名截止日期</label>
+                            <div class="layui-input-block">
+                                <input
+                                    type="text"
+                                    name="submitDate"
+                                    id="submit_date"
+                                    lay-verify=""
+                                    placeholder=""
+                                    autocomplete="off"
+                                    class="layui-input"
+                                />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">奖项类别</label>
                             <div class="layui-input-block">
                                 <div class="layui-collapse" id="awardType"></div>
                                 <i
@@ -176,7 +191,7 @@
                         </div>
                         <div class="layui-form-item">
                             <label class="layui-form-label">作品信息</label>
-                            <div class="layui-input-block">
+                            <div class="layui-input-block prize_setting">
                                 <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
                                     <ul class="layui-tab-title">
                                         <li class="layui-this">计划单列市</li>
@@ -185,41 +200,29 @@
                                         <li>团体组织（中学、社会性组织）</li>
                                     </ul>
                                     <div class="layui-tab-content">
-                                        <div class="layui-tab-item layui-show">内容1</div>
-                                        <div class="layui-tab-item">内容2</div>
-                                        <div class="layui-tab-item">内容3</div>
-                                        <div class="layui-tab-item">内容5</div>
+                                        <div class="layui-tab-item layui-show">
+                                            <table class="layui-hide" id="worksInfoTable0" lay-filter="works_info_table" style="width: 100%"></table>
+                                        </div>
+                                        <div class="layui-tab-item">
+                                            <table class="layui-hide" id="worksInfoTable1" lay-filter="works_info_table" style="width: 100%"></table>
+                                        </div>
+                                        <div class="layui-tab-item">
+                                            <table class="layui-hide" id="worksInfoTable2" lay-filter="works_info_table" style="width: 100%"></table>
+                                        </div>
+                                        <div class="layui-tab-item">
+                                            <table class="layui-hide" id="worksInfoTable3" lay-filter="works_info_table" style="width: 100%"></table>
+                                        </div>
                                     </div>
                                 </div>
-                                <!-- <select name="worksInfo" lay-verify="" lay-filter="type">
-                                    <option value="0">计划单列市</option>
-                                    <option value="1">气象类高校</option>
-                                    <option value="2">气象局单位</option>
-                                    <option value="3">团体组织（中学、社会性组织）</option>
-                                </select> -->
-                            </div>
-                            <div class="layui-input-block">
-                                <table class="layui-hide" id="worksInfoTable" lay-filter="works_info_table"></table>
                                 <script type="text/html" id="work_format_btn">
                                     <a class="layui-btn layui-btn-xs" lay-event="edit_format">编辑</a>
                                 </script>
                             </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">报名截止日期</label>
-                            <div class="layui-input-block">
-                                <input
-                                    type="text"
-                                    name="submitDate"
-                                    id="submit_date"
-                                    lay-verify=""
-                                    placeholder=""
-                                    autocomplete="off"
-                                    class="layui-input"
-                                />
+                            <div class="layui-input-block activityInfoWrap">
+                                <table class="layui-hide" id="worksInfoTable" lay-filter="works_info_table" style="width: 100%"></table>
                             </div>
                         </div>
-                        <div class="prize_setting">
+                        <div class="layui-form-item prize_setting">
                             <div class="layui-form-item">
                                 <label class="layui-form-label">奖项设定</label>
                                 <div class="layui-input-block" id="awardSetting">
@@ -283,32 +286,32 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">线上投票</label>
-                            <div class="layui-input-block">
-                                <input type="radio" name="vote" value="0" title="否" checked lay-filter="vote" />
-                                <input type="radio" name="vote" value="1" title="是" lay-filter="vote" />
-                            </div>
-                        </div>
-                        <div class="vote-wrap" style="display: none">
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">投票环节</label>
+                            <div class="layui-form-item onlineVoting" style="display: none">
+                                <label class="layui-form-label">线上投票</label>
                                 <div class="layui-input-block">
-                                    <input type="radio" name="voteLinks" value="0" title="复审" checked lay-filter="vote" />
-                                    <input type="radio" name="voteLinks" value="1" title="终审" lay-filter="vote" />
+                                    <input type="radio" name="vote" value="0" title="否" checked lay-filter="vote" />
+                                    <input type="radio" name="vote" value="1" title="是" lay-filter="vote" />
                                 </div>
                             </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label"></label>
-                                <div class="layui-input-block">
-                                    专家评分平均分 *
-                                    <div class="layui-inline">
-                                        <input type="text" style="width: 100px" name="expertWeight" class="layui-input" />
+                            <div class="vote-wrap" style="display: none">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">投票环节</label>
+                                    <div class="layui-input-block">
+                                        <input type="radio" name="voteLinks" value="0" title="复审" checked lay-filter="voteLinks" />
+                                        <input type="radio" name="voteLinks" value="1" title="终审" lay-filter="voteLinks" />
                                     </div>
-                                    + 网络投票数 / 最高得票数 *
-                                    <div class="layui-inline">
-                                        <input type="text" name="voteWeight" style="width: 100px" class="layui-input" />
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label"></label>
+                                    <div class="layui-input-block">
+                                        专家评分平均分 *
+                                        <div class="layui-inline">
+                                            <input type="text" style="width: 100px" name="expertWeight" class="layui-input" />
+                                        </div>
+                                        + 网络投票数 / 最高得票数 *
+                                        <div class="layui-inline">
+                                            <input type="text" name="voteWeight" style="width: 100px" class="layui-input" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -327,21 +330,23 @@
             </div>
         </div>
         <form class="layui-form p-md notyfy_form" id="work_info_form" action="" lay-filter="work_info_form" style="display: none">
-            <div class="layui-form-item">
-                <label class="layui-form-label">作品格式</label>
-                <div class="layui-input-block" id="workFormat"></div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">大小限制</label>
-                <div class="layui-input-inline">
-                    <input type="number" name="big" class="layui-input" placeholder="512" />
+            <div class="prize_setting">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">作品格式</label>
+                    <div class="layui-input-block" id="workFormat"></div>
                 </div>
-                <div class="layui-input-inline" style="width: 50px; line-height: 38px">kb</div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">数量限制</label>
-                <div class="layui-input-block">
-                    <input type="number" name="count" class="layui-input" />
+                <div class="layui-form-item">
+                    <label class="layui-form-label">大小限制</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="big" class="layui-input" placeholder="512" />
+                    </div>
+                    <div class="layui-input-inline" style="width: 50px; line-height: 38px">kb</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">数量限制</label>
+                    <div class="layui-input-block">
+                        <input type="number" name="count" class="layui-input" />
+                    </div>
                 </div>
             </div>
             <div class="layui-form-item">

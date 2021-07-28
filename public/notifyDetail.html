@@ -238,11 +238,8 @@
                     contentType: 'application/json;charset=UTF-8',
                     success: function (res) {
                         if (res.code === 200) {
-                            if (Number(notifyDetail.isCollection) === 1) {
-                                window.location.href = 'workForm.html'
-                            } else {
-                                layer.msg('报名成功')
-                            }
+                            window.location.href = 'workForm.html'
+                            layer.msg('报名成功')
                             layer.close(index)
                         }
                     },

@@ -4,7 +4,8 @@ var notifyId = sessionStorage.getItem('notifyId'),
     formTemplate = 'newspapers',
     selectWrokInfo = {}, //选中的作品类型
     selectWorkformat = '', //选中的作品格式
-    workFields = [] //选中的作品主题
+    workFields = [], //选中的作品主题
+    workTypes = []
 
 var workThemeSelect = xmSelect.render({
     el: '#workTheme',
@@ -33,8 +34,7 @@ layui.use(['form', 'upload', 'laydate'], function () {
     $.get(baseUrl + '/notice/detail?noticeId=' + notifyId, function (res) {
         if (res.code === 200) {
             notifyDetail = res.data
-            selectWrokInfo = res.data.worksInfos ? res.data.worksInfos[0] : {}
-            setActivityDefaultValue(form)
+            setWorkDefaultValue(form)
             renderWorkFormats(form) //初始化上传作品的格式
             renderWorkUpload(upload)
             renderFormParams(laydate) //初始化动态表单字段
@@ -46,9 +46,21 @@ layui.use(['form', 'upload', 'laydate'], function () {
         }
     })
     form.on('select(worksTypes)', function (obj) {
-        selectWrokInfo = notifyDetail.worksInfos.find(function (item) {
-            return item.id == obj.value
-        })
+        if (workTypes.length > 0) {
+            selectWrokInfo = workTypes.find(function (item) {
+                return item.worksTypeId === obj.value
+            })
+        }
+        renderFormParams(form)
+        renderWorkFormats(form)
+    })
+    form.on('select(worksInfo)', function (obj) {
+        workTypes = notifyDetail.worksInfos[Number(obj.value)]
+        if (form.val('work_form').worksTypeId) {
+            selectWrokInfo = workTypes.find(function (item) {
+                return item.worksTypeId === form.val('work_form').worksTypeId
+            })
+        }
         renderFormParams(form)
         renderWorkFormats(form)
     })
@@ -67,86 +79,41 @@ layui.use(['form', 'upload', 'laydate'], function () {
 
         $('.uploadTip').html('请上传' + obj.value + '格式的文件，大小不超过' + selectWrokInfo.big + 'kb')
     })
+    form.on('submit(download)', function (obj) {
+        submitFun(obj, 'download')
+    })
     form.on('submit(submit_form)', function (obj) {
-        var formData = Object.assign(resFormData, obj.field)
-        formData.activeUserId = sessionStorage.getItem('token')
-        formData.workFields = workFields
-        formData.worksType = $('select[name="worksTypeId"] option:selected').text()
-        formData.worksInfo = notifyDetail.worksInfo
-        formData.worksExtends = formatWorksExtends()
-        debugger
-        $.ajax({
-            type: 'post',
-            url: baseUrl + '/works/saveOrEditWorks',
-            data: JSON.stringify(formData),
-            contentType: 'application/json;charset=UTF-8',
-            success: function (res) {
-                resFormData = res.data
-                if (res.code == 200) {
-                    layer.confirm(
-                        '是否提交下一作品？',
-                        {
-                            title: '提示',
-                            btn: ['是', '否'],
-                        },
-                        function () {
-                            window.location.href = 'workForm.html'
-                        },
-                        function () {
-                            window.location.href = 'workListForUser.html'
-                        }
-                    )
-                } else {
-                    layer.msg(res.message)
-                }
-            },
-        })
+        submitFun(obj, 'save')
     })
 })
-function setActivityDefaultValue(form) {
-    for (var i = 0; i < notifyDetail.worksInfos.length; i++) {
-        var obj = notifyDetail.worksInfos[i]
-        $('#work_type').append('<option value="' + obj.id + '">' + obj.type + '</option>')
+function setWorkDefaultValue(form) {
+    for (var i = 0; i < notifyDetail.worksTypes.length; i++) {
+        var obj = notifyDetail.worksTypes[i]
+        $('#work_type').append('<option value="' + obj.id + '">' + obj.name + '</option>')
     }
     form.render('select')
-    var workinfo = null
-    switch (Number(notifyDetail.worksInfo)) {
-        case 0:
-            workinfo = '计划单列市'
-            break
-        case 1:
-            workinfo = '气象类高校'
-            break
-        case 2:
-            workinfo = '气象局单位'
-            break
-        default:
-            workinfo = '团体组织（中学、社会性组织）'
-    }
+    $('#work_type').val('')
+    $('select[name="worksInfo"]').val('')
     form.val('work_form', {
         activityName: notifyDetail.shortName,
-        worksInfo: workinfo,
         noticeId: notifyDetail.id,
-        // worksTypes: '',
     })
-    // if (Number(notifyDetail.type) === 3) {
-    //     $('.worksInfo_wrap').show()
-    // }
 }
 function renderWorkFormats(form) {
     var formats = selectWrokInfo.format ? selectWrokInfo.format.split(',') : []
 
-    selectWorkformat = formats[0]
+    selectWorkformat = formats[0] || ''
     $('#workFormat').empty()
     for (var i = 0; i < formats.length; i++) {
         $('#workFormat').append('<option value="' + formats[i] + '">' + formats[i] + '</option>')
     }
     form.render('select')
-    $('.uploadTip').html('请上传' + formats[0] + '格式的文件，大小不超过' + selectWrokInfo.big + 'kb')
+    if (formats[0]) {
+        $('.uploadTip').html('请上传' + formats[0] + '格式的文件，大小不超过' + selectWrokInfo.big + 'kb')
+    }
 }
 function renderWorkUpload(upload) {
     var exts = selectWorkformat.replaceAll('.', '').toLocaleLowerCase()
-    console.log(exts)
     upload.render({
         elem: '#workAttachment', //绑定元素
         url: baseUrl + '/upload/fileUpload', //上传接口
@@ -213,10 +180,10 @@ function renderFormParams(laydate) {
             '</div></div>'
     }
     $('#customDefineParmWrap').append(temp)
-    laydate.render({
-        elem: '#date',
-        showBottom: false,
-    })
+    // laydate.render({
+    //     elem: '#date',
+    //     showBottom: false,
+    // })
 }
 function formatWorksExtends() {
     var els = $('#customDefineParmWrap').find('.layui-form-item'),
@@ -229,4 +196,43 @@ function formatWorksExtends() {
         })
     }
     return params
+}
+
+function submitFun(obj, type) {
+    var formData = Object.assign(resFormData, obj.field)
+    formData.activeUserId = sessionStorage.getItem('token')
+    formData.workFields = workFields
+    formData.worksType = $('select[name="worksTypeId"] option:selected').text()
+    formData.worksExtends = formatWorksExtends()
+    debugger
+    $.ajax({
+        type: 'post',
+        url: baseUrl + '/works/saveOrEditWorks',
+        data: JSON.stringify(formData),
+        contentType: 'application/json;charset=UTF-8',
+        success: function (res) {
+            resFormData = res.data
+            if (res.code == 200) {
+                if (type === 'save') {
+                    layer.confirm(
+                        '是否提交下一作品？',
+                        {
+                            title: '提示',
+                            btn: ['是', '否'],
+                        },
+                        function () {
+                            window.location.href = 'workForm.html'
+                        },
+                        function () {
+                            window.location.href = 'workListForSubmit.html'
+                        }
+                    )
+                } else {
+                    window.location.href = baseUrl + '/works/downloadWork?workId=' + res.data.id
+                }
+            } else {
+                layer.msg(res.message)
+            }
+        },
+    })
 }

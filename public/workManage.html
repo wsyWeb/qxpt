@@ -10,7 +10,7 @@
         <!-- 导入自己的样式表 -->
         <link rel="stylesheet" href="./css/runnet_common.css" />
         <link rel="stylesheet" href="./css/runnet_page.css" />
-        <title>我的作品</title>
+        <title>作品管理</title>
         <style>
             .search_form select {
                 width: 100px;
@@ -27,28 +27,19 @@
                 <div id="my_space_nav" class="float-left" style="width: 180px"></div>
                 <div id="my_space_content" class="float-right" style="width: 1000px">
                     <form class="layui-form search_form m-b-lg" action="" lay-filter="search_form">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label required">所属活动</label>
-                            <div class="layui-input-block">
-                                <select class="activity_search" lay-verify="" lay-filter="type" style="width: 100px"></select>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label required">所属性质</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="activityName" readonly class="layui-input activityName" />
-                            </div>
+                        <div class="layui-inline">活动简称</div>
+                        <div class="layui-inline">
+                            <select class="activity_search" lay-verify="" lay-filter="activity_search" style="width: 100px"></select>
                         </div>
                     </form>
 
                     <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
-                    <div class="text-center m-t-lg">
-                        <a class="layui-btn">确认提交</a>
+                    <div class="text-center m-t-lg submitWrap" style="display: none">
+                        <a class="layui-btn">进入终审环节</a>
                     </div>
                     <script type="text/html" id="person_detail_btn">
-                        <a class="layui-btn layui-btn-xs" lay-event="look_detail">查看</a>
-                        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-                        <a class="layui-btn layui-btn-xs" lay-event="del">删除</a>
+                        <a class="layui-btn layui-btn-xs" lay-event="look_detail">评分</a>
+                        <a class="layui-btn layui-btn-xs" lay-event="edit">查看详情</a>
                     </script>
                 </div>
             </div>
@@ -63,65 +54,86 @@
     $('#my_space_nav').load('templates/my_space_nav.html')
     var userId = sessionStorage.getItem('token')
     var activityDataGrid = []
-    layui.use(['table', 'form'], function () {
+    layui.use(['table', 'form', 'element'], function () {
         var table = layui.table,
-            form = layui.form
+            form = layui.form,
+            element = layui.element
 
+        form.on('select(activity_search)', function (obj) {
+            notifyId = obj.value
+            getAllWorks(obj.value)
+        })
         renderTable = function () {
             table.render({
                 elem: '#work_table',
                 data: activityDataGrid,
                 cols: [
                     [
-                        { type: 'checkbox' },
                         { field: 'worksType', title: '作品类型' },
-                        { field: 'name', title: '作品名称' },
-                        { field: 'author', title: '作者姓名' },
-                        { field: 'format', title: '格式' },
-                        {
-                            field: 'sign',
-                            title: '操作',
-                            width: 200,
-                            toolbar: '#person_detail_btn',
-                        },
+                        { field: 'joinCount', title: '参评作品数' },
+                        { field: 'xx', title: '初审作品数' },
+                        { field: 'assignCount', title: '作品分派数' },
+                        { field: 'reviewCount', title: '复审完成数' },
+                        { field: 'joinFinalCount', title: '进入终审数' },
+                        { field: 'finalCount', title: '终审完成数' },
+                        { field: 'isVotes', title: '是否录入投票数' },
+                        // {
+                        //     field: 'sign',
+                        //     title: '操作',
+                        //     width: 150,
+                        //     toolbar: '#person_detail_btn',
+                        // },
                     ],
                 ],
             })
+            if (activityDataGrid.length > 0) {
+                $('.submitWrap').show()
+            }
         }
-        // 获取当前登录用户所参加的所有活动
-        $.get(baseUrl + '/notice/findListByUserId?activeUserId=' + userId, function (res) {
+        getAllWorks = function (id) {
+            $.get(baseUrl + '/works/worksList?noticeId=' + id, function (res) {
+                if (res.code === 200) {
+                    activityDataGrid = res.data
+                    renderTable()
+                }
+            })
+        }
+        // 获取所有公告
+        $.get(baseUrl + '/notice/findAll', function (res) {
             if (res.code === 200) {
                 for (var i = 0; i < res.data.length; i++) {
                     $('.activity_search').append('<option value="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
                 }
                 form.render('select')
+                if (res.data.length) {
+                    notifyId = res.data[0].id
+                    getAllWorks(res.data[0].id)
+                }
             }
         })
-        $.ajax({
-            type: 'post',
-            url: baseUrl + '/works/getList',
-            contentType: 'application/json;charset=UTF-8',
-            data: JSON.stringify({ activeUserId: userId }),
-            success: function (res) {
-                if (res.code === 200) {
-                    activityDataGrid = res.data
-                    renderTable()
-                }
-            },
-        })
-        table.on('tool(expert_table)', function (obj) {
+        renderTable()
+        table.on('tool(work_table)', function (obj) {
             var data = obj.data
             if (obj.event === 'look_detail') {
             } else if (obj.event === 'edit') {
             } else {
             }
         })
-        table.on('sort(expert_table)', function (obj) {
-            table.reload('expert_table', {
+        table.on('sort(work_table)', function (obj) {
+            table.reload('work_table', {
                 where: {
                     [obj.field]: obj.type, //排序方式
                 },
             })
+        })
+
+        table.on('row(work_table)', function (obj) {
+            var queryParams = {
+                worksTypeId: obj.data.worksTypeId,
+                noticeId: notifyId,
+            }
+            sessionStorage.setItem('findWorkByWorkType', JSON.stringify(queryParams))
+            window.location.href = 'workListForType.html'
         })
     })
 

@@ -26,19 +26,9 @@
             <div class="wrap p-t-lg">
                 <div id="my_space_nav" class="float-left" style="width: 180px"></div>
                 <div id="my_space_content" class="float-right" style="width: 1000px">
-                    <form class="layui-form search_form m-b-lg" action="" lay-filter="search_form">
-                        <div class="layui-inline">活动简称</div>
-                        <div class="layui-inline">
-                            <select class="activity_search" lay-verify="" lay-filter="type" style="width: 100px"></select>
-                        </div>
-                    </form>
-
                     <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
-                    <div class="text-center m-t-lg submitWrap">
-                        <a class="layui-btn">进入终审环节</a>
-                    </div>
                     <script type="text/html" id="person_detail_btn">
-                        <a class="layui-btn layui-btn-xs" lay-event="look_detail">评分</a>
+                        <a class="layui-btn layui-btn-xs" lay-event="look_detail">审核</a>
                         <a class="layui-btn layui-btn-xs" lay-event="edit">查看详情</a>
                     </script>
                 </div>
@@ -58,46 +48,48 @@
         var table = layui.table,
             form = layui.form
 
+        form.on('select(activity_search)', function (obj) {
+            getAllWorks(obj.value)
+        })
         renderTable = function () {
             table.render({
                 elem: '#work_table',
-                data: activityDataGrid,
+                url: baseUrl + '/works/getList',
+                contentType: 'application/json',
+                method: 'post',
+                where: JSON.parse(sessionStorage.getItem('findWorkByWorkType')),
+                limits: [10, 20, 50, 80, 100],
+                response: {
+                    statusCode: 200, //重新规定成功的状态码为 200，table 组件默认为 0
+                },
                 cols: [
                     [
-                        { field: 'worksType', title: '作品类型' },
-                        { field: 'name', title: '作品名称' },
-                        { field: 'author', title: '作者姓名' },
-                        { field: 'format', title: '更新时间' },
-                        { field: 'score', title: '得分' },
+                        { field: 'name', title: '标题' },
+                        { field: 'author', title: '作者' },
+                        { field: 'updateTime', title: '更新时间' },
+                        { field: 'worksType', title: '类别' },
+                        {
+                            field: 'isAssign',
+                            title: '是否分派',
+                            templet: function (d) {
+                                if (Number(d.isAssign) === 1) return '是'
+                                return '否'
+                            },
+                        },
+                        { field: 'joinFinalCount', title: '评分完成度' },
                         {
                             field: 'sign',
                             title: '操作',
-                            sort: true,
                             width: 150,
                             toolbar: '#person_detail_btn',
                         },
                     ],
                 ],
+                page: true,
             })
         }
-        getAllWorks = function (id) {
-            $.get(baseUrl + '/works/worksList?noticeId=' + id, function (res) {
-                if (res.code === 200) {
-                    activityDataGrid = v.data
-                    renderTable()
-                }
-            })
-        }
-        // 获取所有公告
-        $.get(baseUrl + '/notice/findAll', function (res) {
-            if (res.code === 200) {
-                for (var i = 0; i < res.data.length; i++) {
-                    $('.activity_search').append('<option value="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
-                }
-                form.render('select')
-                getAllWorks(res.data[0].id)
-            }
-        })
+
+        renderTable()
         table.on('tool(expert_table)', function (obj) {
             var data = obj.data
             if (obj.event === 'look_detail') {

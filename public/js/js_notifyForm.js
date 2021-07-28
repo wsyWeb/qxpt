@@ -13,18 +13,22 @@ var workInfoList = [
     {
         label: '计划单列市',
         value: 0,
+        uid: guid(),
     },
     {
         label: '气象类高校',
         value: 1,
+        uid: guid(),
     },
     {
         label: '气象局单位',
         value: 2,
+        uid: guid(),
     },
     {
         label: '团体组织（中学、社会性组织）',
         value: 3,
+        uid: guid(),
     },
 ]
 var resFormData = {},
@@ -33,7 +37,9 @@ var resFormData = {},
     id = sessionStorage.getItem('notifyId'),
     allLeaders = [],
     allExperts = [],
-    workInfos = []
+    workInfos = {}, // 作品信息
+    activeInfos = [], //活动信息
+    showWorkInfoBigSetting = false
 
 var awardTypeTpl = award_type.innerHTML,
     awardTypeView = document.getElementById('awardType')
@@ -41,6 +47,7 @@ var awardTypeTpl = award_type.innerHTML,
 var awardSettingTpl = award_setting.innerHTML,
     awardSettingView = document.getElementById('awardSetting')
 
+// 删除附件
 $('.attachment_list').on('click', '.del-btn', function (e) {
     var oldFileName = $(e.target).attr('name')
     $(e.target).parent().remove()
@@ -48,21 +55,30 @@ $('.attachment_list').on('click', '.del-btn', function (e) {
         return i.name !== oldFileName
     })
 })
-
+// 编辑奖项类别需要更改作品信息的值
 $('body').on('blur', 'input[lay-filter="work_type_input"]', function (e) {
     var id = $(e.target).parent().parent().attr('id')
-    for (var i = 0; i < workInfos.length; i++) {
-        if (workInfos[i].worksTypeId === id) {
-            workInfos[i].type = this.value
-            break
+    for (var i = 0; i < workInfoList.length; i++) {
+        for (var j = 0; j < workInfos[i].length; j++) {
+            if (workInfos[i][j].worksTypeId === id) {
+                workInfos[i][j].type = this.value
+                break
+            }
+        }
+    }
+    for (var i = 0; i < activeInfos.length; i++) {
+        if (activeInfos[i].worksTypeId === id) {
+            activeInfos[i].type = this.value
         }
     }
     renderTable()
 })
 
 $.get(baseUrl + '/expert/queryExperyList?examineStatus=2&page=1&limit=10000&expertLevel=1', function (res) {
-    allExperts = res.data.data
-    expertMebers.update({ data: res.data.data })
+    if (res.code === 200) {
+        allExperts = res.data.data
+        expertMebers.update({ data: res.data.data })
+    }
 })
 layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function () {
     var upload = layui.upload,
@@ -130,14 +146,27 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
                 $('#expert_leader').append('<option value="' + obj.arr[i].id + '">' + obj.arr[i].name + '</option>')
             }
             form.render('select')
+            $('#expert_leader').next().find('.layui-unselect').val('')
         },
     })
     renderTable = function () {
         for (var o = 0; o < workInfoList.length; o++) {
             table.render({
-                elem: '#worksInfoTable',
+                elem: '#worksInfoTable' + o,
                 cols: [tableCols],
-                data: workInfos,
+                data: workInfos[o] || [],
+            })
+        }
+
+        var activityCols = tableCols.filter(function (item) {
+            return item.field !== 'big' && item.field !== 'format' && item.field !== 'count'
+        })
+        showWorkInfoBigSetting = Number(form.val('notyfy_form').isCollection) !== 1 && Number(form.val('notyfy_form').isEnter) === 1
+        if (showWorkInfoBigSetting) {
+            table.render({
+                elem: '#worksInfoTable',
+                cols: [activityCols],
+                data: activeInfos,
             })
         }
     }
@@ -146,17 +175,26 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             if (res.code === 200 && res.data) {
                 resFormData.worksTypes = res.data
                 setAwardValue(laytpl, element)
-                workInfos = res.data.map(function (item) {
+                activeInfos = res.data.map(function (item) {
                     return {
                         worksTypeId: item.id,
-                        id: item.id,
                         type: item.name,
-                        format: '',
-                        big: '',
-                        count: '',
                         template: item.template,
                     }
                 })
+                for (var o = 0; o < workInfoList.length; o++) {
+                    workInfos[o] = res.data.map(function (item) {
+                        return {
+                            worksTypeId: item.id,
+                            // id: item.id,
+                            type: item.name,
+                            format: '',
+                            big: '',
+                            count: '',
+                            template: item.template,
+                        }
+                    })
+                }
                 renderTable()
             }
         })
@@ -167,17 +205,43 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             if (res.code === 200) {
                 resFormData = res.data || {}
                 enclosureParams = res.data.enclosures
-                workInfos = resFormData.worksInfos || [] // 作品信息
+                // 作品信息
+                if (resFormData.worksInfos) {
+                    workInfos = resFormData.worksInfos
+                } else {
+                    for (var i = 0; i < workInfoList.length; i++) {
+                        workInfos[i] = res.data.worksTypes.map(function (item) {
+                            return {
+                                worksTypeId: item.id,
+                                type: item.name,
+                                format: '',
+                                big: '',
+                                count: '',
+                                template: item.template,
+                            }
+                        })
+                    }
+                }
+                if (resFormData.activeInfos) {
+                    activeInfos = resFormData.activeInfos
+                } else {
+                    for (var i = 0; i < res.data.worksTypes.length; i++) {
+                        activeInfos.push({
+                            worksTypeId: res.data.worksTypes[i].id,
+                            type: res.data.worksTypes[i].name,
+                            template: '',
+                        })
+                    }
+                }
                 setFormDefaultValue(form)
                 setAwardValue(laytpl, element)
                 updateExpertMemberSelectStatus()
-                renderTable()
+                // renderTable()
             }
         })
     } else {
         getAwardType(2)
     }
-    // renderTable()
     //执行实例
     table.on('tool(works_info_table)', function (obj) {
         $('#work_info_form').show()
@@ -199,9 +263,13 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             area: ['500px', 'auto'],
             btn: ['确定', '取消'],
             yes: function (index) {
-                obj.update(form.val('work_info_form'))
+                var v = form.val('work_info_form')
+                obj.update(v)
                 $('#work_info_form').hide()
                 layer.close(index)
+            },
+            cancel: function () {
+                $('#work_info_form').hide()
             },
         })
     })
@@ -215,6 +283,7 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             $('input[name="isEnter"]').prop('disabled', true)
             $('a[lay-filter="next"]').show()
             $('a[lay-filter="release"]').hide()
+            $('.activityInfoWrap').hide()
             $('.prize_setting').show()
         } else {
             var isEnter = form.val('notyfy_form').isEnter
@@ -223,6 +292,8 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             if (Number(isEnter) !== 1) {
                 $('a[lay-filter="next"]').hide()
                 $('a[lay-filter="release"]').show()
+            } else {
+                $('.activityInfoWrap').show()
             }
         }
         form.render('radio')
@@ -234,6 +305,9 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
         } else {
             $('a[lay-filter="next"]').hide()
             $('a[lay-filter="release"]').show()
+        }
+        if (Number(obj.value) === 1 && Number(form.val('notyfy_form').isCollection) !== 1) {
+            $('.activityInfoWrap').show()
         }
     })
     form.on('radio(vote)', function (obj) {
@@ -249,14 +323,19 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
         } else {
             $('.score-wrap').hide()
         }
+        if (Number(obj.value) === 3) {
+            $('.onlineVoting').show()
+        } else {
+            $('.onlineVoting').hide()
+        }
     })
     form.on('select(expertLeader)', function (obj) {
         console.log(obj)
     })
     form.on('submit(next)', function (obj) {
-        if (!resFormData.filePath) {
-            return layer.msg('请先导入公告正文')
-        }
+        // if (!resFormData.filePath) {
+        //     return layer.msg('请先导入公告正文')
+        // }
         $('.collection-setting').show()
         $('.basic-setting').hide()
         $('a[lay-filter="next"]').hide()
@@ -275,9 +354,9 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
         submitFun(obj, 'draft')
     })
     form.on('submit(release)', function (obj) {
-        if (!resFormData.filePath) {
-            return layer.msg('请先导入公告正文')
-        }
+        // if (!resFormData.filePath) {
+        //     return layer.msg('请先导入公告正文')
+        // }
         if (Number(obj.field.isEnter) === 1 && !obj.field.shortName) {
             return layer.msg('请输入活动简称')
         }
@@ -395,6 +474,9 @@ function setFormDefaultValue(form) {
     if (Number(resFormData.isEnter) === 1) {
         $('a[lay-filter="next"]').show()
         $('a[lay-filter="release"]').hide()
+        if (Number(resFormData.isCollection) !== 1) {
+            $('.activityInfoWrap').show()
+        }
     }
     if (Number(resFormData.isCollection) === 1) {
         $('.prize_setting').show()
@@ -403,6 +485,14 @@ function setFormDefaultValue(form) {
     }
     if (Number(resFormData.vote) === 1) {
         $('.vote-wrap').show()
+    }
+    if (Number(resFormData.feedBack) === 1) {
+        $('.score-wrap').show()
+    } else {
+        $('.score-wrap').hide()
+    }
+    if (Number(resFormData.feedBack) === 3) {
+        $('.onlineVoting').show()
     }
 }
 function setAwardValue(laytpl, element) {
@@ -429,9 +519,13 @@ function submitFun(obj, type) {
     formData.leaderName = $('#expert_leader option:selected').text() // 获取组长名字
     formData.awardSetting = JSON.stringify(formatAwardSetting()) //奖项设定
     formData.worksTypes = formatWorksTypes() //奖项类别
+    if (formData.isEnter === 1 && formData.isCollection !== 1) {
+        formData.activeInfos = activeInfos
+    } else if (formData.isCollection === 1) {
+        formData.worksInfos = workInfos
+    }
     console.log(JSON.stringify(formData))
     debugger
-
     $.ajax({
         type: 'post',
         url: baseUrl + '/notice/saveNotice',
@@ -467,10 +561,8 @@ function formatWorksTypes() {
     for (var i = 0; i < parentEls.length; i++) {
         var childEls = $(parentEls[i]).find('.item'),
             id = $(parentEls[i]).attr('id'),
-            types = [],
-            mergeWorkInfo = workInfos.find(function (o) {
-                return o.worksTypeId === id
-            })
+            types = []
+
         for (var j = 0; j < childEls.length; j++) {
             types.push({
                 name: $(childEls[j]).find('input').val(),
@@ -478,12 +570,9 @@ function formatWorksTypes() {
             })
         }
         params.push({
+            id,
             name: $(parentEls[i]).find('.layui-colla-title input').val(),
             worksTypes: types,
-            format: mergeWorkInfo.format,
-            big: mergeWorkInfo.big,
-            count: mergeWorkInfo.count,
-            template: mergeWorkInfo.template,
         })
     }
     return params
@@ -498,13 +587,14 @@ function addAwardItemNode(target) {
     )
 }
 function addAwardTypeNode(target) {
+    var uid = guid()
     $('#awardType').append(
         '<div class="layui-colla-item" id="' +
-            (workInfos.length + 999) +
+            uid +
             '">' +
             '<h2 class="layui-colla-title">' +
             '<input lay-filter="work_type_input" type="text" class="layui-input" value="类别' +
-            (workInfos.length + 1) +
+            uid +
             '"/>' +
             '<i class="layui-icon-reduce-circle layui-icon font-18 cursor-pointer del-award-btn" title="删除" onclick="removeAwardTypeNode(this)"></i>' +
             '</h2>' +
@@ -513,14 +603,21 @@ function addAwardTypeNode(target) {
             '</div>' +
             '</div>'
     )
-    workInfos.push({
-        worksTypeId: (workInfos.length + 999).toString(),
-        id: (workInfos.length + 999).toString(),
-        type: '类别' + (workInfos.length + 1),
-        format: '',
-        big: '',
-        count: '',
-        model: '',
+    for (var i = 0; i < workInfoList.length; i++) {
+        workInfos[i].push({
+            worksTypeId: uid,
+            // id: guid(),
+            type: '类别' + uid,
+            format: '',
+            big: '',
+            count: '',
+            template: '',
+        })
+    }
+    activeInfos.push({
+        worksTypeId: uid,
+        type: '类别' + uid,
+        template: '',
     })
     renderTable()
 }
@@ -539,8 +636,13 @@ function addAwardLevelNode(target) {
 }
 function removeAwardTypeNode(target) {
     var id = $(target).parent().parent().attr('id')
-    workInfos = workInfos.filter(function (item) {
-        return item.id !== id
+    for (var i = 0; i < workInfoList.length; i++) {
+        workInfos[i] = workInfos[i].filter(function (item) {
+            return item.worksTypeId !== id
+        })
+    }
+    activeInfos = activeInfos.filter(function (item) {
+        return item.worksTypeId !== id
     })
     renderTable()
     $(target).parent().parent().remove()
