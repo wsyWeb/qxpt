@@ -1,5 +1,5 @@
 var baseUrl = '/rsp-group-innovation'
-var imageUrl = 'http://10.168.0.218:20001'
+var imageUrl = 'http://10.168.0.218:20001/'
 
 var awardLevel = [
     {

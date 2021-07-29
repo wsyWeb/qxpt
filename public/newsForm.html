@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+        <link rel="stylesheet" type="text/css" href="http://10.168.0.218:8086/rsp-group-innovation/static/css/common.css"/>
+        <link rel="stylesheet" href="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/css/layui.css" />
+        <link rel="stylesheet" href="css/runnet_common.css" />
+        <link rel="stylesheet" href="css/runnet_page.css" />
+        <title>新闻管理</title>
+        <style lang="">
+            .notyfy_form .layui-form-label {
+                width: 120px;
+            }
+            .notyfy_form .layui-input-block {
+                margin-left: 120px;
+            }
+            .attachment_list li {
+                width: 500px;
+                margin-bottom: 10px;
+                position: relative;
+            }
+            .attachment_list i {
+                position: absolute;
+                right: 0;
+            }
+            .attachment_list i:hover {
+                color: red;
+            }
+            .collection-setting,
+            .prize_setting {
+                display: none;
+            }
+            #awardType .layui-colla-title input {
+                background-color: transparent !important;
+                border-color: transparent !important;
+                width: 200px;
+                border-bottom: 1px solid #c9c9c9 !important;
+            }
+            #awardType .item {
+                width: 200px;
+            }
+            #awardType .del-award-btn {
+                position: absolute;
+                right: 20px;
+                top: 0px;
+            }
+            #awardType .item .del-work-btn {
+                position: absolute;
+                right: 0;
+                top: 0;
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+            }
+            .upload-img {
+                width: 100px;
+                height: 120px;
+                position: relative;
+            }
+            .not-image {
+                /* background-color: #ccc; */
+                /* border: 1px solid #ccc; */
+                cursor: pointer;
+            }
+            .not-image::before {
+                content: '+';
+                color: #ccc;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 60px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="headDiv"></div>
+        <div id="searchDiv"></div>
+        <div class="runnet_main_body">
+            <div class="wrap">
+                <div class="runnut_head">
+                    <span class="borderl"></span>
+                    <span class="layui-breadcrumb" lay-separator=">">
+                        <a href="newsManage.html">新闻管理</a>
+                        <a><cite id="curTitle">新增新闻</cite></a>
+                    </span>
+                </div>
+                <form class="layui-form m-t-md notyfy_form" action="" lay-filter="notyfy_form">
+                    <div class="font-15 font-bold p-b-md basic-setting">基本信息设置</div>
+                    <div class="block p-md basic-setting">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">新闻类别</label>
+                            <div class="layui-input-block">
+                                <select name="type" lay-verify="">
+                                    <option value="1">新闻动态</option>
+                                    <option value="2">政策宣讲</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">标题</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" lay-verify="required" placeholder="请输入标题" class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">副标题</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="viceTitle" placeholder="请输入内容" class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">主图</label>
+                            <div class="layui-input-block">
+                                <div class="m-b-xs upload-img not-image border" id="upload_img_btn"></div>
+                                <img id="headPortrait-img" width="100px" height="120px" style="display: none" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">新闻内容</label>
+                            <div class="layui-input-block">
+                                <div id="container"></div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">是否置顶</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="istop" value="2" title="否" checked lay-filter="workCollection" />
+                                <input type="radio" name="istop" value="1" title="是" lay-filter="workCollection" />
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="layui-form-item m-t-lg p-l-md">
+                        <div class="layui-input-block">
+                            <a lay-submit class="layui-btn" lay-filter="release">保存</a>
+                            <a class="layui-btn layui-btn-primary" href="newsManage.html">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
+
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/jquery.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/js/common.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
+<script src="js/base.js"></script>
+<script src="js/js_newsForm.js"></script>
+
+<script src="lib/ueditor/ueditor.config.js"></script>
+<script src="lib/ueditor/ueditor.all.min.js"></script>
+<script src="lib/ueditor/lang/zh-cn/zh-cn.js"></script>
+
+<script type="text/javascript">
+    var id = sessionStorage.getItem('newsId');
+
+
+    //mini.parse();
+
+    var ue = UE.getEditor('container');
+
+
+    function getContent() {
+        var arr = ue.getContent();
+        alert(arr);
+    };
+    function setContent() {
+        ue.setContent('MiniUI - 专业WebUI控件库');
+    };
+    function setDisabled() {
+
+        ue.setDisabled('fullscreen');
+
+    };
+    function setEnabled() {
+        ue.setEnabled();
+    }
+
+
+
+
+</script>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <!-- 导入 layui 的样式表 -->
+    <link rel="stylesheet" href="./lib/layui/css/layui.css" />
+    <link rel="stylesheet" type="text/css" href="http://10.168.0.218:8086/rsp-group-innovation/static/css/common.css"/>
+
+    <!-- 导入自己的样式表 -->
+    <link rel="stylesheet" href="./css/runnet_common.css" />
+    <link rel="stylesheet" href="./css/runnet_page.css" />
+    <title>专家库</title>
+    <style type="text/css">
+        .layui-btn{
+            padding:0 12px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="headDiv"></div>
+<div id="searchDiv"></div>
+<div class="runnet_main_body">
+    <div class="wrap p-t-lg">
+        <div id="my_space_nav" class="float-left" style="width: 180px"></div>
+        <div id="my_space_content" class="float-right" style="width: 1000px">
+            <form class="layui-form search_form m-b-lg" action="" lay-filter="search_form">
+                <div>
+                <div class="layui-inline" style="margin-left:10px;">入驻领域</div>
+                <div class="layui-inline">
+                    <div id="entryField" style="width:261px;"></div>
+                </div>
+                <div class="layui-inline" style="margin-left:10px;">专家姓名</div>
+                <div class="layui-inline">
+                    <input type="text" name="name" placeholder="请输入专家姓名" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-inline" style="margin-left:10px;">级别</div>
+                <div class="layui-inline">
+                    <select class="activity_search" name="positionLevel" lay-verify="" lay-filter="activity_search" style="width: 100px">
+                        <option value="">全部</option>
+                        <option value="1">一级专家</option>
+                        <option value="2">二级专家</option>
+                    </select>
+                </div>
+                </div>
+                <div style="margin-top:10px;">
+                <div class="layui-inline" style="margin-left:10px;">入驻时间</div>
+                <div class="layui-inline">
+                    <input type="text"
+                            name="createtime"
+                            id="createtime"
+                            lay-verify=""
+                            placeholder=""
+                            autocomplete="off"
+                            class="layui-input"
+                    />
+                </div>
+                <div class="layui-inline" style="margin-left:10px;">是否推荐</div>
+                <div class="layui-inline">
+                    <select class="activity_search" name="istop" lay-verify="" lay-filter="activity_search" style="width: 100px">
+                        <option value="">全部</option>
+                        <option value="1">是</option>
+                        <option value="2">否</option>
+                    </select>
+                </div>
+                <div class="layui-inline" style="margin-left:10px;">单位</div>
+                <div class="layui-inline">
+                    <input type="text" name="workUnit" placeholder="请输入工作单位" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-inline">
+                    <button type="button" id="btnserach" class="layui-btn layui-btn-primary"  lay-submit data-type="reload" lay-filter="data-search-btn"><i class="layui-icon"></i>搜索</button>
+                </div>
+                </div>
+            </form>
+            <table class="layui-hide" id="expert_table" lay-filter="expert_table"></table>
+            <script type="text/html" id="person_detail_btn">
+                <a class="layui-btn layui-btn-xs" lay-event="look_detail">查看详情</a>
+            </script>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script src="./lib/layui/layui.all.js"></script>
+<script src="./lib/jquery.js"></script>
+<script src="js/base.js"></script>
+<script src="lib/layui/xm-select.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/js/common.js"></script>
+
+<script>
+    $('#my_space_nav').load('templates/my_space_nav.html')
+    var currentIndex,entryFields = [],fieldOneArr = [],fieldTwoArr = [],feildIDStr = [];
+    layui.use('table', function () {
+        var table = layui.table
+
+        table.render({
+            elem: '#expert_table',
+            url: baseUrl + '/expert/queryExperyList?examineStatus=-1',
+            limit: 20,
+            limits: [20, 50, 80, 100],
+            autoSort: false,
+            response: {
+                statusCode: 200, //重新规定成功的状态码为 200，table 组件默认为 0
+            },
+            parseData: function (res) {
+                return {
+                    message: res.message,
+                    code: res.code,
+                    count: res.data.count, //解析数据长度
+                    data: res.data.data, //解析数据列表
+                }
+            },
+            cols: [
+                [
+                    { type: 'numbers' },
+                    { field: 'name', title: '姓名', sort: true },
+                    { field: 'workUnit', title: '单位' },
+                    { field: 'entryField', title: '所属领域' },
+                    {
+                        field: 'score',
+                        title: '得分',
+                        sort: true,
+                        templet: function (d) {
+                            if (!d.score || d.score == 0) return '--'
+                            return d.score
+                        },
+                    },
+                    {
+                        field: 'sign',
+                        title: '操作',
+                        width: 200,
+                        toolbar: '#person_detail_btn',
+                    },
+                ],
+            ],
+            page: true,
+        })
+        table.on('tool(expert_table)', function (obj) {
+            var data = obj.data
+            if (obj.event === 'look_detail') {
+                layer.open({
+                    type: 2,
+                    id: 'detail_ifrmae',
+                    title: '候选人简历',
+                    area: ['1200px', '90%'],
+                    fixed: true, //不固定
+                    maxmin: true,
+                    content: 'expertDetail.html',
+                    success: function (layero, index) {
+                        var iframe = window['layui-layer-iframe' + index] //拿到iframe元素
+                        iframe.child(data, index) //向此iframe层方法 传递参数
+                    },
+                })
+            } else if (obj.event === 'check') {
+                layer.open({
+                    type: 2,
+                    id: 'check_iframe',
+                    title: '候选人简历',
+                    area: ['1200px', '90%'],
+                    fixed: true, //不固定
+                    maxmin: true,
+                    content: 'expertDetail.html',
+                    btn: ['提交', '关闭'],
+                    success: function (layero, index) {
+                        currentIndex = index
+                        var iframe = window['layui-layer-iframe' + index] //拿到iframe元素
+                        iframe.child(data, index) //向此iframe层方法 传递参数
+                    },
+                    yes: function (index) {
+                        var submitForm = window['layui-layer-iframe' + index].callbackdata()
+                        if (!submitForm) return
+                        $.ajax({
+                            type: 'post',
+                            url: baseUrl + '/expert/updateByExpert',
+                            contentType: 'application/json;charset=UTF-8',
+                            data: JSON.stringify(submitForm),
+                            success: function (res) {
+                                if (res.code == 200) {
+                                    layer.close(index)
+                                    var currpage = $('.layui-laypage-em').next().text()
+                                    layer.close(index)
+                                    layer.msg('评分成功')
+                                    table.reload('expert_table', {
+                                        page: {
+                                            curr: currpage,
+                                        },
+                                    })
+                                } else {
+                                    layer.msg(res.message)
+                                }
+                            },
+                        })
+                    },
+                })
+            }
+        })
+        table.on('sort(expert_table)', function (obj) {
+            table.reload('expert_table', {
+                where: {
+                    [obj.field]: obj.type, //排序方式
+                },
+            })
+        });
+
+        var active = {
+            reload: function(){
+                var name = $("input[name='name']");
+                var positionLevel = $("select[name='positionLevel']");
+                var createtime = $("input[name='createtime']");
+                var workUnit = $("input[name='workUnit']");
+                var istop = $("select[name='istop']");
+                var entryField = "";
+                if(feildIDStr.length>0){
+                    feildIDStr = [...new Set(feildIDStr)];
+                    entryField = feildIDStr.join(",");
+                }
+                table.reload('expert_table', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        name:  name.val(),
+                        expertLevel:positionLevel.val(),
+                        createtime:createtime.val(),
+                        workUnit:workUnit.val(),
+                        istop:istop.val(),
+                        entryField:entryField
+
+                    }
+                });
+            }
+        };
+
+        $('#btnserach').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+    });
+
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#createtime' //指定元素
+        });
+    });
+
+    $.get(baseUrl + '/entryField/queryEntryFieldList', function (resEntryFields) {
+        if (resEntryFields.code === 200) {
+            var mapRes = resEntryFields.data.filter(function (i) {
+                return i.children && i.children.length > 0
+            })
+            entryFields = mapRes
+            if (fieldTwoArr.length > 0) {
+                for (var j = 0; j < fieldTwoArr.length; j++) {
+                    var item = fieldTwoArr[j]
+                    for (var o = 0; o < mapRes.length; o++) {
+                        mapRes[o].children.forEach(function (i) {
+                            if (i.id === item.id) i.selected = true
+                        })
+                    }
+                }
+            }
+            fieldOneSelect.update({ data: mapRes })
+        }
+    });
+
+    var fieldOneSelect = xmSelect.render({
+        el: '#entryField',
+        language: 'zn',
+        // layVerify: 'required',
+        layVerType: 'msg',
+        prop: {
+            name: 'title',
+            value: 'id',
+        },
+        data: [],
+        on: function (selectObj) {
+            fieldTwoArr = []
+            fieldOneArr = [],feildIDStr = []
+            selectObj.arr.forEach(function (i) {
+                var exitNode = fieldOneArr.find(function (o) {
+                    return o.id === i.parentId
+                })
+                if (!exitNode) {
+                    var parantNode = entryFields.find(function (j) {
+                        return j.id === i.parentId
+                    })
+                    feildIDStr.push(parantNode.id);
+                    fieldOneArr.push({
+                        id: parantNode.id,
+                        title: parantNode.title,
+                    })
+                }
+                feildIDStr.push(i.id);
+                fieldTwoArr.push({
+                    id: i.id,
+                    title: i.title,
+                    parentId: i.parentId,
+                })
+            })
+        },
+    })
+</script>

@@ -53,44 +53,46 @@ $('.file-lists').on('click', '.del-btn', function (e) {
 $('.defaultExpertParams').on('click', '.del-btn', function (e) {
     $(e.target).parent().parent().remove()
 })
+setTimeout(function(){
+    $.get(baseUrl + '/expert/queryExpertByUserId?user_name=' + sessionStorage.getItem('token'), function (res) {
+        if (res.code == 200) {
+            resFormData = res.data || {}
+            fieldOneArr = resFormData.fieldOneArr || []
+            fieldTwoArr = resFormData.fieldTwoArr || []
+            // defaultExpertParams = resFormData.dataArr || defaultExpertParams
+            setFormDefaultValue()
+            if (res.data) {
+                defaultExpertParams = resFormData.dataArr
+                setDefaultParams()
+                resetForm()
+            } else {
+                getDefineParams()
+            }
 
-$.get(baseUrl + '/expert/queryExpertByUserId?user_name=' + sessionStorage.getItem('token'), function (res) {
-    if (res.code == 200) {
-        resFormData = res.data || {}
-        fieldOneArr = resFormData.fieldOneArr || []
-        fieldTwoArr = resFormData.fieldTwoArr || []
-        // defaultExpertParams = resFormData.dataArr || defaultExpertParams
-        setFormDefaultValue()
-        if (res.data) {
-            defaultExpertParams = resFormData.dataArr
-            setDefaultParams()
-            resetForm()
-        } else {
-            getDefineParams()
-        }
-
-        $.get(baseUrl + '/entryField/queryEntryFieldList', function (resEntryFields) {
-            if (resEntryFields.code === 200) {
-                var mapRes = resEntryFields.data.filter(function (i) {
-                    return i.children && i.children.length > 0
-                })
-                entryFields = mapRes
-                if (fieldTwoArr.length > 0) {
-                    for (var j = 0; j < fieldTwoArr.length; j++) {
-                        var item = fieldTwoArr[j]
-                        for (var o = 0; o < mapRes.length; o++) {
-                            mapRes[o].children.forEach(function (i) {
-                                if (i.id === item.id) i.selected = true
-                            })
+            $.get(baseUrl + '/entryField/queryEntryFieldList', function (resEntryFields) {
+                if (resEntryFields.code === 200) {
+                    var mapRes = resEntryFields.data.filter(function (i) {
+                        return i.children && i.children.length > 0
+                    })
+                    entryFields = mapRes
+                    if (fieldTwoArr.length > 0) {
+                        for (var j = 0; j < fieldTwoArr.length; j++) {
+                            var item = fieldTwoArr[j]
+                            for (var o = 0; o < mapRes.length; o++) {
+                                mapRes[o].children.forEach(function (i) {
+                                    if (i.id === item.id) i.selected = true
+                                })
+                            }
                         }
                     }
-                }
 
-                fieldOneSelect.update({ data: mapRes })
-            }
-        })
-    }
-})
+                    fieldOneSelect.update({ data: mapRes })
+                }
+            })
+        }
+    })
+},0)
+
 function getDefineParams() {
     $.get(baseUrl + '/template/queryTemplateList', function (res) {
         if (res.code === 200) {
@@ -121,7 +123,6 @@ function setFormDefaultValue() {
             resumeAddress.push(item)
         }
     }
-
     form.val('register_expert_form', {
         id: resFormData.id,
         userName: resFormData.userName,
@@ -151,6 +152,8 @@ function setFormDefaultValue() {
         entryField: resFormData.entryField,
         scorereadonly: resFormData.score,
         evaluatereadonly: resFormData.evaluate,
+        provinceName:resFormData.provinceName,
+        provinceId:resFormData.provinceId,
     })
 }
 function setDefaultParams() {
@@ -274,7 +277,9 @@ function submitFun(data, type, url) {
     formData.referrerCode = resFormData.code || sessionStorage.getItem('verificationCode')
     formData.fieldOneArr = fieldOneArr
     formData.fieldTwoArr = fieldTwoArr
-    formData.dataArr = defineExpertParam()
+    formData.dataArr = defineExpertParam();
+    formData.provinceName = $("select[name='provinceId'] option:selected").text();
+    formData.provinceId = $("select[name='provinceId'] option:selected").val();
     console.log(JSON.stringify(formData))
     $.ajax({
         type: 'post',
@@ -311,6 +316,7 @@ function resetForm() {
         $('.file-lists .del-btn').remove()
         $('#upload_attachment_btn').hide()
     }
+
 }
 
 function defineExpertParam() {

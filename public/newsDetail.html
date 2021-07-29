@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+        <link rel="stylesheet" type="text/css" href="http://10.168.0.218:8086/rsp-group-innovation/static/css/common.css" />
+        <link rel="stylesheet" href="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/css/layui.css" />
+        <!-- 导入自己的样式表 -->
+        <link rel="stylesheet" href="css/runnet_common.css" />
+        <link rel="stylesheet" href="css/runnet_page.css" />
+        <title>新闻详情</title>
+        <style>
+            .notify-content {
+                border-top: 1px solid #dedede;
+            }
+            .notify-content p {
+                line-height: 28px;
+            }
+            .attachments li {
+                line-height: 32px;
+            }
+            .message_form .layui-form-label {
+                width: 150px;
+            }
+            .message_form .layui-input-block {
+                margin-left: 150px;
+            }
+            strong {
+                font-weight: bold;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="headDiv"></div>
+        <div id="searchDiv"></div>
+
+        <div class="runnet_main_body">
+            <div class="wrap">
+                <div class="runnut_head">
+                    <span class="borderl"></span>
+                    <span class="layui-breadcrumb" lay-separator=">">
+                        <a href="index.html">首页</a>
+                        <a href="runnet_crowdCreate.html">众创平台</a>
+                        <a><cite>新闻详情</cite></a>
+                    </span>
+                </div>
+                <script id="news_demo" type="text/html">
+                <div class="block p-md m-t-lg">
+                    <h1 class="font-20 text-center">{{d.title}}</h1>
+                    <ul class="flex-around color-tip m-t-lg">
+                        <li>时间：{{d.insertTime}}</li>
+<!--                        <li>来源：中国日报</li>-->
+                        <li>浏览：{{d.nums}}次浏览</li>
+                        <li>字号：大 中 小</li>
+                    </ul>
+                    <div class="notify-content m-t-md p-t-md">
+                        {{d.viceContext}}
+                        <p class="text-indent-2">
+                        </p>
+                    </div>
+                </div>
+                </script>
+                <div id="news_view"></div>
+            </div>
+        </div>
+    </body>
+</html>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/jquery.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/js/common.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
+<script src="js/base.js"></script>
+<script>
+
+    function GetQueryString(name){
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  unescape(r[2]); return null;
+    }
+    layui.use(['laytpl', 'form'], function () {
+        var laytpl = layui.laytpl
+        var form = layui.form
+
+        $.get(baseUrl + '/news/getNewsById?operation=client&id=' + GetQueryString("id"), function (res) {
+            if (res.code === 200) {
+                var newsTpl = news_demo.innerHTML
+                var news_view = document.getElementById('news_view')
+                laytpl(newsTpl).render(res.data, function (html) {
+                    news_view.innerHTML = html
+                })
+                //setAttachement()
+            }
+        })
+    })
+    function setAttachement() {
+        var files = notifyDetail.enclosures || []
+        if (files.length) {
+            for (var i = 0; i < files.length; i++) {
+                $('.attachments').append(
+                    '<li><a class="cursor-pointer color-theme" href="' + imageUrl + files[i].url + '">' + files[i].name + '</a></li>'
+                )
+            }
+        }
+    }
+</script>

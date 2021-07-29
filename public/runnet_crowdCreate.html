@@ -72,25 +72,30 @@
                     <i class="iconfont icon-xinwen color-icon"></i>
                     <span>新闻动态 >></span>
                 </div>
+
                 <div class="section_1">
-                    <div style="width: 800px" class="height300 block p-xs relative float-left">
-                        <img src="images/crowdCreate/1.png" style="height: 100%; width: 100%" />
-                        <div class="absolute memo">中国科技期刊卓越行动计划工作交流会推进会在京召开</div>
-                    </div>
+                    <script id="newsTop_demo" type="text/html">
+                        <a style="width: 800px" class="height300 block p-xs relative float-left" href="newsDetail.html?id={{d.id}}">
+                            <img src="{{d.manPic}}" style="height: 100%; width: 100%" />
+                            <div class="absolute memo">{{d.title}}</div>
+                        </a>
+                    </script>
+                    <div id="newsTop_views"></div>
                     <script id="news_demo" type="text/html">
-                        {{# layui.each(newsLists , function(index, item){ }}
+                        {{# layui.each(d , function(index, item){ }}
                         <li class="overflow-hidden p-b-sm">
                             <div class="float-left">
-                                <img src="images/incubator/5.png" height="80ox;" width="100px" />
+                                <img src="{{item.manPic}}" height="80ox;" width="100px" />
                             </div>
                             <div style="width: 240px;" class="float-right text-ellipsis-3   text-indent-2">
-                                <a href="" class="link-hover">{{item}}</a>
+                                <a href="newsDetail.html?id={{item.id}}" class="link-hover">{{item.title}}</a>
                             </div>
                         </li>
                         {{# }); }}
                     </script>
                     <ul style="width: 380px" class="height300 block p-sm overflow-hidden float-right" id="news_wrap"></ul>
                 </div>
+
                 <div class="clear">
                     <div style="width: 800px" class="float-left">
                         <div class="page-nav">
@@ -98,10 +103,10 @@
                             <span>政策宣讲 >></span>
                         </div>
                         <script id="policy_demo" type="text/html">
-                            {{# layui.each(policyLists, function(index, item){ }}
+                            {{# layui.each(d, function(index, item){ }}
                             <li class="flex-between p-b-md">
-                                <div class="text-ellipsis-1 link-hover" style="width: 60%;">{{item.memo}}</div>
-                                <div>{{item.name}}</div>
+                                <a href="newsDetail.html?id={{item.id}}" class="text-ellipsis-1 link-hover" style="width: 60%;">{{item.title}}</a>
+                                <a href="newsDetail.html?id={{item.id}}">{{item.viceTitle}}</a>
                             </li>
                             {{# }); }}
                         </script>
@@ -158,53 +163,27 @@
 <script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/js/common.js"></script>
 <script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
 <script type="text/javascript" src="js/base.js"></script>
-<script>
-    var newsLists = [
-        '"4月19日，“科创中国”咨询委员会第一次全体会议在京召开"',
-        '"科创中国”在行动——山东省日照市2021年中国科协专利信息平台应用培训会举办"',
-        '"山东省科协党组深入学习习近平总书记在庆祝中国共产党成立95周年大会上的讲话"',
-        '4月20日，中国科技期刊卓越行动计划工作交流推进会在京召开。中国科协党组书记、常务副主席、书记处第一书记怀进鹏院士，世界一流科技期刊建设专家委员会主任杨卫院士出席会议并致辞，',
-    ]
-    var policyLists = [
-        {
-            memo: '科技部办公厅关于印发《科技部 落实国家科技计划管理监督 主体责任实施方案》的通知',
-            name: '国科发政〔2016〕79号',
-        },
-        {
-            memo: '科技部 中央军委科学技术委员会关于印发《“十三五”科技军民融合发展专项规划》的通知',
-            name: '国科发资〔2017〕85号',
-        },
-        {
-            memo: '科技部 财政部 发展改革委关于印发《科技评估工作规定（试行）》的通知',
-            name: '国科发政〔2016〕382号 ',
-        },
-        {
-            memo: '科技部关于印发《科技监督和评估体系 建设工作方案》的通知',
-            name: '国科发政〔2016〕79号',
-        },
-        {
-            memo: '科技部关于开展2018年度全国科技统计调查工作的通知',
-            name: '国科发规〔2019〕11号',
-        },
-        {
-            memo: '市科委关于印发天津市科技计划管理办法的通知',
-            name: '津科计〔2017〕27号',
-        },
-        {
-            memo: '北京市深化市级财政科技计划(专项、基金等)管理改革实施方案》',
-            name: '北京市科委 ',
-        },
-    ]
+<script type="text/javascript">
+    // var newsLists = [
+    //     '"4月19日，“科创中国”咨询委员会第一次全体会议在京召开"',
+    //     '"科创中国”在行动——山东省日照市2021年中国科协专利信息平台应用培训会举办"',
+    //     '"山东省科协党组深入学习习近平总书记在庆祝中国共产党成立95周年大会上的讲话"',
+    //     '4月20日，中国科技期刊卓越行动计划工作交流推进会在京召开。中国科协党组书记、常务副主席、书记处第一书记怀进鹏院士，世界一流科技期刊建设专家委员会主任杨卫院士出席会议并致辞，',
+    // ];
+
+
     layui.use(['laytpl'], function () {
         var laytpl = layui.laytpl
 
         var notifyTpl = notify_demo.innerHTML,
             policyTpl = policy_demo.innerHTML,
-            newsTpl = news_demo.innerHTML
+            newsTpl = news_demo.innerHTML,
+            newsTopTpl = newsTop_demo.innerHTML
         var notifyView = document.getElementById('notify-wrap'),
             policyView = document.getElementById('policy_wrap'),
             newsView = document.getElementById('news_wrap'),
             rollMsgView = document.getElementById('roll_msg_wrap')
+            newsTopViews = document.getElementById('newsTop_views')
 
         var renderNotify = function (v) {
             laytpl(notifyTpl).render(v, function (html) {
@@ -219,18 +198,67 @@
             data: JSON.stringify({ page: 1, limit: 7 }),
             success: function (res) {
                 if (res.code == 200) {
+                    notifys = res.data.data
                     renderNotify(res.data.data)
                     showAnimation()
                 }
             },
         })
 
-        laytpl(policyTpl).render(policyLists, function (html) {
-            policyView.innerHTML = html
+        var renderPolicy = function(v){
+            laytpl(policyTpl).render(v, function (html) {
+                policyView.innerHTML = html
+            })
+        }
+        $.ajax({
+            type: 'post',
+            url: baseUrl + '/news/queryList',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({ page: 1, limit: 5,type:"2" }),
+            success: function (res) {
+                if (res.code == 200) {
+                    renderPolicy(res.data.data)
+                }
+            },
         })
 
-        laytpl(newsTpl).render(newsLists, function (html) {
-            newsView.innerHTML = html
+        var renderNews = function (v) {
+            laytpl(newsTpl).render(v, function (html) {
+                newsView.innerHTML = html
+            })
+        }
+        var renderNewsTop = function (v) {
+            laytpl(newsTopTpl).render(v, function (html) {
+                newsTopViews.innerHTML = html
+            })
+        }
+        $.ajax({
+            type: 'post',
+            url: baseUrl + '/news/queryList',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({ page: 1, limit: 5,type:"1" }),
+            success: function (res) {
+                if (res.code == 200) {
+                    var objArr = res.data.data;
+                    var has = true;
+                    var tempArr = new Array();
+                    var tempTopArr = {};
+                    if(objArr.length>0){
+                        for(var i=0;i<objArr.length;i++){
+                            if(objArr[i].istop == "1" && has){
+                                objArr[i].manPic = imageUrl+objArr[i].manPic;
+                                tempTopArr = objArr[i];
+                                has = false;
+                            }else{
+                                objArr[i].manPic = imageUrl+objArr[i].manPic;
+                                tempArr.push(objArr[i]);
+                            }
+                        }
+                        renderNewsTop(tempTopArr);
+                        renderNews(tempArr);
+                    }
+                }
+            },
         })
     })
 
