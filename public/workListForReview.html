@@ -10,7 +10,7 @@
         <!-- 导入自己的样式表 -->
         <link rel="stylesheet" href="./css/runnet_common.css" />
         <link rel="stylesheet" href="./css/runnet_page.css" />
-        <title>作品审核</title>
+        <title>作品复审结果</title>
         <style>
             .search_form select {
                 width: 100px;
@@ -27,44 +27,37 @@
                 <div class="runnut_head">
                     <span class="borderl"></span>
                     <span class="layui-breadcrumb" lay-separator=">">
-                        <a href="mySpaceDashboard.html">个人信息</a>
-                        <a><cite id="curTitle">作品审核</cite></a>
+                        <a href="workManage.html">作品管理</a>
+                        <a><cite id="curTitle">作品复审结果</cite></a>
                     </span>
                 </div>
-                <div class="m-t-md">
-                    <div class="layui-inline">活动简称</div>
-                    <div class="layui-inline"><input type="text" class="layui-input" /></div>
-                </div>
-                <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
-                <script type="text/html" id="person_detail_btn">
-                    <select name="" id="">
-                        <option value="已登记安">1</option>
-                        <option value="2">2</option>
-                    </select>
-                </script>
-                <form class="review_form layui-form" action lay-filter="review_form">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">审核结果</label>
-                        <div class="layui-input-block">
-                            <select name="firstReviewState" lay-filter="firstReviewState">
-                                <option value="1">通过</option>
-                                <option value="2">不通过</option>
-                                <option value="3">修改</option>
-                            </select>
+                <form class="layui-form search_form m-b-lg m-t-lg" action="" lay-filter="search_form">
+                    <div>
+                        <div class="layui-inline">作品类型</div>
+                        <div class="layui-inline">
+                            <select class="activity_search" lay-verify="" lay-filter="activity_search" style="width: 100px"></select>
                         </div>
                     </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">审核意见</label>
-                        <div class="layui-input-block">
-                            <textarea name="firstOpinion" lay-verify="" placeholder="" class="layui-textarea"></textarea>
-                        </div>
-                    </div>
-                    <div class="layui-form-item m-t-lg p-l-md text-center">
-                        <div class="layui-input-block">
-                            <a lay-submit class="layui-btn" lay-filter="submit_form">提交</a>
+                    <div class="m-t-md">
+                        <div class="layui-inline">参赛情况</div>
+                        <div class="layui-inline">
+                            <select class="activity_search" lay-verify="" lay-filter="activity_search" style="width: 100px"></select>
                         </div>
                     </div>
                 </form>
+                <div class="border-top m-t-lg m-b-lg"></div>
+                <div>
+                    <div class="layui-inline">终审作品数</div>
+                    <div class="layui-inline">
+                        <input type="number" class="layui-input workNum" onblur="changeWorkNum(this)" />
+                    </div>
+                    <div class="layui-inline">个</div>
+                </div>
+                <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
+                <div class="m-t-lg text-center">
+                    <button class="layui-btn layui-btn-primary" onclick="loadMore()">加载更多</button>
+                    <button class="layui-btn" onclick="saveFun()">保存</button>
+                </div>
             </div>
         </div>
     </body>
@@ -79,7 +72,6 @@
         notifyDetail = {},
         noticeId = JSON.parse(sessionStorage.getItem('findWorkByWorkType')).noticeId
 
-    $('#my_space_nav').load('templates/my_space_nav.html')
     $.get(baseUrl + '/notice/detail?noticeId=' + noticeId, function (res) {
         if (res.code === 200) {
             notifyDetail = res.data
@@ -89,6 +81,9 @@
         var table = layui.table,
             form = layui.form
 
+        form.on('select(activity_search)', function (obj) {
+            getAllWorks(obj.value)
+        })
         renderTable = function () {
             table.render({
                 elem: '#work_table',
@@ -111,25 +106,45 @@
                 },
                 cols: [
                     [
-                        { type: 'numbers' },
-                        { field: 'worksType', title: '作品类型' },
-                        { field: 'author', title: '作者' },
-                        { field: '', title: '单位' },
-                        { field: 'updateTime', title: '职务' },
-                        { field: 'score', title: '得分/得票数' },
+                        { type: 'checkbox' },
+                        { field: 'name', title: '排名', sort: true },
+                        { field: 'updateTime', title: '姓名' },
+                        { field: 'worksType', title: '单位' },
+                        { field: 'worksType', title: '职务' },
+                        { field: 'worksType', title: '得分' },
+                        { field: 'worksType', title: '奖项' },
                         {
-                            field: 'score',
-                            title: '奖项',
-                            toolbar: '#person_detail_btn',
+                            field: 'opt',
+                            title: '',
+                            toolbar: '<div><a class="layui-btn layui-btn-xs" lay-event="showAttachement">查看单位推荐意见</a></div>',
                         },
                     ],
                 ],
-                done: function (obj) {
-                    console.log(obj)
-                },
             })
         }
 
         renderTable()
+        table.on('tool(work_table)', function (obj) {
+            var data = obj.data
+            sessionStorage.setItem('workId', data.id)
+            if (obj.event === 'showAttachement') {
+                debugger
+            }
+        })
+        // table.on('sort(work_table)', function (obj) {
+        //     table.reload('expert_table', {
+        //         where: {
+        //             [obj.field]: obj.type, //排序方式
+        //         },
+        //     })
+        // })
     })
+    function changeWorkNum(target) {
+        var num = parseInt($(target).val())
+        if (!num || num === 0) {
+            return layer.msg('终审作品数必须大于零')
+        }
+    }
+    function loadMore() {}
+    function saveFun() {}
 </script>

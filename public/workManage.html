@@ -15,6 +15,9 @@
             .search_form select {
                 width: 100px;
             }
+            .none {
+                display: none;
+            }
         </style>
     </head>
 
@@ -34,16 +37,40 @@
                     </form>
 
                     <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
-                    <div class="text-center m-t-lg submitWrap" style="display: none">
-                        <a class="layui-btn">进入终审环节</a>
+                    <div class="text-center m-t-lg">
+                        <button class="layui-btn turnVoteBtn" onclick="toVote()">进入投票环节</button>
+                        <button class="layui-btn turnResultReviewBtn" onclick="toFinalReview()">进入终审环节</button>
+                        <button class="layui-btn" onclick="inExopertComment()">专家组意见</button>
+                        <button class="layui-btn" onclick="inReviewResult()">查看复审结果</button>
+                        <button class="layui-btn" onclick="inFinalResult()">查看终审结果</button>
                     </div>
                     <script type="text/html" id="person_detail_btn">
-                        <a class="layui-btn layui-btn-xs" lay-event="look_detail">评分</a>
-                        <a class="layui-btn layui-btn-xs" lay-event="edit">查看详情</a>
+                        <a class="layui-btn layui-btn-xs" lay-event="list">作品列表</a>
+                        <a class="layui-btn layui-btn-xs assignExpertBtn" lay-event="assignExpert">分配专家</a>
                     </script>
                 </div>
             </div>
         </div>
+        <form class="layui-form p-md assign_expert_form" id="assign_expert_form" action="" lay-filter="assign_expert_form" style="display: none">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 100px">活动简称</label>
+                <div class="layui-input-block">
+                    <input type="number" name="big" class="layui-input" placeholder="512" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 100px">作品类型</label>
+                <div class="layui-input-block">
+                    <input type="number" name="count" class="layui-input" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 100px">分派专家</label>
+                <div class="layui-input-block">
+                    <input type="number" name="count" class="layui-input" />
+                </div>
+            </div>
+        </form>
     </body>
 </html>
 <script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/jquery.js"></script>
@@ -53,16 +80,22 @@
 <script>
     $('#my_space_nav').load('templates/my_space_nav.html')
     var userId = sessionStorage.getItem('token')
-    var activityDataGrid = []
+    var activityDataGrid = [],
+        selectNotify = {},
+        notifyList = []
+
     layui.use(['table', 'form', 'element'], function () {
         var table = layui.table,
             form = layui.form,
             element = layui.element
 
         form.on('select(activity_search)', function (obj) {
-            notifyId = obj.value
-            getAllWorks(obj.value)
+            selectNotify = notifyList.find(function (item) {
+                return item.id === obj.value
+            })
+            getAllWorks()
         })
+
         renderTable = function () {
             table.render({
                 elem: '#work_table',
@@ -77,39 +110,57 @@
                         { field: 'joinFinalCount', title: '进入终审数' },
                         { field: 'finalCount', title: '终审完成数' },
                         { field: 'isVotes', title: '是否录入投票数' },
+                        { field: 'opt', title: '操作', width: 160, toolbar: '#person_detail_btn' },
                     ],
                 ],
+                done: function () {
+                    if (selectNotify.distMethod === 0) {
+                        $('.assignExpertBtn').remove()
+                    }
+                },
             })
-            if (activityDataGrid.length > 0) {
-                $('.submitWrap').show()
-            }
         }
         getAllWorks = function (id) {
-            $.get(baseUrl + '/works/worksList?noticeId=' + id, function (res) {
+            $.get(baseUrl + '/works/worksList?noticeId=' + selectNotify.id, function (res) {
                 if (res.code === 200) {
                     activityDataGrid = res.data
                     renderTable()
+                    setOperateBtn()
                 }
             })
         }
         // 获取所有公告
         $.get(baseUrl + '/notice/findAll', function (res) {
             if (res.code === 200) {
-                for (var i = 0; i < res.data.length; i++) {
-                    $('.activity_search').append('<option value="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
-                }
-                form.render('select')
-                if (res.data.length) {
-                    notifyId = res.data[0].id
-                    getAllWorks(res.data[0].id)
+                notifyList = res.data
+                if (notifyList.length) {
+                    for (var i = 0; i < notifyList.length; i++) {
+                        $('.activity_search').append('<option value="' + notifyList[i].id + '">' + notifyList[i].shortName + '</option>')
+                    }
+                    form.render('select')
+                    selectNotify = res.data[0]
+                    getAllWorks()
                 }
             }
         })
-        renderTable()
         table.on('tool(work_table)', function (obj) {
             var data = obj.data
-            if (obj.event === 'look_detail') {
-            } else if (obj.event === 'edit') {
+            if (obj.event === 'list') {
+                var queryParams = {
+                    worksTypeId: obj.data.worksTypeId,
+                    noticeId: selectNotify.id,
+                }
+                sessionStorage.setItem('findWorkByWorkType', JSON.stringify(queryParams))
+                window.location.href = 'workListForType.html'
+            } else if (obj.event === 'assignExpert') {
+                if (data.joinCount > data.firstReviewCount) {
+                    layer.confirm('还有未审核完成的作品，确认要分派专家吗', { title: '提示' }, function () {
+                        layer.closeAll()
+                        showAssignForm()
+                    })
+                } else {
+                    showAssignForm()
+                }
             } else {
             }
         })
@@ -121,17 +172,56 @@
             })
         })
 
-        table.on('row(work_table)', function (obj) {
-            var queryParams = {
-                worksTypeId: obj.data.worksTypeId,
-                noticeId: notifyId,
-            }
-            sessionStorage.setItem('findWorkByWorkType', JSON.stringify(queryParams))
-            window.location.href = 'workListForType.html'
-        })
+        // table.on('row(work_table)', function (obj) {
+        //     console.log('aa')
+        // })
     })
 
-    function updateScore(v) {
-        console.log(v)
+    function showAssignForm() {
+        $('.assign_expert_form').show()
+        layer.open({
+            type: 1,
+            title: '批量分派专家',
+            content: $('#assign_expert_form'),
+            scrollbar: false,
+            area: ['500px', 'auto'],
+            btn: ['确定', '取消'],
+            yes: function (index) {
+                var v = form.val('work_info_form')
+                obj.update(v)
+                $('#work_info_form').hide()
+                layer.close(index)
+            },
+            cancel: function () {
+                $('#assign_expert_form').hide()
+            },
+        })
+    }
+    function toVote() {
+        sessionStorage.setItem('reviewType', 'vote')
+        window.location.href = 'workListForFinal.html'
+    }
+    function toFinalReview() {}
+    function inExopertComment() {}
+    function inReviewResult() {
+        window.location.href = 'workListForReview.html'
+    }
+    function inFinalResult() {
+        sessionStorage.setItem('reviewType', 'lookResult')
+        window.location.href = 'workListForFinal.html'
+    }
+    function setOperateBtn() {
+        $('.none').hide()
+        if (selectNotify.vote === 1) {
+            if (selectNotify.voteLinks === 0) {
+                //投票为复审后先进入投票环节
+                $('.turnVoteBtn').show()
+            } else if (selectNotify.voteLinks === 1) {
+                //投票为终审后后先进入终审环节
+                $('.turnResultReviewBtn').show()
+            }
+        } else {
+            $('.turnResultReviewBtn').show()
+        }
     }
 </script>

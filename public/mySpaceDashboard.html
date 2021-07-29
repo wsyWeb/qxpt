@@ -3,35 +3,94 @@
     <head>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
         <!-- 导入 layui 的样式表 -->
-        <link rel="stylesheet" href="lib/layui/css/layui.css" />
+        <link rel="stylesheet" type="text/css" href="http://10.168.0.218:8086/rsp-group-innovation/static/css/common.css" />
+        <link rel="stylesheet" type="text/css" href="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/css/layui.css" />
         <!-- 导入自己的样式表 -->
-        <link rel="stylesheet" href="css/runnet_common.css" />
-        <link rel="stylesheet" href="css/runnet_page.css" />
-        <title>通知公告</title>
+        <link rel="stylesheet" href="./css/runnet_common.css" />
+        <link rel="stylesheet" href="./css/runnet_page.css" />
+        <title>个人空间</title>
         <style></style>
-        <script src="lib/layui/layui.all.js"></script>
-        <script src="lib/jquery.js"></script>
     </head>
 
     <body>
-        <div class="headDiv"></div>
-        <div class="searchDiv"></div>
+        <div id="headDiv"></div>
+        <div id="searchDiv"></div>
 
         <div class="runnet_main_body">
-            <div class="wrap">
-                <div id="my_space_nav"></div>
-                <div id="my_space_content"></div>
+            <div class="wrap p-t-lg">
+                <div id="my_space_nav" class="float-left" style="width: 180px"></div>
+                <div id="my_space_content" class="float-right" style="width: 1000px">
+                    <div>
+                        <a onclick="showAssignExpertModal()" class="font-18">选举专家组长</a>
+                    </div>
+                    <div class="font-18 m-t-md">
+                        <a onclick="reviewWork()" class="font-18">专家组长作品审核</a>
+                    </div>
+                </div>
             </div>
         </div>
-        <script>
-            $(".headDiv").load("templates/header.html");
-            $(".searchDiv").load("templates/search.html");
-            $("#my_space_nav").load("templates/my_space_nav.html");
-        </script>
+        <form class="layui-form p-md assign_expert_form" lay-filter="assign_expert_form" style="display: none">
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 100px">活动简称</label>
+                <div class="layui-input-block">
+                    <select name="shortName" id=""></select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 100px">专家组名单</label>
+                <div class="layui-input-block">
+                    <input type="radio" value="1" title="张三" name="expert" />
+                    <input type="radio" value="2" title="张三" name="expert" />
+                    <input type="radio" value="3" title="张三" name="expert" />
+                    <input type="radio" value="4" title="张三" name="expert" />
+                    <input type="radio" value="5" title="张三" name="expert" />
+                </div>
+            </div>
+        </form>
     </body>
 </html>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/jquery.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/js/common.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
+<script src="js/base.js"></script>
+<script>
+    $('#my_space_nav').load('templates/my_space_nav.html')
+    function showVoteDialogFun() {}
+
+    layui.use(['form'], function () {
+        var form = layui.form
+
+        form.on('submit(submit_form)', function (obj) {
+            var formData = obj.field
+            if (!formData.expert) {
+                return layer.msg('请选择一位专家')
+            }
+            debugger
+        })
+    })
+
+    function showAssignExpertModal() {
+        $('.assign_expert_form').show()
+        layer.open({
+            type: 1,
+            title: '指定专家组长',
+            content: $('.assign_expert_form'),
+            scrollbar: false,
+            area: ['500px', 'auto'],
+            btn: ['确定', '取消'],
+            yes: function (index) {
+                var v = form.val('work_info_form')
+
+                layer.close(index)
+            },
+            cancel: function () {
+                $('.assign_expert_form').hide()
+            },
+        })
+    }
+    function reviewWork() {
+        window.location.href = 'workListForExpert.html'
+    }
+</script>
