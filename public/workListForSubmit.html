@@ -158,6 +158,9 @@
             if (obj.event === 'look_detail') {
             } else if (obj.event === 'edit') {
             } else {
+                if (data.state === 1) {
+                    return layer.msg('作品已提交，不能删除')
+                }
                 layer.confirm('你确定删除该作品吗', { title: '提示' }, function () {
                     $.get(baseUrl + '/works/deleteWork?workId=' + data.id, function (res) {
                         if (res.code === 200) {

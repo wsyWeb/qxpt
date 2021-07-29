@@ -85,14 +85,12 @@
                     }
                 })
                 form.on('submit(submit_form)', function (obj) {
-                    var expertIds = expert.getValue('value'),
-                        formData = obj.field
+                    var formData = obj.field
 
                     if (Number(formData.gender) === 1 && !formData.firstOpinion) {
                         return layer.msg('请填写审核意见')
                     }
                     formData.workId = workDetail.id
-                    formData.expertIds = expertIds
                     $.ajax({
                         type: 'post',
                         url: baseUrl + '/works/firstReview',
