@@ -61,7 +61,7 @@
             method: 'post',
             url: baseUrl + '/notice/pageList',
             contentType: 'application/json',
-            limits: [20, 50, 80, 100],
+            limits: [10, 20, 50, 80, 100],
             response: {
                 statusCode: 200, //重新规定成功的状态码为 200，table 组件默认为 0
             },
@@ -83,7 +83,7 @@
                         // width: '80',
                         templet: function (d) {
                             if (d.isTop === 1) {
-                                return '<i class="layui-icon layui-icon-rate-solid" style="color:FF5722"></i>'
+                                return '<i class="layui-icon layui-icon-rate-solid" style="color:#FF5722"></i>'
                             }
                             return '<i class="layui-icon layui-icon-rate"></i>'
                         },
@@ -94,6 +94,9 @@
                         field: 'type',
                         title: '类别',
                         templet: function (d) {
+                            if (Number(d.isEnter) !== 1) {
+                                return '--'
+                            }
                             switch (Number(d.type)) {
                                 case 1:
                                     return '短视频大赛'

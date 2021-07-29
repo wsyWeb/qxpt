@@ -1,6 +1,15 @@
 <ul class="layui-nav layui-nav-tree" lay-filter="test">
     <li class="layui-nav-item"><a>个人信息</a></li>
     <li class="layui-nav-item">
+        <a href="workListForSubmit.html">我的作品(个人)</a>
+    </li>
+    <li class="layui-nav-item">
+        <a href="workListForExpert.html">作品复审和终审（专家）</a>
+    </li>
+    <li class="layui-nav-item">
+        <a href="workManage.html">作品管理（管理员）</a>
+    </li>
+    <li class="layui-nav-item">
         <a href="notifyManage.html">通知管理</a>
     </li>
     <li class="layui-nav-item">
@@ -30,5 +39,6 @@
     }
     layui.use('element', function () {
         var element = layui.element //导航的hover效果、二级菜单等功能，需要依赖element模块
+        element.render()
     })
 </script>

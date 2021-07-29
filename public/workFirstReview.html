@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+        <link rel="stylesheet" type="text/css" href="http://10.168.0.218:8086/rsp-group-innovation/static/css/common.css" />
+        <link rel="stylesheet" type="text/css" href="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/css/layui.css" />
+        <link rel="stylesheet" type="text/css" href="css/runnet_common.css" />
+        <link rel="stylesheet" type="text/css" href="css/runnet_page.css" />
+        <title>作品初审</title>
+    </head>
+
+    <body>
+        <div id="headDiv"></div>
+        <div id="searchDiv"></div>
+
+        <div class="runnet_main_body">
+            <div class="wrap">
+                <div class="runnut_head">
+                    <span class="borderl"></span>
+                    <span class="layui-breadcrumb" lay-separator=">">
+                        <a href="workManage.html">作品管理</a>
+                        <a href="workListForType.html">作品列表</a>
+                        <a><cite id="curTitle">作品初审</cite></a>
+                    </span>
+                </div>
+
+                <form class="layui-form m-t-md wrok_form detailForm" action="" lay-filter="work_form"></form>
+
+                <div class="border-top m-t-lg m-b-lg"></div>
+                <form class="review_form layui-form" action lay-filter="review_form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">审核结果</label>
+                        <div class="layui-input-block">
+                            <select name="firstReviewState" lay-filter="firstReviewState">
+                                <option value="1">通过</option>
+                                <option value="2">不通过</option>
+                                <option value="3">修改</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">审核意见</label>
+                        <div class="layui-input-block">
+                            <textarea name="firstOpinion" lay-verify="" placeholder="" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item assignExpert">
+                        <label class="layui-form-label required">分派专家</label>
+                        <div class="layui-input-block" id="experts"></div>
+                    </div>
+                    <div class="layui-form-item m-t-lg p-l-md text-center">
+                        <div class="layui-input-block">
+                            <a lay-submit class="layui-btn" lay-filter="submit_form">保存</a>
+                            <a lay-submit class="layui-btn layui-btn-primary next-btn" lay-filter="next">下一个</a>
+                            <a class="layui-btn layui-btn-primary" href="workListForType.html">返回</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/jquery.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/js/common.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
+<script src="lib/layui/xm-select.js"></script>
+<script type="text/javascript" src="js/base.js"></script>
+<script>
+    var workDetail = {}
+    var expert = xmSelect.render({
+        el: '#experts',
+        name: 'expertIds',
+        autoRow: true,
+        toolbar: {
+            show: true,
+        },
+        autoRow: true,
+        height: '500px',
+        language: 'zn',
+        prop: {
+            name: 'expertName',
+            value: 'expertId',
+        },
+        data: [],
+    })
+    $.get(baseUrl + '/works/detail?id=' + sessionStorage.getItem('workId'), function (res) {
+        if (res.code === 200) {
+            workDetail = res.data
+            $('.detailForm').load('/templates/work/workDetail.html')
+            getExpert()
+
+            layui.use(['form'], function () {
+                var form = layui.form
+                if (workDetail.distMethod === 1) {
+                    $('.assignExpert').hide()
+                }
+                if (!workDetail.nextWorkId) {
+                    $('.next-btn').hide()
+                }
+                form.on('select(firstReviewState)', function (obj) {
+                    if (Number(obj.value) === 1) {
+                        $('.assignExpert').show()
+                    } else {
+                        $('.assignExpert').hide()
+                    }
+                })
+                form.on('submit(submit_form)', function (obj) {
+                    var expertIds = expert.getValue('value'),
+                        formData = obj.field
+
+                    if (Number(formData.firstReviewState) === 1 && expertIds.length === 0 && Number(workDetail.distMethod) === 0) {
+                        return layer.msg('请分派专家')
+                    }
+                    if (Number(formData.firstReviewState) !== 1 && !formData.firstOpinion) {
+                        return layer.msg('请填写审核意见')
+                    }
+                    formData.workId = workDetail.id
+                    formData.expertIds = expertIds
+                    $.ajax({
+                        type: 'post',
+                        url: baseUrl + '/works/firstReview',
+                        data: JSON.stringify(formData),
+                        contentType: 'application/json;charset=UTF-8',
+                        success: function (res) {
+                            if (res.code === 200) {
+                                layer.msg('审核成功')
+                                if (workDetail.nextWorkId) {
+                                    sessionStorage.setItem('workId', workDetail.nextWorkId)
+                                    window.location.href = 'workFirstReview.html'
+                                } else {
+                                    window.location.href = 'workListForType.html'
+                                }
+                            }
+                        },
+                    })
+                })
+                form.on('submit(next)', function (obj) {
+                    sessionStorage.setItem('workId', workDetail.nextWorkId)
+                    window.location.href = 'workFirstReview.html'
+                })
+            })
+        }
+    })
+    function getExpert() {
+        var fieldIds = []
+        if (workDetail.workFields) {
+            fieldIds = workDetail.workFields.map(function (item) {
+                return item.fieldId
+            })
+        }
+        $.ajax({
+            type: 'post',
+            url: baseUrl + '/works/relatedFieldsExpertList',
+            data: JSON.stringify({ fieldIds: fieldIds }),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (res) {
+                if (res.code === 200) {
+                    expert.update({ data: res.data })
+                }
+            },
+        })
+    }
+</script>
