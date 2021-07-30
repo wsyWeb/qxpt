@@ -26,49 +26,47 @@
             <div class="wrap">
                 <!-- <div id="my_space_nav" class="float-left" style="width: 180px"></div>
                 <div id="my_space_content" class="float-right" style="width: 1000px"> -->
-                    <div class="runnut_head">
-                        <span class="borderl"></span>
-                        <span class="layui-breadcrumb" lay-separator=">">
-                            <a href="workManage.html">作品管理</a>
-                            <a><cite id="curTitle">作品列表</cite></a>
-                        </span>
-                    </div>
-                    <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
-                    <div class="text-center assignExpertWrap" style="display: none;">
-                        <a class="layui-btn" onclick="assignExpert()">批量分派专家</a>
-                    </div>
-                    <script type="text/html" id="person_detail_btn">
-                        {{# if(Number(d.firstReviewState) === 0){ }}
-                        <a class="layui-btn layui-btn-xs" lay-event="review">审核</a>
-                        {{# } }}
-                        {{# if(Number(d.firstReviewState) === 1){ }}
-                        <span class="">审核通过</span>
-                        {{# } }}
-                        {{# if(Number(d.firstReviewState) === 2){ }}
-                        <span class="">审核不通过</span>
-                        {{# } }}
-                        {{# if(Number(d.firstReviewState) === 3){ }}
-                        <span class="">已退回</span>
-                        {{# } }}
-                    </script>
-                <!-- </div>
+                <div class="runnut_head">
+                    <span class="borderl"></span>
+                    <span class="layui-breadcrumb" lay-separator=">">
+                        <a href="workManage.html">作品管理</a>
+                        <a><cite id="curTitle">作品列表</cite></a>
+                    </span>
+                </div>
+                <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
+                <!-- <div class="text-center assignExpertWrap" style="display: none">
+                    <a class="layui-btn" onclick="assignExpert()">批量分派专家</a>
+                </div> -->
+                <script type="text/html" id="person_detail_btn">
+                    {{# if(Number(d.firstReviewState) === 0){ }}
+                    <a class="layui-btn layui-btn-xs" lay-event="review">审核</a>
+                    {{# } }} {{# if(Number(d.firstReviewState) === 1){ }}
+                    <span class="">审核通过</span>
+                    {{# } }} {{# if(Number(d.firstReviewState) === 2){ }}
+                    <span class="">审核不通过</span>
+                    {{# } }} {{# if(Number(d.firstReviewState) === 3){ }}
+                    <span class="">已退回</span>
+                    {{# } }}
+                </script>
+            </div>
+            <!-- </div>
             </div> -->
         </div>
         <form class="layui-form p-md assign_expert_form" id="assign_expert_form" action="" lay-filter="assign_expert_form" style="display: none">
             <div class="layui-form-item">
-                <label class="layui-form-label" style="width: 100px;">活动简称</label>
+                <label class="layui-form-label" style="width: 100px">活动简称</label>
                 <div class="layui-input-block">
-                    <input type="number" name="big" class="layui-input" placeholder="512" />
+                    <input type="text" readonly name="shortName" class="layui-input" placeholder="512" />
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label" style="width: 100px;">作品类型</label>
+                <label class="layui-form-label" style="width: 100px">作品类型</label>
                 <div class="layui-input-block">
-                    <input type="number" name="count" class="layui-input" />
+                    <input type="text" readonly name="workType" class="layui-input" />
                 </div>
             </div>
             <div class="layui-form-item">
-                <label class="layui-form-label" style="width: 100px;">分派专家</label>
+                <label class="layui-form-label" style="width: 100px">分派专家</label>
                 <div class="layui-input-block">
                     <input type="number" name="count" class="layui-input" />
                 </div>
@@ -84,7 +82,8 @@
     var userId = sessionStorage.getItem('token')
     var activityDataGrid = [],
         notifyDetail = {},
-        noticeId = JSON.parse(sessionStorage.getItem('findWorkByWorkType')).noticeId
+        searchParams = JSON.parse(sessionStorage.getItem('findWorkByWorkType')) || {}
+    noticeId = searchParams.noticeId
 
     $.get(baseUrl + '/notice/detail?noticeId=' + noticeId, function (res) {
         if (res.code === 200) {
@@ -92,11 +91,19 @@
             if (notifyDetail.distMethod === 1) {
                 $('.assignExpertWrap').show()
             }
+            var workTypeObj =
+                notifyDetail.worksTypes.find(function (item) {
+                    return item.id === searchParams.worksTypeId
+                }) || {}
+            form.val('assign_expert_form', {
+                shortName: notifyDetail.shortName,
+                workType: workTypeObj.name,
+            })
         }
     })
     layui.use(['table', 'form'], function () {
-        var table = layui.table,
-            form = layui.form
+        table = layui.table
+        form = layui.form
 
         form.on('select(activity_search)', function (obj) {
             getAllWorks(obj.value)
@@ -107,7 +114,7 @@
                 url: baseUrl + '/works/pageListById',
                 contentType: 'application/json',
                 method: 'post',
-                where: JSON.parse(sessionStorage.getItem('findWorkByWorkType')),
+                where: searchParams,
                 limits: [10, 20, 50, 80, 100],
                 response: {
                     statusCode: 200, //重新规定成功的状态码为 200，table 组件默认为 0
@@ -125,7 +132,7 @@
                     [
                         { field: 'name', title: '标题' },
                         { field: 'author', title: '作者' },
-                        { field: 'updateTime', title: '更新时间'},
+                        { field: 'updateTime', title: '更新时间' },
                         { field: 'worksType', title: '类别' },
                         {
                             field: 'isAssign',
@@ -154,7 +161,7 @@
             sessionStorage.setItem('workId', data.id)
             if (obj.event === 'look_detail') {
             } else if (obj.event === 'review') {
-                window.location.href = "workFirstReview.html"
+                window.location.href = 'workFirstReview.html'
             } else {
             }
         })
@@ -168,34 +175,51 @@
     })
 
     function assignExpert(v) {
-        var unReviewWorks = activityDataGrid.filter(function(item) {
-            return item.firstReviewState === 0
-        }) || []
+        var unReviewWorks =
+            activityDataGrid.filter(function (item) {
+                return item.firstReviewState === 0
+            }) || []
         if (unReviewWorks.length > 0) {
             layer.confirm('还有未审核完成的作品，确认要分派专家吗', { title: '提示' }, function () {
-               layer.closeAll()
-               showAssignForm()
+                layer.closeAll()
+                showAssignForm()
             })
-        }else {
+        } else {
             showAssignForm()
         }
     }
-    function showAssignForm(){
-        $('.assign_expert_form').show()
+    function showAssignForm() {
+        // $('#assign_expert_form').show()
         layer.open({
             type: 1,
             title: '批量分派专家',
             content: $('#assign_expert_form'),
             scrollbar: false,
+            closeBtn: false,
             area: ['500px', 'auto'],
             btn: ['确定', '取消'],
             yes: function (index) {
-                var v = form.val('work_info_form')
-                obj.update(v)
-                $('#work_info_form').hide()
+                // $('#assign_expert_form').hide()form.val('work_info_form')
+                var wrokIds = activityDataGrid.map(function (item) {
+                    return item.id
+                })
+                var formData = {
+                    workIds,
+                }
+                $.ajax({
+                    type: 'post',
+                    url: baseUrl + '/works/assignWorks',
+                    contentType: 'application/json;charset=UTF-8',
+                    data: JSON.stringify(formData),
+                    success: function (res) {
+                        if (res.code === 200) {
+                            layer.msg('作品提交成功，请耐心等待管理员审核')
+                        }
+                    },
+                })
                 layer.close(index)
             },
-            cancel: function () {
+            btn2: function () {
                 $('#assign_expert_form').hide()
             },
         })

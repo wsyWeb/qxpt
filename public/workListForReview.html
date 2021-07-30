@@ -141,7 +141,7 @@
     })
     function changeWorkNum(target) {
         var num = parseInt($(target).val())
-        if (!num || num === 0) {
+        if (num && num === 0) {
             return layer.msg('终审作品数必须大于零')
         }
     }

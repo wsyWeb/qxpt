@@ -5,8 +5,15 @@ var notifyId = sessionStorage.getItem('notifyId'),
     selectWrokInfo = {}, //选中的作品类型
     selectWorkformat = '', //选中的作品格式
     workFields = [], //选中的作品主题
-    workTypes = []
+    workTypes = [],
+    resumeAddress = [] //单位意见
+var workId = sessionStorage.getItem('workFormId')
 
+if (!workId) {
+    $('.editTitle').hide()
+} else {
+    $('.addTitle').hide()
+}
 var workThemeSelect = xmSelect.render({
     el: '#workTheme',
     language: 'zn',
@@ -35,15 +42,28 @@ layui.use(['form', 'upload', 'laydate'], function () {
     $.get(baseUrl + '/notice/detail?noticeId=' + notifyId, function (res) {
         if (res.code === 200) {
             notifyDetail = res.data
-            setWorkDefaultValue(form)
+            setNotifyDefaultValue(form)
             renderWorkFormats(form) //初始化上传作品的格式
-            renderWorkUpload(upload)
-            renderFormParams(laydate) //初始化动态表单字段
-        }
-    })
-    $.get(baseUrl + '/entryField/queryEntryFieldList', function (res) {
-        if (res.code === 200) {
-            workThemeSelect.update({ data: res.data })
+
+            $.get(baseUrl + '/entryField/queryEntryFieldList', function (entryFieldRes) {
+                if (entryFieldRes.code === 200) {
+                    workThemeSelect.update({ data: entryFieldRes.data })
+                    if (!!workId) {
+                        $.get(baseUrl + '/works/detail?id=' + workId, function (res) {
+                            if (res.code === 200) {
+                                resFormData = res.data
+                                setWorkDefaultValue(form)
+                                updateWorkThemeSelectStatus(entryFieldRes.data)
+                                renderFormParams(laydate, 'edit')
+                                renderWorkUpload(upload)
+                            }
+                        })
+                    } else {
+                        renderFormParams(laydate) //初始化动态表单字段
+                        renderWorkUpload(upload)
+                    }
+                }
+            })
         }
     })
     form.on('select(worksTypes)', function (obj) {
@@ -52,6 +72,8 @@ layui.use(['form', 'upload', 'laydate'], function () {
                 return item.worksTypeId === obj.value
             })
         }
+        setSmallOption(form, obj.value)
+
         renderFormParams(form)
         renderWorkFormats(form)
     })
@@ -65,6 +87,7 @@ layui.use(['form', 'upload', 'laydate'], function () {
         renderFormParams(form)
         renderWorkFormats(form)
     })
+    form.on('select(smallType)', function (obj) {})
     form.on('select(work_format)', function (obj) {
         selectWorkformat = obj.value
 
@@ -81,18 +104,64 @@ layui.use(['form', 'upload', 'laydate'], function () {
         submitFun(obj, 'save')
     })
 })
-function setWorkDefaultValue(form) {
+function setNotifyDefaultValue(form) {
     for (var i = 0; i < notifyDetail.worksTypes.length; i++) {
         var obj = notifyDetail.worksTypes[i]
         $('#work_type').append('<option value="' + obj.id + '">' + obj.name + '</option>')
     }
     form.render('select')
-    $('#work_type').val('')
-    $('select[name="worksInfo"]').val('')
+    if (!workId) {
+        $('#work_type').val('')
+        $('select[name="worksInfo"]').val('')
+    }
     form.val('work_form', {
         activityName: notifyDetail.shortName,
         noticeId: notifyDetail.id,
     })
+}
+function setWorkDefaultValue(form) {
+    if (resFormData.smallTypeId) {
+        setSmallOption(form, resFormData.worksTypeId)
+    }
+    form.val('work_form', {
+        worksTypeId: resFormData.worksTypeId,
+        worksInfo: resFormData.worksInfo,
+        name: resFormData.name,
+        author: resFormData.author,
+        format: resFormData.format,
+        smallTypeId: resFormData.smallTypeId,
+    })
+    $('.workList').html('<a class="color-theme " target="_blank" href=' + imageUrl + resFormData.url + '>' + resFormData.filename + '</a>')
+}
+function setSmallOption(form, id) {
+    smallInfos =
+        notifyDetail.worksTypes.find(function (item) {
+            return item.id === id
+        }).worksTypes || []
+    if (smallInfos.length > 0) {
+        $('#small_type').empty()
+        for (var i = 0; i < smallInfos.length; i++) {
+            $('#small_type').append('<option value="' + smallInfos[i].id + '">' + smallInfos[i].name + '</option>')
+        }
+    }
+    if (!!workId) {
+        form.render('select')
+    }
+}
+function updateWorkThemeSelectStatus(entryFieldRes) {
+    var arr = resFormData.workFields || []
+    for (var j = 0; j < arr.length; j++) {
+        var item = arr[j]
+        for (var o = 0; o < entryFieldRes.length; o++) {
+            if (entryFieldRes[o].id === item.fieldId) {
+                entryFieldRes[o].selected = true
+            }
+            entryFieldRes[o].children.forEach(function (i) {
+                if (i.id === item.fieldId) i.selected = true
+            })
+        }
+    }
+    workThemeSelect.update({ data: entryFieldRes })
 }
 function renderWorkFormats(form) {
     var formats = selectWrokInfo.format ? selectWrokInfo.format.split(',') : []
@@ -115,11 +184,6 @@ function renderWorkUpload(upload) {
         accept: 'file',
         exts: exts,
         size: selectWrokInfo.big,
-        before: function (obj) {
-            var files = obj.pushFile()
-            console.log(files)
-            return false
-        },
         done: function (res) {
             if (res.code !== 200) {
                 layer.msg('上传失败')
@@ -136,39 +200,53 @@ function renderWorkUpload(upload) {
             layer.msg('上传失败')
         },
     })
+    upload.render({
+        elem: '#companyAttachment', //绑定元素
+        url: baseUrl + '/upload/fileUpload', //上传接口
+        accept: 'file',
+        done: function (res) {
+            if (res.code === 200) {
+                $('.attachementList').html(
+                    '<a class="color-theme " target="_blank" href=' + imageUrl + res.data.newFileName + '>' + res.data.oldFileName + '</a>'
+                )
+                resumeAddress.push(res.data)
+            }
+        },
+    })
 }
-function renderFormParams(laydate) {
+function renderFormParams(laydate, type) {
     $('#customDefineParmWrap').empty()
     formTemplate = selectWrokInfo.template || 'newspapers'
-    var formParams = defaultForm[formTemplate],
+    var formParams = [],
         temp = ''
+    if (!!type) {
+        formParams = resFormData.worksExtends || []
+    } else {
+        formParams = defaultForm[formTemplate]
+    }
     for (var i = 0; i < formParams.length; i++) {
-        var el = ''
+        var el = '',
+            v = formParams[i].value || ' '
         if (formParams[i].sort === 1) {
             el =
                 '<input class="layui-input item" id="' +
                 (formParams[i].type || i) +
                 '" value="' +
-                formParams[i].value +
+                v +
                 '" placeholder="' +
                 formParams[i].placeholder +
                 '"/>'
         } else if (formParams[i].sort === 2) {
-            el =
-                '<textarea class="layui-textarea item" value="' +
-                formParams[i].value +
-                '" placeholder="' +
-                formParams[i].placeholder +
-                '"></textarea>'
+            el = '<textarea class="layui-textarea item" placeholder="' + formParams[i].placeholder + '">' + v + '</textarea>'
         } else if (formParams[i].sort === 0) {
-            el = '<a class="layui-btn layui-btn-primary" id="companyAttachment">上传打扫件</a>'
+            el = '<a class="layui-btn layui-btn-primary" id="companyAttachment">上传打扫件</a> <div class="layui-inline attachementList"></div>'
         }
         temp +=
             '<div class="layui-form-item" sort="' +
             formParams[i].sort +
             '">' +
             '<label class="layui-form-label">' +
-            formParams[i].label +
+            formParams[i].name +
             '</label>' +
             '<div class="layui-input-block">' +
             el +
@@ -208,6 +286,10 @@ function submitFun(obj, type) {
         success: function (res) {
             resFormData = res.data
             if (res.code == 200) {
+                if (!!workId) {
+                    window.location.href = 'workListForSubmit.html'
+                    layer, msg('修改成功')
+                }
                 if (type === 'save') {
                     layer.confirm(
                         '是否提交下一作品？',
@@ -222,7 +304,7 @@ function submitFun(obj, type) {
                             window.location.href = 'workListForSubmit.html'
                         }
                     )
-                } else {
+                } else if (type === 'download') {
                     window.location.href = baseUrl + '/works/downloadWork?workId=' + res.data.id
                 }
             } else {
@@ -230,4 +312,11 @@ function submitFun(obj, type) {
             }
         },
     })
+}
+function back() {
+    if (!!workId) {
+        window.location.href = 'workListForSubmit.html'
+    } else {
+        window.location.href = 'notifyList.html'
+    }
 }

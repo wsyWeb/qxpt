@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="./css/runnet_page.css" />
         <title>作品审核</title>
         <style>
-            .search_form select {
+            .review_form .layui-form-label {
                 width: 100px;
             }
         </style>
@@ -33,15 +33,10 @@
                 </div>
                 <div class="m-t-md">
                     <div class="layui-inline">活动简称</div>
-                    <div class="layui-inline"><input type="text" class="layui-input" /></div>
+                    <div class="layui-inline"><input type="text" name="shortName" class="layui-input" /></div>
                 </div>
                 <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
-                <script type="text/html" id="person_detail_btn">
-                    <select name="" id="">
-                        <option value="已登记安">1</option>
-                        <option value="2">2</option>
-                    </select>
-                </script>
+                <div class="border-top m-t-lg m-b-lg"></div>
                 <form class="review_form layui-form" action lay-filter="review_form">
                     <div class="layui-form-item">
                         <label class="layui-form-label">审核结果</label>
@@ -77,59 +72,79 @@
     var userId = sessionStorage.getItem('token')
     var activityDataGrid = [],
         notifyDetail = {},
+        awardSetting = [],
         noticeId = JSON.parse(sessionStorage.getItem('findWorkByWorkType')).noticeId
 
     $('#my_space_nav').load('templates/my_space_nav.html')
-    $.get(baseUrl + '/notice/detail?noticeId=' + noticeId, function (res) {
-        if (res.code === 200) {
-            notifyDetail = res.data
-        }
-    })
+
     layui.use(['table', 'form'], function () {
         var table = layui.table,
             form = layui.form
 
+        $.get(baseUrl + '/notice/detail?noticeId=' + noticeId, function (res) {
+            if (res.code === 200) {
+                notifyDetail = res.data
+                $('input[name="shortName"]').val(notifyDetail.shortName)
+                $.get(baseUrl + '/works/findList?noticeId=' + noticeId, function (workRes) {
+                    if (workRes.code === 200) {
+                        activityDataGrid = workRes.data
+                        renderTable()
+                    }
+                })
+            }
+        })
         renderTable = function () {
+            awardSetting = JSON.parse(notifyDetail.awardSetting) || []
+            var optionEl = ''
+            for (var i = 0; i < awardSetting.length; i++) {
+                optionEl += '<option value="' + awardSetting[i].level + '">' + awardSetting[i].level + '</option>'
+            }
             table.render({
                 elem: '#work_table',
-                url: baseUrl + '/works/pageListById',
-                contentType: 'application/json',
-                method: 'post',
-                where: JSON.parse(sessionStorage.getItem('findWorkByWorkType')),
-                limits: [10, 20, 50, 80, 100],
-                response: {
-                    statusCode: 200, //重新规定成功的状态码为 200，table 组件默认为 0
-                },
-                parseData: function (res) {
-                    activityDataGrid = res.data.data
-                    return {
-                        message: res.message,
-                        code: res.code,
-                        count: res.data.count, //解析数据长度
-                        data: res.data.data, //解析数据列表
-                    }
-                },
+                data: activityDataGrid,
                 cols: [
                     [
                         { type: 'numbers' },
                         { field: 'worksType', title: '作品类型' },
                         { field: 'author', title: '作者' },
                         { field: '', title: '单位' },
-                        { field: 'updateTime', title: '职务' },
+                        { field: '', title: '职务' },
                         { field: 'score', title: '得分/得票数' },
                         {
                             field: 'score',
                             title: '奖项',
-                            toolbar: '#person_detail_btn',
+                            templet: function (d) {
+                                console.log(d)
+                                var el =
+                                    ' <form class="review_form layui-form" action lay-filter="review_form">' +
+                                    '<select name="" id="' +
+                                    d.id +
+                                    '">' +
+                                    optionEl +
+                                    '</select>' +
+                                    '</form>'
+                                return el
+                            },
                         },
                     ],
                 ],
                 done: function (obj) {
-                    console.log(obj)
+                    $('.layui-table-body, .layui-table-box, .layui-table-cell').css('overflow', 'visible')
+                    // $('.layui-table-body, .layui-table-cell,td[data-field="score"]  ').css('overflow', 'visible')
+
+                    var cells = document.querySelectorAll('div[lay-id="work_table"] .layui-table-cell')
+                    for (var i = 0; i < cells.length; i++) {
+                        cells[i].style.height = 'auto'
+                    }
                 },
             })
         }
 
-        renderTable()
+        form.on('submit(submit_form)', function (obj) {
+            var formData = obj.field
+            if (Number(formData.state) !== 1) {
+                return layer.msg('请输入审核理由')
+            }
+        })
     })
 </script>

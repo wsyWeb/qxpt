@@ -32,27 +32,27 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">一票否决</label>
                         <div class="layui-input-block">
-                            <input type="radio" name="gender" value="0" title="否" checked="" />
-                            <input type="radio" name="gender" value="1" title="是" />
+                            <input type="radio" name="state" value="0" title="否" checked="" />
+                            <input type="radio" name="state" value="1" title="是" />
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label">作品打分</label>
+                        <label class="layui-form-label required">作品打分</label>
                         <div class="layui-input-block">
-                            <input type="number" class="layui-input" />
+                            <input type="number" name="score" class="layui-input" />
                         </div>
                     </div>
                     <div class="layui-form-item">
                         <label class="layui-form-label">评价意见</label>
                         <div class="layui-input-block">
-                            <textarea name="firstOpinion" lay-verify="" placeholder="" class="layui-textarea"></textarea>
+                            <textarea name="option" lay-verify="" placeholder="" class="layui-textarea"></textarea>
                         </div>
                     </div>
                     <div class="layui-form-item m-t-lg p-l-md text-center">
                         <div class="layui-input-block">
                             <a lay-submit class="layui-btn" lay-filter="submit_form">保存</a>
                             <a class="layui-btn layui-btn-primary" lay-filter="next">下一个</a>
-                            <a class="layui-btn layui-btn-primary" href="workListForType.html">返回</a>
+                            <a class="layui-btn layui-btn-primary" href="workListForScore.html">返回</a>
                         </div>
                     </div>
                 </form>
@@ -74,26 +74,16 @@
 
             layui.use(['form'], function () {
                 var form = layui.form
-                if (workDetail.distMethod === 1) {
-                    $('.assignExpert').hide()
-                }
-                form.on('radio(radio)', function (obj) {
-                    if (Number(obj.value) === 1) {
-                        $('.assignExpert').show()
-                    } else {
-                        $('.assignExpert').hide()
-                    }
-                })
                 form.on('submit(submit_form)', function (obj) {
                     var formData = obj.field
-
-                    if (Number(formData.gender) === 1 && !formData.firstOpinion) {
-                        return layer.msg('请填写审核意见')
+                    formData.expertId = sessionStorage.getItem('token')
+                    if (Number(formData.state) === 1 && !formData.firstOpinion) {
+                        return layer.msg('请填写否决原因')
                     }
                     formData.workId = workDetail.id
                     $.ajax({
                         type: 'post',
-                        url: baseUrl + '/works/firstReview',
+                        url: baseUrl + '/works/review',
                         data: JSON.stringify(formData),
                         contentType: 'application/json;charset=UTF-8',
                         success: function (res) {
@@ -101,7 +91,8 @@
                                 layer.msg('审核成功')
                                 if (workDetail.nextWorkId) {
                                     sessionStorage.setItem('workId', workDetail.nextWorkId)
-                                    window.location.href = 'workFirstReview.html'
+                                    debugger
+                                    window.location.href = 'workFinalReview.html'
                                 } else {
                                     window.location.href = 'workListForType.html'
                                 }

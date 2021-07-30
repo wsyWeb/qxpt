@@ -262,6 +262,7 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             title: '编辑信息',
             content: $('#work_info_form'),
             scrollbar: false,
+            closeBtn: 0,
             area: ['500px', 'auto'],
             btn: ['确定', '取消'],
             yes: function (index) {
@@ -270,7 +271,7 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
                 $('#work_info_form').hide()
                 layer.close(index)
             },
-            cancel: function () {
+            btn2: function () {
                 $('#work_info_form').hide()
             },
         })

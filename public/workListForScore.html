@@ -33,26 +33,6 @@
                 </div>
             </div>
         </div>
-        <form class="layui-form p-md assign_expert_form" id="assign_expert_form" action="" lay-filter="assign_expert_form" style="display: none">
-            <div class="layui-form-item">
-                <label class="layui-form-label" style="width: 100px">活动简称</label>
-                <div class="layui-input-block">
-                    <input type="number" name="big" class="layui-input" placeholder="512" />
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label" style="width: 100px">作品类型</label>
-                <div class="layui-input-block">
-                    <input type="number" name="count" class="layui-input" />
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label" style="width: 100px">分派专家</label>
-                <div class="layui-input-block">
-                    <input type="number" name="count" class="layui-input" />
-                </div>
-            </div>
-        </form>
     </body>
 </html>
 <script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/jquery.js"></script>
@@ -63,15 +43,12 @@
     var userId = sessionStorage.getItem('token')
     var activityDataGrid = [],
         notifyDetail = {},
-        noticeId = JSON.parse(sessionStorage.getItem('findWorkByWorkType')).noticeId
+        noticeId = sessionStorage.getItem('findWorkByWorkType') && JSON.parse(sessionStorage.getItem('findWorkByWorkType')).noticeId
 
     $('#my_space_nav').load('templates/my_space_nav.html')
-    $.get(baseUrl + '/notice/detail?noticeId=' + noticeId, function (res) {
+    $.get(baseUrl + '/works/listByExpertIdNoticeId?expertId=' + userId + '&state=3', function (res) {
         if (res.code === 200) {
             notifyDetail = res.data
-            if (notifyDetail.distMethod === 0) {
-                $('.assignExpertWrap').hide()
-            }
         }
     })
     layui.use(['table', 'form'], function () {
@@ -82,12 +59,15 @@
             getAllWorks(obj.value)
         })
         renderTable = function () {
+            var params = {
+                expertId: sessionStorage.getItem('token'),
+                noticeId,
+            }
             table.render({
                 elem: '#work_table',
-                url: baseUrl + '/works/pageListById',
-                contentType: 'application/json',
-                method: 'post',
-                where: JSON.parse(sessionStorage.getItem('findWorkByWorkType')),
+                url: baseUrl + '/works/listByExpertIdNoticeId?expertId=' + params.expertId + '&noticeId=' + params.noticeId,
+                // contentType: 'application/json',
+                // where: params,
                 limits: [10, 20, 50, 80, 100],
                 response: {
                     statusCode: 200, //重新规定成功的状态码为 200，table 组件默认为 0
@@ -120,7 +100,7 @@
             })
         }
 
-        renderTable()
+        // renderTable()
         table.on('tool(work_table)', function (obj) {
             var data = obj.data
             sessionStorage.setItem('workId', data.id)

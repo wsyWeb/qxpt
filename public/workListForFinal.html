@@ -37,7 +37,7 @@
                 <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
                 <div class="text-center m-t-lg">
                     <a class="layui-btn saveBtn" onclick="saveFun()" style="display: none">保存</a>
-                    <a class="layui-btn" onclick="exportFun()">导出</a>
+                    <a class="layui-btn layui-btn-primary exportBtn" style="display: none" onclick="exportFun()">导出</a>
                 </div>
                 <!-- </div> -->
             </div>
@@ -53,7 +53,7 @@
     var activityDataGrid = [],
         cols = [],
         notifyDetail = {},
-        noticeId = JSON.parse(sessionStorage.getItem('findWorkByWorkType')).noticeId,
+        noticeId = sessionStorage.getItem('notifyId'),
         reviewType = sessionStorage.getItem('reviewType')
 
     layui.use(['table', 'form'], function () {
@@ -70,11 +70,18 @@
                         { field: 'author', title: '标题' },
                         { field: 'updateTime', title: '作者' },
                         { field: 'worksType', title: '单位' },
-                        { field: 'score', title: '得票数', edit: 'text' },
+                        { field: 'votes', title: '得票数', edit: 'text' },
                         { field: 'worksType', title: '操作' },
                     ]
+                    $.get(baseUrl + '/works/findList?noticeId=' + noticeId, function (workRes) {
+                        if (workRes.code === 200) {
+                            activityDataGrid = workRes.data
+                            renderTable()
+                        }
+                    })
                 } else {
                     $('.workTitle').html(notifyDetail.shortName + '作品评选详情')
+
                     cols = [
                         { field: 'name', title: '排名', sort: true },
                         { field: 'author', title: '作品类型' },
@@ -84,32 +91,26 @@
                         { field: 'worksType', title: '得分/得票数' },
                         { field: 'worksType', title: '奖项' },
                     ]
+                    $.get(baseUrl + '/works/finalReviewWorkList?noticeId=' + noticeId, function (workRes) {
+                        if (workRes.code === 200) {
+                            activityDataGrid = workRes.data
+                            renderTable()
+                        }
+                    })
                 }
-                renderTable()
             }
         })
 
         renderTable = function () {
             table.render({
                 elem: '#work_table',
-                url: baseUrl + '/works/pageListById',
-                contentType: 'application/json',
-                method: 'post',
-                where: JSON.parse(sessionStorage.getItem('findWorkByWorkType')),
-                limits: [10, 20, 50, 80, 100],
-                response: {
-                    statusCode: 200, //重新规定成功的状态码为 200，table 组件默认为 0
-                },
-                parseData: function (res) {
-                    activityDataGrid = res.data.data
-                    return {
-                        message: res.message,
-                        code: res.code,
-                        count: res.data.count, //解析数据长度
-                        data: res.data.data, //解析数据列表
+                data: activityDataGrid,
+                cols: [cols],
+                done: function (d) {
+                    if (d.length > 0) {
+                        $('.exportBtn').show()
                     }
                 },
-                cols: [cols],
             })
         }
     })
@@ -117,6 +118,33 @@
         layui.use('table', function () {
             var table = layui.table
             table.exportFile('work_table', activityDataGrid, 'xls')
+        })
+    }
+    function saveFun() {
+        var formData = []
+        for (var i = 0; i < activityDataGrid.length; i++) {
+            var item = activityDataGrid[i]
+            if (item.votes) {
+                if (!/(^[1-9]\d*$)/.test(item.votes)) {
+                    return layer.msg('投票数格式有误')
+                } else {
+                    formData.push({
+                        id: item.id,
+                        votes: item.votes,
+                    })
+                }
+            }
+        }
+        $.ajax({
+            type: 'post',
+            url: baseUrl + '/works/inputVotes',
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
+            success: function (res) {
+                if (res.code === 200) {
+                    layer.msg('投票数录入成功')
+                }
+            },
         })
     }
 </script>

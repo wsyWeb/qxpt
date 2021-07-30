@@ -48,7 +48,7 @@
                         {{# }); }}
                     </script>
                     <div class="text-center m-t-lg submitWrap" style="display: none">
-                        <a class="layui-btn" onclick="submitWorks()">确认提交</a>
+                        <a class="layui-btn" onclick="submitWorks()">提交作品</a>
                     </div>
                     <script type="text/html" id="person_detail_btn">
                         <a class="layui-btn layui-btn-xs" lay-event="look_detail">查看</a>
@@ -58,6 +58,7 @@
                 </div>
             </div>
         </div>
+        <form class="layui-form m-t-md wrok_form detailForm" action="" lay-filter="work_form" style="display: none"></form>
     </body>
 </html>
 <script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/jquery.js"></script>
@@ -67,10 +68,12 @@
 <script>
     $('#my_space_nav').load('templates/my_space_nav.html')
     var userId = sessionStorage.getItem('token'),
-        formatWorks = []
+        formatWorks = [],
+        workDetail = {}
+
     layui.use(['table', 'form', 'laytpl'], function () {
+        form = layui.form
         var table = layui.table,
-            form = layui.form,
             laytpl = layui.laytpl
 
         var tpl = workTableScript.innerHTML,
@@ -78,7 +81,7 @@
 
         // 获取当前登录用户所参加的所有活动
         $.get(baseUrl + '/notice/findListByUserId?activeUserId=' + userId, function (res) {
-            if (res.code === 200) {
+            if (res.code === 200 && res.data) {
                 for (var i = 0; i < res.data.length; i++) {
                     $('.activity_search').append('<option value="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
                 }
@@ -156,7 +159,28 @@
         table.on('tool(work_table)', function (obj) {
             var data = obj.data
             if (obj.event === 'look_detail') {
+                $.get(baseUrl + '/works/detail?id=' + data.id, function (res) {
+                    if (res.code === 200) {
+                        workDetail = res.data
+                        $('.detailForm').load('/templates/work/workDetail.html', function () {
+                            layer.open({
+                                type: 1,
+                                title: '作品详情',
+                                content: $('.detailForm'),
+                                fixed: true,
+                                maxmin: true,
+                                area: ['1200px', '90%'],
+                                cancel: function () {
+                                    $('.detailForm').hide()
+                                },
+                            })
+                        })
+                    }
+                })
             } else if (obj.event === 'edit') {
+                sessionStorage.setItem('notifyId', data.noticeId)
+                sessionStorage.setItem('workFormId', data.id)
+                window.location.href = 'workForm.html'
             } else {
                 if (data.state === 1) {
                     return layer.msg('作品已提交，不能删除')
@@ -196,6 +220,9 @@
                 }
             })
         })
+        if (ids.length === 0) {
+            return layer.msg('请先选择要提交的作品')
+        }
         $.ajax({
             type: 'post',
             url: baseUrl + '/works/submitWorks',
@@ -207,5 +234,72 @@
                 }
             },
         })
+    }
+    function setDefaultValue(form) {
+        var worksInfo = '',
+            workTheme = []
+
+        if (workDetail.workFields) {
+            workTheme = workDetail.workFields.map(function (item) {
+                return item.fieldName
+            })
+        }
+        switch (workDetail.worksInfo) {
+            case 0:
+                worksInfo = '计划单列市'
+                break
+            case 1:
+                worksInfo = '气象类高校'
+                break
+            case 2:
+                worksInfo = '气象局单位'
+                break
+            case 3:
+                worksInfo = '团体组织（中学、社会性组织）'
+                break
+        }
+        form.val('work_form', {
+            shortName: workDetail.shortName,
+            worksType: workDetail.worksType,
+            name: workDetail.name,
+            author: workDetail.author,
+            worksInfo: workDetail.worksInfo,
+            format: workDetail.format,
+            worksInfo,
+            workTheme: workTheme.join('、'),
+        })
+        var formParams = workDetail.worksExtends || []
+        var temp = ''
+        for (var i = 0; i < formParams.length; i++) {
+            var el = '',
+                v = formParams[i].value || ' '
+            if (formParams[i].sort === 1) {
+                el =
+                    '<input class="layui-input item" readonly id="' +
+                    (formParams[i].type || i) +
+                    '" value="' +
+                    v +
+                    '" placeholder="' +
+                    formParams[i].placeholder +
+                    '"/>'
+            } else if (formParams[i].sort === 2) {
+                el = '<textarea class="layui-textarea item" readonly placeholder="' + formParams[i].placeholder + '">' + v + '</textarea>'
+            } else if (formParams[i].sort === 0) {
+                // el = '<a class="layui-btn layui-btn-primary" id="companyAttachment">上传打扫件</a>'
+            }
+            temp +=
+                '<div class="layui-form-item" sort="' +
+                formParams[i].sort +
+                '">' +
+                '<label class="layui-form-label">' +
+                formParams[i].name +
+                '</label>' +
+                '<div class="layui-input-block">' +
+                el +
+                '</div></div>'
+        }
+        $('#customDefineParmWrap').append(temp)
+
+        $('.workList').append('<a class="color-theme" target="_blank" href="' + imageUrl + workDetail.url + '">' + workDetail.filename + '</a>')
     }
 </script>

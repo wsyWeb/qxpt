@@ -39,6 +39,7 @@
                     <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
                     <div class="text-center m-t-lg">
                         <button class="layui-btn turnVoteBtn" onclick="toVote()">进入投票环节</button>
+                        <button class="layui-btn" onclick="outputVoteResult()">录入投票结果</button>
                         <button class="layui-btn turnResultReviewBtn" onclick="toFinalReview()">进入终审环节</button>
                         <button class="layui-btn" onclick="inExopertComment()">专家组意见</button>
                         <button class="layui-btn" onclick="inReviewResult()">查看复审结果</button>
@@ -93,6 +94,7 @@
             selectNotify = notifyList.find(function (item) {
                 return item.id === obj.value
             })
+            sessionStorage.setItem('notifyId', selectNotify.id)
             getAllWorks()
         })
 
@@ -139,6 +141,7 @@
                     }
                     form.render('select')
                     selectNotify = res.data[0]
+                    sessionStorage.setItem('notifyId', selectNotify.id)
                     getAllWorks()
                 }
             }
@@ -156,10 +159,10 @@
                 if (data.joinCount > data.firstReviewCount) {
                     layer.confirm('还有未审核完成的作品，确认要分派专家吗', { title: '提示' }, function () {
                         layer.closeAll()
-                        showAssignForm()
+                        assignExpert()
                     })
                 } else {
-                    showAssignForm()
+                    assignExpert()
                 }
             } else {
             }
@@ -176,28 +179,24 @@
         //     console.log('aa')
         // })
     })
-
-    function showAssignForm() {
-        $('.assign_expert_form').show()
-        layer.open({
-            type: 1,
-            title: '批量分派专家',
-            content: $('#assign_expert_form'),
-            scrollbar: false,
-            area: ['500px', 'auto'],
-            btn: ['确定', '取消'],
-            yes: function (index) {
-                var v = form.val('work_info_form')
-                obj.update(v)
-                $('#work_info_form').hide()
-                layer.close(index)
-            },
-            cancel: function () {
-                $('#assign_expert_form').hide()
-            },
+    function assignExpert() {
+        var formData = {
+            noticeId: selectNotify.id,
+        }
+        $.get(baseUrl + '/works/assignWorks?noticeId=' + selectNotify.id, function (res) {
+            if (res.code === 200) {
+                layer.msg('批量分配专家成功')
+            } else {
+                layer.msg('分配专家失败')
+            }
         })
     }
     function toVote() {
+        layer.msg('已进入投票环节')
+        // sessionStorage.setItem('reviewType', 'vote')
+        // window.location.href = 'workListForFinal.html'
+    }
+    function outputVoteResult() {
         sessionStorage.setItem('reviewType', 'vote')
         window.location.href = 'workListForFinal.html'
     }

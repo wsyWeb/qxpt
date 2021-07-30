@@ -27,9 +27,13 @@
             <div class="wrap">
                 <div class="runnut_head">
                     <span class="borderl"></span>
-                    <span class="layui-breadcrumb" lay-separator=">">
-                        <a href="notifyList.html">通知列表</a>
+                    <span class="layui-breadcrumb addTitle" lay-separator=">">
+                        <a href="notifyList.html" class="addTitle">通知列表</a>
                         <a><cite id="curTitle">作品信息填写</cite></a>
+                    </span>
+                    <span class="layui-breadcrumb editTitle" lay-separator=">">
+                        <a href="workListForSubmit.html" class="editTitle">我的作品</a>
+                        <a><cite id="curTitle">作品信息编辑</cite></a>
                     </span>
                 </div>
                 <form class="layui-form m-t-md wrok_form" action="" lay-filter="work_form">
@@ -39,6 +43,17 @@
                             <label class="layui-form-label">所属活动</label>
                             <div class="layui-input-block">
                                 <input type="text" name="activityName" readonly class="layui-input activityName" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item worksInfo_wrap">
+                            <label class="layui-form-label required">报送作品性质</label>
+                            <div class="layui-input-block">
+                                <select name="worksInfo" lay-verify="required" lay-filter="worksInfo">
+                                    <option value="0">计划单列市</option>
+                                    <option value="1">气象类高校</option>
+                                    <option value="2">气象局单位</option>
+                                    <option value="3">团体组织（中学、社会性组织）</option>
+                                </select>
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -58,17 +73,7 @@
                                 <div id="workTheme"></div>
                             </div>
                         </div>
-                        <div class="layui-form-item worksInfo_wrap">
-                            <label class="layui-form-label required">报送作品性质</label>
-                            <div class="layui-input-block">
-                                <select name="worksInfo" lay-verify="required" lay-filter="worksInfo">
-                                    <option value="0">计划单列市</option>
-                                    <option value="1">气象类高校</option>
-                                    <option value="2">气象局单位</option>
-                                    <option value="3">团体组织（中学、社会性组织）</option>
-                                </select>
-                            </div>
-                        </div>
+
                         <div class="layui-form-item">
                             <label class="layui-form-label required">作品名称</label>
                             <div class="layui-input-block">
@@ -107,7 +112,7 @@
                         <div class="layui-input-block">
                             <a lay-submit class="layui-btn" lay-filter="submit_form">保存</a>
                             <a lay-submit class="layui-btn layui-btn-primary" lay-filter="download">下载</a>
-                            <a class="layui-btn layui-btn-primary" href="notifyDetail.html">返回</a>
+                            <a class="layui-btn layui-btn-primary" onclick="back()">返回</a>
                         </div>
                     </div>
                 </form>

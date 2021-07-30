@@ -35,18 +35,12 @@
             <div class="layui-form-item">
                 <label class="layui-form-label" style="width: 100px">活动简称</label>
                 <div class="layui-input-block">
-                    <select name="shortName" id=""></select>
+                    <select name="shortName" id="" lay-filter="shortname"></select>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label" style="width: 100px">专家组名单</label>
-                <div class="layui-input-block">
-                    <input type="radio" value="1" title="张三" name="expert" />
-                    <input type="radio" value="2" title="张三" name="expert" />
-                    <input type="radio" value="3" title="张三" name="expert" />
-                    <input type="radio" value="4" title="张三" name="expert" />
-                    <input type="radio" value="5" title="张三" name="expert" />
-                </div>
+                <div class="layui-input-block experts"></div>
             </div>
         </form>
     </body>
@@ -57,22 +51,42 @@
 <script src="js/base.js"></script>
 <script>
     $('#my_space_nav').load('templates/my_space_nav.html')
-    function showVoteDialogFun() {}
-
+    var notifyLists = [],
+        token = sessionStorage.getItem('token')
     layui.use(['form'], function () {
-        var form = layui.form
+        form = layui.form
 
-        form.on('submit(submit_form)', function (obj) {
-            var formData = obj.field
-            if (!formData.expert) {
-                return layer.msg('请选择一位专家')
+        $.get(baseUrl + '/notice/findListByExpertId?expertId=' + token, function (res) {
+            if (res.code === 200) {
+                for (var i = 0; i < res.data.length; i++) {
+                    notifyLists = res.data
+                    $('select[name="shortName"]').append('<option id="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
+
+                    form.render('select')
+                    $('select[name="shortName"]').val('')
+                }
             }
-            debugger
+        })
+        form.on('select(shortname)', function (obj) {
+            var selectNotify =
+                notifyLists.find(function (item) {
+                    return item.id === obj.value
+                }) || {}
+            if (selectNotify.finalExperts.length > 0) {
+                for (var j = 0; (j = selectNotify.finalExperts.length); j++) {
+                    $('.experts').append(
+                        '<input type="radio" value="' +
+                            selectNotify.finalExperts[i].expertId +
+                            '" title="' +
+                            selectNotify.finalExperts[i].expertName +
+                            '" name="expert" />'
+                    )
+                }
+            }
         })
     })
 
     function showAssignExpertModal() {
-        $('.assign_expert_form').show()
         layer.open({
             type: 1,
             title: '指定专家组长',
@@ -81,9 +95,16 @@
             area: ['500px', 'auto'],
             btn: ['确定', '取消'],
             yes: function (index) {
-                var v = form.val('work_info_form')
-
-                layer.close(index)
+                var v = form.val('assign_expert_form')
+                if (!v.expert) {
+                    return layer.msg('请选择专家')
+                }
+                $.get(baseUrl + '/finalExpert/election?expertId=' + token + '&voteExpertId=' + v.expert, function (res) {
+                    if (res.code === 200) {
+                        layer.close(index)
+                        layer.msg('选举专家成功')
+                    }
+                })
             },
             cancel: function () {
                 $('.assign_expert_form').hide()
