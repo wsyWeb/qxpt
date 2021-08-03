@@ -43,7 +43,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">审核意见</label>
                         <div class="layui-input-block">
-                            <textarea name="option" lay-verify="" placeholder="" class="layui-textarea"></textarea>
+                            <textarea name="opinion" lay-verify="" placeholder="" class="layui-textarea"></textarea>
                         </div>
                     </div>
                     <div class="layui-form-item assignExpert">
@@ -113,7 +113,7 @@
                     if (Number(formData.state) === 1 && expertIds.length === 0 && Number(workDetail.distMethod) === 0) {
                         return layer.msg('请分派专家')
                     }
-                    if (Number(formData.state) !== 1 && !formData.option) {
+                    if (Number(formData.state) !== 1 && !formData.opinion) {
                         return layer.msg('请填写审核意见')
                     }
                     formData.workId = workDetail.id

@@ -59,7 +59,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label required">审核意见</label>
                         <div class="layui-input-block">
-                            <textarea name="option" lay-verify="required" placeholder="" class="layui-textarea"></textarea>
+                            <textarea name="leaderOpinion" lay-verify="required" placeholder="" class="layui-textarea"></textarea>
                         </div>
                     </div>
                     <div class="layui-form-item m-t-lg p-l-md text-center">
@@ -174,14 +174,29 @@
                     v = $(select).val()
                 if (!!v) {
                     params.push({
-                        workId: $(select).attr('workId'),
+                        id: $(select).attr('workId'),
                         award: $(select).val(),
                     })
                 }
             }
-
+            if (params.length === 0) {
+                return layer.msg('请先设置作品奖项')
+            }
             var msg = validateAward(params)
             if (msg) return layer.msg(msg)
+            formData.noticeId = selectNotify.id
+            formData.awards = params
+            $.ajax({
+                type: 'post',
+                url: baseUrl + '/works/awardSetting',
+                data: JSON.stringify(formData),
+                contentType: 'application/json;charset=UTF-8',
+                success: function (res) {
+                    if (res.code === 200) {
+                        layer.msg('操作成功')
+                    }
+                },
+            })
         })
     })
 
@@ -195,7 +210,6 @@
                 return (msg = awardSetting[o].level + '已超出最大个数限制')
             }
         }
-        console.log(msg)
         return msg
     }
 </script>

@@ -39,6 +39,12 @@
                                 <input type="text" name="worksInfo" readonly class="layui-input worksInfo" />
                             </div>
                         </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label required">报送单位</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="recommendUnit" class="layui-input recommendUnit" />
+                            </div>
+                        </div>
                     </form>
                     <div id="tableWrap"></div>
                     <script id="workTableScript" type="text/html">
@@ -221,6 +227,10 @@
                 }
             })
         })
+        var recommendUnit = $('.recommendUnit').val()
+        if (!recommendUnit) {
+            return layer.msg('请填写报送单位')
+        }
         if (ids.length === 0) {
             return layer.msg('请先选择要提交的作品')
         }
@@ -228,7 +238,10 @@
             type: 'post',
             url: baseUrl + '/works/submitWorks',
             contentType: 'application/json;charset=UTF-8',
-            data: JSON.stringify(ids),
+            data: JSON.stringify({
+                workIds: ids,
+                recommendUnit,
+            }),
             success: function (res) {
                 if (res.code === 200) {
                     layer.msg('作品提交成功，请耐心等待管理员审核')

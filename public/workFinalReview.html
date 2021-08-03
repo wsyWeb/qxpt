@@ -45,7 +45,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">评价意见</label>
                         <div class="layui-input-block">
-                            <textarea name="option" lay-verify="" placeholder="" class="layui-textarea"></textarea>
+                            <textarea name="opinion" lay-verify="" placeholder="" class="layui-textarea"></textarea>
                         </div>
                     </div>
                     <div class="layui-form-item m-t-lg p-l-md text-center">
@@ -77,7 +77,7 @@
                 form.val('review_form', {
                     reviewState: res.data.reviewState,
                     score: res.data.score,
-                    option: res.data.option,
+                    opinion: res.data.opinion,
                 })
             })
             $('.review_form input').attr('disabled', true)
@@ -97,7 +97,7 @@
                 form.on('submit(submit_form)', function (obj) {
                     var formData = obj.field
                     formData.expertId = sessionStorage.getItem('token')
-                    if (Number(formData.reviewState) === 1 && !formData.firstOpinion) {
+                    if (Number(formData.reviewState) === 1 && !formData.opinion) {
                         return layer.msg('请填写否决原因')
                     } else if (Number(formData.reviewState) !== 1 && !formData.score) {
                         return layer.msg('请填写作品分数')
