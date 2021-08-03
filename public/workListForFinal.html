@@ -54,7 +54,7 @@
         cols = [],
         notifyDetail = {},
         noticeId = sessionStorage.getItem('notifyId'),
-        reviewType = sessionStorage.getItem('reviewType')
+        reviewType = sessionStorage.getItem('reviewType') // 判断列表是录入投票数还是查看结果
 
     layui.use(['table', 'form'], function () {
         var table = layui.table,
@@ -91,7 +91,7 @@
                         { field: 'worksType', title: '得分/得票数' },
                         { field: 'worksType', title: '奖项' },
                     ]
-                    $.get(baseUrl + '/works/finalReviewWorkList?noticeId=' + noticeId, function (workRes) {
+                    $.get(baseUrl + '/works/reviewWorkListByExpertId?noticeId=' + noticeId + '&state=4', function (workRes) {
                         if (workRes.code === 200) {
                             activityDataGrid = workRes.data
                             renderTable()

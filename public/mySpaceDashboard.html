@@ -26,7 +26,13 @@
                         <a onclick="showAssignExpertModal()" class="font-18">选举专家组长</a>
                     </div>
                     <div class="font-18 m-t-md">
-                        <a onclick="reviewWork()" class="font-18">专家组长作品审核</a>
+                        <a onclick="reviewWork(1)" class="font-18">专家组长作品审核</a>
+                    </div>
+                    <div class="font-18 m-t-md">
+                        <a onclick="reviewWork(2)" class="font-18">作品复审</a>
+                    </div>
+                    <div class="font-18 m-t-md">
+                        <a onclick="reviewWork(3)" class="font-18">作品终审</a>
                     </div>
                 </div>
             </div>
@@ -52,37 +58,43 @@
 <script>
     $('#my_space_nav').load('templates/my_space_nav.html')
     var notifyLists = [],
+        selectNotify = { finalExperts: [] },
         token = sessionStorage.getItem('token')
     layui.use(['form'], function () {
         form = layui.form
 
-        $.get(baseUrl + '/notice/findListByExpertId?expertId=' + token, function (res) {
-            if (res.code === 200) {
-                for (var i = 0; i < res.data.length; i++) {
-                    notifyLists = res.data
-                    $('select[name="shortName"]').append('<option id="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
-
-                    form.render('select')
-                    $('select[name="shortName"]').val('')
-                }
-            }
-        })
-        form.on('select(shortname)', function (obj) {
-            var selectNotify =
-                notifyLists.find(function (item) {
-                    return item.id === obj.value
-                }) || {}
+        setExpertSelect = function () {
+            console.log(selectNotify.finalExperts.length)
             if (selectNotify.finalExperts.length > 0) {
-                for (var j = 0; (j = selectNotify.finalExperts.length); j++) {
+                for (var o = 0; o < selectNotify.finalExperts.length; o++) {
                     $('.experts').append(
                         '<input type="radio" value="' +
-                            selectNotify.finalExperts[i].expertId +
+                            selectNotify.finalExperts[o].expertId +
                             '" title="' +
-                            selectNotify.finalExperts[i].expertName +
+                            selectNotify.finalExperts[o].expertName +
                             '" name="expert" />'
                     )
                 }
+                form.render('radio')
             }
+        }
+        $.get(baseUrl + '/notice/findListByExpertId?expertId=' + token, function (res) {
+            if (res.code === 200 && res.data) {
+                for (var i = 0; i < res.data.length; i++) {
+                    notifyLists = res.data || []
+                    selectNotify = notifyLists[0] || { finalExperts: [] }
+                    $('select[name="shortName"]').append('<option id="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
+                    form.render('select')
+                }
+                setExpertSelect()
+            }
+        })
+        form.on('select(shortname)', function (obj) {
+            selectNotify =
+                notifyLists.find(function (item) {
+                    return item.id === obj.value
+                }) || {}
+            setExpertSelect()
         })
     })
 
@@ -99,19 +111,30 @@
                 if (!v.expert) {
                     return layer.msg('请选择专家')
                 }
-                $.get(baseUrl + '/finalExpert/election?expertId=' + token + '&voteExpertId=' + v.expert, function (res) {
-                    if (res.code === 200) {
-                        layer.close(index)
-                        layer.msg('选举专家成功')
+                $.get(
+                    baseUrl + '/finalExpert/election?expertId=' + token + '&voteExpertId=' + v.expert + '&noticeId=' + selectNotify.id,
+                    function (res) {
+                        if (res.code === 200) {
+                            layer.close(index)
+                            layer.msg('选举专家成功')
+                        }
                     }
-                })
+                )
             },
             cancel: function () {
                 $('.assign_expert_form').hide()
             },
         })
     }
-    function reviewWork() {
-        window.location.href = 'workListForExpert.html'
+    function reviewWork(state) {
+        if (state === 1) {
+            window.location.href = 'workListForExpert.html'
+        } else if (state === 2) {
+            sessionStorage.setItem('reviewState', 3)
+            window.location.href = 'workListForScore.html'
+        } else {
+            sessionStorage.setItem('reviewState', 4)
+            window.location.href = 'workListForScore.html'
+        }
     }
 </script>

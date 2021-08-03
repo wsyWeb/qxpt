@@ -38,11 +38,10 @@
 
                     <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
                     <div class="text-center m-t-lg">
-                        <button class="layui-btn turnVoteBtn" onclick="toVote()">进入投票环节</button>
-                        <button class="layui-btn" onclick="outputVoteResult()">录入投票结果</button>
                         <button class="layui-btn turnResultReviewBtn" onclick="toFinalReview()">进入终审环节</button>
+
+                        <button class="layui-btn turnVoteBtn" onclick="toVote()">进入投票环节</button>
                         <button class="layui-btn" onclick="inExopertComment()">专家组意见</button>
-                        <button class="layui-btn" onclick="inReviewResult()">查看复审结果</button>
                         <button class="layui-btn" onclick="inFinalResult()">查看终审结果</button>
                     </div>
                     <script type="text/html" id="person_detail_btn">
@@ -192,19 +191,15 @@
         })
     }
     function toVote() {
-        layer.msg('已进入投票环节')
-        // sessionStorage.setItem('reviewType', 'vote')
-        // window.location.href = 'workListForFinal.html'
-    }
-    function outputVoteResult() {
         sessionStorage.setItem('reviewType', 'vote')
         window.location.href = 'workListForFinal.html'
     }
-    function toFinalReview() {}
-    function inExopertComment() {}
-    function inReviewResult() {
+
+    function toFinalReview() {
         window.location.href = 'workListForReview.html'
     }
+    function inExopertComment() {}
+
     function inFinalResult() {
         sessionStorage.setItem('reviewType', 'lookResult')
         window.location.href = 'workListForFinal.html'

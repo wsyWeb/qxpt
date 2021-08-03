@@ -31,25 +31,28 @@
                         <a><cite id="curTitle">作品复审结果</cite></a>
                     </span>
                 </div>
-                <form class="layui-form search_form m-b-lg m-t-lg" action="" lay-filter="search_form">
+                <form class="layui-form search_form m-b-xs m-t-lg" action="" lay-filter="search_form">
                     <div>
                         <div class="layui-inline">作品类型</div>
                         <div class="layui-inline">
-                            <select class="activity_search" lay-verify="" lay-filter="activity_search" style="width: 100px"></select>
+                            <select class="workType" lay-verify="" lay-filter="work_type" style="width: 100px"></select>
                         </div>
                     </div>
                     <div class="m-t-md">
                         <div class="layui-inline">参赛情况</div>
                         <div class="layui-inline">
-                            <select class="activity_search" lay-verify="" lay-filter="activity_search" style="width: 100px"></select>
+                            <select class="activity_search" lay-verify="" lay-filter="activity_search" style="width: 100px">
+                                <option value="">按单位统计</option>
+                            </select>
                         </div>
                     </div>
                 </form>
+                <table lay-filter="statisticsTable" id="statisticsTable"></table>
                 <div class="border-top m-t-lg m-b-lg"></div>
                 <div>
                     <div class="layui-inline">终审作品数</div>
                     <div class="layui-inline">
-                        <input type="number" class="layui-input workNum" onblur="changeWorkNum(this)" />
+                        <input type="number" class="layui-input workNum" onblur="changeWorkNum(this)" value="5" />
                     </div>
                     <div class="layui-inline">个</div>
                 </div>
@@ -70,40 +73,54 @@
     var userId = sessionStorage.getItem('token')
     var activityDataGrid = [],
         notifyDetail = {},
-        noticeId = JSON.parse(sessionStorage.getItem('findWorkByWorkType')).noticeId
+        noticeId = sessionStorage.getItem('notifyId')
 
-    $.get(baseUrl + '/notice/detail?noticeId=' + noticeId, function (res) {
-        if (res.code === 200) {
-            notifyDetail = res.data
-        }
-    })
     layui.use(['table', 'form'], function () {
-        var table = layui.table,
-            form = layui.form
+        table = layui.table
+        form = layui.form
 
-        form.on('select(activity_search)', function (obj) {
-            getAllWorks(obj.value)
+        form.on('select(work_type)', function (obj) {
+            // getAllWorks(obj.value)
         })
+
+        $.get(baseUrl + '/notice/detail?noticeId=' + noticeId, function (res) {
+            if (res.code === 200) {
+                notifyDetail = res.data
+                for (var i = 0; i < notifyDetail.worksTypes.length; i++) {
+                    $('.workType').append('<option id="' + notifyDetail.worksTypes[i].id + '">' + notifyDetail.worksTypes[i].name + '</option>')
+                }
+                form.render('select')
+                //获取所有复审作品
+                $.get(baseUrl + '/works/listByCompany', function (res) {
+                    if (res.code === 200) {
+                        renderStatisticsTable(res.data)
+                    }
+                })
+                $.get(baseUrl + '/works/reviewWorkListByExpertId?noticeId=' + noticeId + '&state=3', function (workRes) {
+                    if (workRes.code === 200) {
+                        activityDataGrid = workRes.data
+                        renderTable()
+                    }
+                })
+            }
+        })
+        renderStatisticsTable = function (d) {
+            table.render({
+                elem: '#statisticsTable',
+                data: d,
+                cols: [
+                    [
+                        { field: 'company', title: '单位' },
+                        { field: 'workCount', title: '作品数' },
+                        { field: 'awardCount', title: '获奖数' },
+                    ],
+                ],
+            })
+        }
         renderTable = function () {
             table.render({
                 elem: '#work_table',
-                url: baseUrl + '/works/pageListById',
-                contentType: 'application/json',
-                method: 'post',
-                where: JSON.parse(sessionStorage.getItem('findWorkByWorkType')),
-                limits: [10, 20, 50, 80, 100],
-                response: {
-                    statusCode: 200, //重新规定成功的状态码为 200，table 组件默认为 0
-                },
-                parseData: function (res) {
-                    activityDataGrid = res.data.data
-                    return {
-                        message: res.message,
-                        code: res.code,
-                        count: res.data.count, //解析数据长度
-                        data: res.data.data, //解析数据列表
-                    }
-                },
+                data: activityDataGrid,
                 cols: [
                     [
                         { type: 'checkbox' },
@@ -123,7 +140,6 @@
             })
         }
 
-        renderTable()
         table.on('tool(work_table)', function (obj) {
             var data = obj.data
             sessionStorage.setItem('workId', data.id)
@@ -146,5 +162,23 @@
         }
     }
     function loadMore() {}
-    function saveFun() {}
+    function saveFun() {
+        var checkStatus = table.checkStatus('idTest'),
+            data = checkStatus.data
+        var workIds = data.map(function (item) {
+            return item.id
+        })
+        console.log(workIds)
+        $.ajax({
+            type: 'post',
+            url: baseUrl + '/works/selectFinalWorkList',
+            data: JSON.stringify(workIds),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (res) {
+                if (res.code === 200) {
+                    layer.msg('作品分派成功')
+                }
+            },
+        })
+    }
 </script>

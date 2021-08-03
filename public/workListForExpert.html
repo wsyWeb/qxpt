@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+div<!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8" />
@@ -31,19 +31,23 @@
                         <a><cite id="curTitle">作品审核</cite></a>
                     </span>
                 </div>
-                <div class="m-t-md">
-                    <div class="layui-inline">活动简称</div>
-                    <div class="layui-inline"><input type="text" name="shortName" class="layui-input" /></div>
-                </div>
+                <form action="" class="layui-form">
+                    <div>
+                        <div class="layui-inline">活动简称</div>
+                        <div class="layui-inline">
+                            <select name="shortName" id="" lay-filter="shortname"></select>
+                        </div>
+                    </div>
+                </form>
                 <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
                 <div class="border-top m-t-lg m-b-lg"></div>
                 <form class="review_form layui-form" action lay-filter="review_form">
                     <div class="layui-form-item">
                         <label class="layui-form-label">审核结果</label>
                         <div class="layui-input-block">
-                            <select name="firstReviewState" lay-filter="firstReviewState">
+                            <select name="state" lay-filter="state">
                                 <option value="1">通过</option>
-                                <option value="2">不通过</option>
+                                <!-- <option value="2">不通过</option> -->
                                 <option value="3">修改</option>
                             </select>
                         </div>
@@ -69,11 +73,9 @@
 <script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
 <script src="js/base.js"></script>
 <script>
-    var userId = sessionStorage.getItem('token')
+    var token = sessionStorage.getItem('token')
     var activityDataGrid = [],
-        notifyDetail = {},
-        awardSetting = [],
-        noticeId = JSON.parse(sessionStorage.getItem('findWorkByWorkType')).noticeId
+        selectNotify = { awardSetting: [] }
 
     $('#my_space_nav').load('templates/my_space_nav.html')
 
@@ -81,20 +83,35 @@
         var table = layui.table,
             form = layui.form
 
-        $.get(baseUrl + '/notice/detail?noticeId=' + noticeId, function (res) {
-            if (res.code === 200) {
-                notifyDetail = res.data
-                $('input[name="shortName"]').val(notifyDetail.shortName)
-                $.get(baseUrl + '/works/findList?noticeId=' + noticeId, function (workRes) {
-                    if (workRes.code === 200) {
-                        activityDataGrid = workRes.data
-                        renderTable()
-                    }
-                })
+        form.on('select(shortName)', function (obj) {
+            selectNotify =
+                notifyLists.find(function (item) {
+                    return item.id === obj.value
+                }) || {}
+            getWorks()
+        })
+        getWorks = function () {
+            $.get(baseUrl + '/works/findList?noticeId=' + selectNotify.id, function (workRes) {
+                if (workRes.code === 200) {
+                    activityDataGrid = workRes.data
+                    renderTable()
+                }
+            })
+        }
+        // 获取活动
+        $.get(baseUrl + '/notice/findListByExpertId?expertId=' + token, function (res) {
+            if (res.code === 200 && res.data) {
+                for (var i = 0; i < res.data.length; i++) {
+                    notifyLists = res.data || []
+                    selectNotify = notifyLists[0] || { awardSetting: [] }
+                    $('select[name="shortName"]').append('<option id="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
+                    form.render('select')
+                }
+                getWorks()
             }
         })
         renderTable = function () {
-            awardSetting = JSON.parse(notifyDetail.awardSetting) || []
+            awardSetting = JSON.parse(selectNotify.awardSetting) || []
             var optionEl = ''
             for (var i = 0; i < awardSetting.length; i++) {
                 optionEl += '<option value="' + awardSetting[i].level + '">' + awardSetting[i].level + '</option>'

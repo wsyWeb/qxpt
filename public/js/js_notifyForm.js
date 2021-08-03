@@ -140,7 +140,7 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             allLeaders = obj.arr
             resFormData.finalExperts = obj.arr.map(function (i) {
                 return {
-                    expertId: i.id,
+                    expertId: i.userName,
                     expertName: i.name,
                 }
             })
@@ -433,7 +433,7 @@ function updateExpertMemberSelectStatus() {
     var finalExperts = resFormData.finalExperts || []
     for (var i = 0; i < allExperts.length; i++) {
         for (var j = 0; j < finalExperts.length; j++) {
-            if (allExperts[i].id === finalExperts[j].expertId) {
+            if (allExperts[i].userName === finalExperts[j].expertId) {
                 allExperts[i].selected = true
             }
         }

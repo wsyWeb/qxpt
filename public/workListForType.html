@@ -85,22 +85,22 @@
         searchParams = JSON.parse(sessionStorage.getItem('findWorkByWorkType')) || {}
     noticeId = searchParams.noticeId
 
-    $.get(baseUrl + '/notice/detail?noticeId=' + noticeId, function (res) {
-        if (res.code === 200) {
-            notifyDetail = res.data
-            if (notifyDetail.distMethod === 1) {
-                $('.assignExpertWrap').show()
-            }
-            var workTypeObj =
-                notifyDetail.worksTypes.find(function (item) {
-                    return item.id === searchParams.worksTypeId
-                }) || {}
-            form.val('assign_expert_form', {
-                shortName: notifyDetail.shortName,
-                workType: workTypeObj.name,
-            })
-        }
-    })
+    // $.get(baseUrl + '/notice/detail?noticeId=' + noticeId, function (res) {
+    //     if (res.code === 200) {
+    //         notifyDetail = res.data
+    //         if (notifyDetail.distMethod === 1) {
+    //             $('.assignExpertWrap').show()
+    //         }
+    //         var workTypeObj =
+    //             notifyDetail.worksTypes.find(function (item) {
+    //                 return item.id === searchParams.worksTypeId
+    //             }) || {}
+    //         form.val('assign_expert_form', {
+    //             shortName: notifyDetail.shortName,
+    //             workType: workTypeObj.name,
+    //         })
+    //     }
+    // })
     layui.use(['table', 'form'], function () {
         table = layui.table
         form = layui.form

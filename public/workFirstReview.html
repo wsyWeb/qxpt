@@ -53,7 +53,7 @@
                     <div class="layui-form-item m-t-lg p-l-md text-center">
                         <div class="layui-input-block">
                             <a lay-submit class="layui-btn" lay-filter="submit_form">保存</a>
-                            <a lay-submit class="layui-btn layui-btn-primary next-btn" lay-filter="next">下一个</a>
+                            <a lay-submit class="layui-btn layui-btn-primary next-btn" onclick="next()">下一个</a>
                             <a class="layui-btn layui-btn-primary" href="workListForType.html">返回</a>
                         </div>
                     </div>
@@ -85,7 +85,7 @@
         },
         data: [],
     })
-    $.get(baseUrl + '/works/detail?id=' + sessionStorage.getItem('workId'), function (res) {
+    $.get(baseUrl + '/works/detail?id=' + sessionStorage.getItem('workId') + '&state=' + 2, function (res) {
         if (res.code === 200) {
             workDetail = res.data
             $('.detailForm').load('/templates/work/workDetail.html')
@@ -141,8 +141,11 @@
                     window.location.href = 'workFirstReview.html'
                 })
             })
+        } else {
+            // window.location.href = 'workListForType.html'
         }
     })
+    // 获取同领域专家
     function getExpert() {
         var fieldIds = []
         if (workDetail.workFields) {
@@ -161,5 +164,9 @@
                 }
             },
         })
+    }
+    function next() {
+        sessionStorage.setItem('workId', workDetail.nextWorkId)
+        window.location.href = 'workFirstReview.html'
     }
 </script>
