@@ -23,7 +23,7 @@
         <div id="searchDiv"></div>
 
         <div class="runnet_main_body">
-            <div class="wrap p-t-md">
+            <div class="wrap">
                 <!-- <div id="my_space_nav" class="float-left" style="width: 180px"></div>
                 <div id="my_space_content" class="float-right" style="width: 1000px"> -->
                 <div class="runnut_head">
@@ -35,7 +35,11 @@
                 </div>
                 <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
                 <script type="text/html" id="person_detail_btn">
+                    {{# if(Number(d.isReview) !== 1){ }}
                     <a class="layui-btn layui-btn-xs" lay-event="review">评分</a>
+                    {{# } }} {{# if(Number(d.isReview) === 1){ }}
+                    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+                    {{# } }}
                 </script>
                 <!-- </div> -->
             </div>
@@ -52,10 +56,12 @@
         notifyDetail = {},
         reviewState = sessionStorage.getItem('reviewState')
 
-    if (Number(reviewState === 3)) {
-        url = '/works/reviewWorkListByExpertId?expertId=' + userId + '&state=' + sessionStorage.getItem('reviewState')
+    if (Number(reviewState) === 3) {
+        url = '/works/reviewWorkListByExpertId?expertId=' + userId
+        $('#curTitle').html('复审作品')
     } else {
-        url = '/works/finalList'
+        url = '/works/finalList?expertId=' + userId
+        $('#curTitle').html('终审作品')
     }
     layui.use(['table', 'form'], function () {
         var table = layui.table,
@@ -99,7 +105,8 @@
         table.on('tool(work_table)', function (obj) {
             var data = obj.data
             sessionStorage.setItem('workId', data.id)
-            if (obj.event === 'look_detail') {
+            if (obj.event === 'detail') {
+                window.location.href = 'workFinalReview.html'
             } else if (obj.event === 'review') {
                 window.location.href = 'workFinalReview.html'
             } else {

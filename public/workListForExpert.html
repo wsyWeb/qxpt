@@ -1,4 +1,4 @@
-div<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8" />
@@ -28,10 +28,10 @@ div<!DOCTYPE html>
                     <span class="borderl"></span>
                     <span class="layui-breadcrumb" lay-separator=">">
                         <a href="mySpaceDashboard.html">个人信息</a>
-                        <a><cite id="curTitle">作品审核</cite></a>
+                        <a><cite id="curTitle">作品奖项设置</cite></a>
                     </span>
                 </div>
-                <form action="" class="layui-form">
+                <form action="" class="layui-form m-t-md">
                     <div>
                         <div class="layui-inline">活动简称</div>
                         <div class="layui-inline">
@@ -39,23 +39,27 @@ div<!DOCTYPE html>
                         </div>
                     </div>
                 </form>
+                <div>
+                    <div>奖项限额：</div>
+                    <div class="award_list"></div>
+                </div>
                 <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
                 <div class="border-top m-t-lg m-b-lg"></div>
                 <form class="review_form layui-form" action lay-filter="review_form">
-                    <div class="layui-form-item">
+                    <!-- <div class="layui-form-item">
                         <label class="layui-form-label">审核结果</label>
                         <div class="layui-input-block">
                             <select name="state" lay-filter="state">
                                 <option value="1">通过</option>
-                                <!-- <option value="2">不通过</option> -->
+                                <option value="2">不通过</option>
                                 <option value="3">修改</option>
                             </select>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="layui-form-item">
-                        <label class="layui-form-label">审核意见</label>
+                        <label class="layui-form-label required">审核意见</label>
                         <div class="layui-input-block">
-                            <textarea name="firstOpinion" lay-verify="" placeholder="" class="layui-textarea"></textarea>
+                            <textarea name="option" lay-verify="required" placeholder="" class="layui-textarea"></textarea>
                         </div>
                     </div>
                     <div class="layui-form-item m-t-lg p-l-md text-center">
@@ -91,7 +95,7 @@ div<!DOCTYPE html>
             getWorks()
         })
         getWorks = function () {
-            $.get(baseUrl + '/works/findList?noticeId=' + selectNotify.id, function (workRes) {
+            $.get(baseUrl + '/works/finalList?expertId=' + token + '&noticeId=' + selectNotify.id, function (workRes) {
                 if (workRes.code === 200) {
                     activityDataGrid = workRes.data
                     renderTable()
@@ -104,17 +108,19 @@ div<!DOCTYPE html>
                 for (var i = 0; i < res.data.length; i++) {
                     notifyLists = res.data || []
                     selectNotify = notifyLists[0] || { awardSetting: [] }
+                    awardSetting = JSON.parse(selectNotify.awardSetting) || []
                     $('select[name="shortName"]').append('<option id="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
+
                     form.render('select')
                 }
                 getWorks()
             }
         })
         renderTable = function () {
-            awardSetting = JSON.parse(selectNotify.awardSetting) || []
             var optionEl = ''
             for (var i = 0; i < awardSetting.length; i++) {
                 optionEl += '<option value="' + awardSetting[i].level + '">' + awardSetting[i].level + '</option>'
+                $('.award_list').append('<div>' + awardSetting[i].level + awardSetting[i].value + '个</div>')
             }
             table.render({
                 elem: '#work_table',
@@ -123,18 +129,17 @@ div<!DOCTYPE html>
                     [
                         { type: 'numbers' },
                         { field: 'worksType', title: '作品类型' },
+                        { field: 'name', title: '作品名称' },
                         { field: 'author', title: '作者' },
                         { field: '', title: '单位' },
-                        { field: '', title: '职务' },
                         { field: 'score', title: '得分/得票数' },
                         {
                             field: 'score',
                             title: '奖项',
-                            templet: function (d) {
-                                console.log(d)
+                            templet: function (d, idx) {
                                 var el =
-                                    ' <form class="review_form layui-form" action lay-filter="review_form">' +
-                                    '<select name="" id="' +
+                                    ' <form class="award_form layui-form" action lay-filter="award_form">' +
+                                    '<select name="" workId="' +
                                     d.id +
                                     '">' +
                                     optionEl +
@@ -153,15 +158,44 @@ div<!DOCTYPE html>
                     for (var i = 0; i < cells.length; i++) {
                         cells[i].style.height = 'auto'
                     }
+                    $('.award_form select').val(' ')
+                    form.render('')
                 },
             })
         }
 
         form.on('submit(submit_form)', function (obj) {
             var formData = obj.field
-            if (Number(formData.state) !== 1) {
-                return layer.msg('请输入审核理由')
+            var awardForms = $('.award_form'),
+                params = []
+            // 获取作品设置的奖项
+            for (var i = 0; i < awardForms.length; i++) {
+                var select = $(awardForms[i]).find('select'),
+                    v = $(select).val()
+                if (!!v) {
+                    params.push({
+                        workId: $(select).attr('workId'),
+                        award: $(select).val(),
+                    })
+                }
             }
+
+            var msg = validateAward(params)
+            if (msg) return layer.msg(msg)
         })
     })
+
+    function validateAward(validateArr) {
+        var msg
+        for (var o = 0; o < awardSetting.length; o++) {
+            var levelList = validateArr.filter(function (item) {
+                return item.award === awardSetting[o].level
+            })
+            if (levelList.length > Number(awardSetting[o].value)) {
+                return (msg = awardSetting[o].level + '已超出最大个数限制')
+            }
+        }
+        console.log(msg)
+        return msg
+    }
 </script>

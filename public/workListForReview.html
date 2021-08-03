@@ -12,8 +12,11 @@
         <link rel="stylesheet" href="./css/runnet_page.css" />
         <title>作品复审结果</title>
         <style>
-            .search_form select {
-                width: 100px;
+            div[lay-id='work_table'] .layui-table td {
+                color: #c9c9c9;
+            }
+            .layui-table tr.checked td {
+                color: #666;
             }
         </style>
     </head>
@@ -73,7 +76,8 @@
     var userId = sessionStorage.getItem('token')
     var activityDataGrid = [],
         notifyDetail = {},
-        noticeId = sessionStorage.getItem('notifyId')
+        noticeId = sessionStorage.getItem('notifyId'),
+        worksTypeId = ''
 
     layui.use(['table', 'form'], function () {
         table = layui.table
@@ -87,20 +91,33 @@
             if (res.code === 200) {
                 notifyDetail = res.data
                 for (var i = 0; i < notifyDetail.worksTypes.length; i++) {
-                    $('.workType').append('<option id="' + notifyDetail.worksTypes[i].id + '">' + notifyDetail.worksTypes[i].name + '</option>')
+                    $('.workType').append('<option value="' + notifyDetail.worksTypes[i].id + '">' + notifyDetail.worksTypes[i].name + '</option>')
                 }
                 form.render('select')
                 //获取所有复审作品
-                $.get(baseUrl + '/works/listByCompany', function (res) {
-                    if (res.code === 200) {
-                        renderStatisticsTable(res.data)
+                $.get(baseUrl + '/works/listByCompany', function (statisticRes) {
+                    if (statisticRes.code === 200) {
+                        renderStatisticsTable(statisticRes.data)
                     }
                 })
-                $.get(baseUrl + '/works/reviewWorkListByExpertId?noticeId=' + noticeId + '&state=3', function (workRes) {
-                    if (workRes.code === 200) {
-                        activityDataGrid = workRes.data
-                        renderTable()
-                    }
+                var params = {
+                    noticeId,
+                    worksTypeId: $('.workType').val(),
+                    limit: 10000,
+                    page: 1,
+                }
+
+                $.ajax({
+                    type: 'post',
+                    url: baseUrl + '/works/pageListById',
+                    data: JSON.stringify(params),
+                    contentType: 'application/json',
+                    success: function (workRes) {
+                        if (workRes.code === 200) {
+                            activityDataGrid = workRes.data.data
+                            renderTable()
+                        }
+                    },
                 })
             }
         })
@@ -124,28 +141,44 @@
                 cols: [
                     [
                         { type: 'checkbox' },
-                        { field: 'name', title: '排名', sort: true },
-                        { field: 'updateTime', title: '姓名' },
+                        // { type: 'numbers', title: '排名' },
+                        { field: 'name', title: '作品名称' },
+                        { field: 'author', title: '作者' },
                         { field: 'worksType', title: '单位' },
-                        { field: 'worksType', title: '职务' },
-                        { field: 'worksType', title: '得分' },
-                        { field: 'worksType', title: '奖项' },
-                        {
-                            field: 'opt',
-                            title: '',
-                            toolbar: '<div><a class="layui-btn layui-btn-xs" lay-event="showAttachement">查看单位推荐意见</a></div>',
-                        },
+                        { field: 'score', title: '得分', sort: true },
                     ],
                 ],
+                done: function (res) {
+                    console.log(res, 'doen')
+                    // 去掉全选
+                    $('thead .laytable-cell-checkbox').children().remove()
+                    for (var i = 0; i < res.data.length; i++) {
+                        // var check = res.data[i]['isCheked']
+                        if (i < 5) {
+                            res.data[i]['LAY_CHECKED'] = true
+                            $('tr[data-index=' + i + ']').addClass('checked')
+                            $('tr[data-index=' + i + '] input[type="checkbox"]').prop('checked', true)
+                            $('tr[data-index=' + i + '] input[type="checkbox"]')
+                                .next()
+                                .addClass('layui-form-checked')
+                        }
+                    }
+                },
             })
         }
-
-        table.on('tool(work_table)', function (obj) {
-            var data = obj.data
-            sessionStorage.setItem('workId', data.id)
-            if (obj.event === 'showAttachement') {
-                debugger
+        table.on('checkbox(work_table)', function (obj, idx) {
+            console.log(obj, idx)
+            if (obj.checked) {
+                $(obj.tr).addClass('checked')
+            } else {
+                $(obj.tr).removeClass('checked')
             }
+            // obj.update({
+            //     isCheked: obj.checked ? 1 : 0,
+            // })
+            // selectExpert = datagrid.filter(function (i) {
+            //     return Number(i.isCheked) == 1
+            // })
         })
         // table.on('sort(work_table)', function (obj) {
         //     table.reload('expert_table', {
@@ -163,12 +196,14 @@
     }
     function loadMore() {}
     function saveFun() {
-        var checkStatus = table.checkStatus('idTest'),
+        var checkStatus = table.checkStatus('work_table'),
             data = checkStatus.data
         var workIds = data.map(function (item) {
             return item.id
         })
-        console.log(workIds)
+        if (workIds.length === 0) {
+            return layer.msg('请选择作品')
+        }
         $.ajax({
             type: 'post',
             url: baseUrl + '/works/selectFinalWorkList',
@@ -176,7 +211,7 @@
             contentType: 'application/json;charset=UTF-8',
             success: function (res) {
                 if (res.code === 200) {
-                    layer.msg('作品分派成功')
+                    layer.msg('作品已进入终审')
                 }
             },
         })

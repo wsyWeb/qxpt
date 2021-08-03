@@ -50,7 +50,7 @@
                     </div>
                     <div class="layui-form-item m-t-lg p-l-md text-center">
                         <div class="layui-input-block">
-                            <a lay-submit class="layui-btn" lay-filter="submit_form">保存</a>
+                            <a lay-submit class="layui-btn save-btn" lay-filter="submit_form">保存</a>
                             <a class="layui-btn layui-btn-primary next-btn" onclick="next()">下一个</a>
                             <a class="layui-btn layui-btn-primary" href="workListForScore.html">返回</a>
                         </div>
@@ -65,9 +65,26 @@
 <script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
 <script type="text/javascript" src="js/base.js"></script>
 <script>
-    var workDetail = {}
-
-    $.get(baseUrl + '/works/detail?id=' + sessionStorage.getItem('workId') + '&state=3', function (res) {
+    var workDetail = {},
+        reviewState = sessionStorage.getItem('reviewState'),
+        workId = sessionStorage.getItem('workId'),
+        token = sessionStorage.getItem('token')
+    $.get(baseUrl + '/works/scoreDetail?workId=' + workId + '&state=' + reviewState + '&expertId=' + token, function (res) {
+        if (res.data.reviewState === 0 || res.data.reviewState === 1) {
+            $('.save-btn').hide()
+            layui.use(['form'], function () {
+                var form = layui.form
+                form.val('review_form', {
+                    reviewState: res.data.reviewState,
+                    score: res.data.score,
+                    option: res.data.option,
+                })
+            })
+            $('.review_form input').attr('disabled', true)
+            $('.review_form textarea').attr('disabled', true)
+        }
+    })
+    $.get(baseUrl + '/works/detail?id=' + workId + '&state=' + reviewState, function (res) {
         if (res.code === 200) {
             workDetail = res.data
             $('.detailForm').load('/templates/work/workDetail.html')
@@ -76,7 +93,7 @@
                 $('.next-btn').hide()
             }
             layui.use(['form'], function () {
-                var form = layui.form
+                form = layui.form
                 form.on('submit(submit_form)', function (obj) {
                     var formData = obj.field
                     formData.expertId = sessionStorage.getItem('token')
@@ -84,8 +101,10 @@
                         return layer.msg('请填写否决原因')
                     } else if (Number(formData.reviewState) !== 1 && !formData.score) {
                         return layer.msg('请填写作品分数')
+                    } else if (Math.abs(formData.score) > 100) {
+                        return layer.msg('分数不能超过100')
                     }
-                    formData.state = 3
+                    formData.state = reviewState
                     formData.workId = workDetail.id
                     $.ajax({
                         type: 'post',

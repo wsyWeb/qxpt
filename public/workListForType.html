@@ -82,25 +82,9 @@
     var userId = sessionStorage.getItem('token')
     var activityDataGrid = [],
         notifyDetail = {},
-        searchParams = JSON.parse(sessionStorage.getItem('findWorkByWorkType')) || {}
-    noticeId = searchParams.noticeId
+        notifyId = sessionStorage.getItem('notifyId'),
+        worksTypeId = sessionStorage.getItem('worksTypeId')
 
-    // $.get(baseUrl + '/notice/detail?noticeId=' + noticeId, function (res) {
-    //     if (res.code === 200) {
-    //         notifyDetail = res.data
-    //         if (notifyDetail.distMethod === 1) {
-    //             $('.assignExpertWrap').show()
-    //         }
-    //         var workTypeObj =
-    //             notifyDetail.worksTypes.find(function (item) {
-    //                 return item.id === searchParams.worksTypeId
-    //             }) || {}
-    //         form.val('assign_expert_form', {
-    //             shortName: notifyDetail.shortName,
-    //             workType: workTypeObj.name,
-    //         })
-    //     }
-    // })
     layui.use(['table', 'form'], function () {
         table = layui.table
         form = layui.form
@@ -114,7 +98,10 @@
                 url: baseUrl + '/works/pageListById',
                 contentType: 'application/json',
                 method: 'post',
-                where: searchParams,
+                where: {
+                    noticeId: notifyId,
+                    worksTypeId,
+                },
                 limits: [10, 20, 50, 80, 100],
                 response: {
                     statusCode: 200, //重新规定成功的状态码为 200，table 组件默认为 0
@@ -199,7 +186,6 @@
             area: ['500px', 'auto'],
             btn: ['确定', '取消'],
             yes: function (index) {
-                // $('#assign_expert_form').hide()form.val('work_info_form')
                 var wrokIds = activityDataGrid.map(function (item) {
                     return item.id
                 })

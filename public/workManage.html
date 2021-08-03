@@ -148,11 +148,8 @@
         table.on('tool(work_table)', function (obj) {
             var data = obj.data
             if (obj.event === 'list') {
-                var queryParams = {
-                    worksTypeId: obj.data.worksTypeId,
-                    noticeId: selectNotify.id,
-                }
-                sessionStorage.setItem('findWorkByWorkType', JSON.stringify(queryParams))
+                sessionStorage.setItem('worksTypeId', obj.data.worksTypeId)
+                sessionStorage.setItem('notifyId', selectNotify.id)
                 window.location.href = 'workListForType.html'
             } else if (obj.event === 'assignExpert') {
                 if (data.joinCount > data.firstReviewCount) {
