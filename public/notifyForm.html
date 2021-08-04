@@ -134,7 +134,7 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">报名截止日期</label>
+                            <label class="layui-form-label required">报名截止日期</label>
                             <div class="layui-input-block">
                                 <input
                                     type="text"
@@ -170,7 +170,7 @@
                                         </h2>
                                         <div class="layui-colla-content">
                                             {{# layui.each(item.worksTypes, function(idx2, work){ }}
-                                            <div class="layui-inline item position-relative">
+                                            <div class="layui-inline item position-relative" template="{{work.template}}">
                                                 <input type="text" class="layui-input" value="{{work.name}}" />
                                                 <a class="layui-btn layui-btn-primary del-work-btn" onclick="removeAwardItemNode(this)">
                                                     <i class="layui-icon-delete layui-icon "></i>
@@ -276,7 +276,7 @@
                                 <div class="layui-input-block"></div>
                             </div> -->
                             <div class="layui-form-item">
-                                <label class="layui-form-label">指派终审专家</label>
+                                <label class="layui-form-label required">指派终审专家</label>
                                 <div class="layui-input-block">
                                     组员
                                     <div class="layui-inline" id="expert_members" style="width: 200px"></div>

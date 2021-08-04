@@ -35,7 +35,7 @@
                                 <i></i>
                                 <a onclick="toNotifyDetail(this)" id="{{item.id}}" class="link-hover">{{item.title}}</a>
                             </div>
-                            <div class="color-tip">{{item.createTime}}</div>
+                            <div class="color-tip">{{formatTime(item.createTime)}}</div>
                         </li>
                         {{# }); }}
                     </script>

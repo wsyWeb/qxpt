@@ -69,9 +69,9 @@
                     cols = [
                         { field: 'author', title: '标题' },
                         { field: 'updateTime', title: '作者' },
-                        { field: 'worksType', title: '单位' },
+                        { field: 'recommendUnit', title: '单位' },
                         { field: 'votes', title: '得票数', edit: 'text' },
-                        { field: 'worksType', title: '操作' },
+                        { field: 'opt', title: '操作' },
                     ]
                     $.get(baseUrl + '/works/findList?noticeId=' + noticeId, function (workRes) {
                         if (workRes.code === 200) {
@@ -85,13 +85,12 @@
                     cols = [
                         { field: 'name', title: '排名', sort: true },
                         { field: 'author', title: '作品类型' },
-                        { field: 'updateTime', title: '姓名' },
-                        { field: 'worksType', title: '单位' },
-                        { field: 'worksType', title: '职务' },
-                        { field: 'worksType', title: '得分/得票数' },
-                        { field: 'worksType', title: '奖项' },
+                        { field: 'author', title: '作者' },
+                        { field: 'recommendUnit', title: '单位' },
+                        { field: 'score', title: '得分/得票数' },
+                        { field: 'award', title: '奖项' },
                     ]
-                    $.get(baseUrl + '/works/reviewWorkListByExpertId?noticeId=' + noticeId + '&state=4', function (workRes) {
+                    $.get(baseUrl + '/works/resultList?noticeId=' + noticeId, function (workRes) {
                         if (workRes.code === 200) {
                             activityDataGrid = workRes.data
                             renderTable()

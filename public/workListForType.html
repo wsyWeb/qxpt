@@ -119,11 +119,19 @@
                     [
                         { field: 'name', title: '标题' },
                         { field: 'author', title: '作者' },
-                        { field: 'updateTime', title: '更新时间' },
+                        {
+                            field: 'updateTime',
+                            title: '更新时间',
+                            templet: function (d) {
+                                if (d.updateTime) return formatTime(d.updateTime)
+                                return formatTime(d.createTime)
+                            },
+                        },
                         { field: 'worksType', title: '类别' },
                         {
                             field: 'isAssign',
                             title: '是否分派',
+                            width: 80,
                             templet: function (d) {
                                 if (Number(d.isAssign) === 1) return '是'
                                 return '否'

@@ -104,12 +104,11 @@
                 cols: [
                     [
                         { field: 'worksType', title: '作品类型' },
-                        { field: 'joinCount', title: '参评作品数' },
-                        { field: 'xx', title: '初审作品数' },
-                        { field: 'assignCount', title: '作品分派数' },
-                        { field: 'reviewCount', title: '复审完成数' },
-                        { field: 'joinFinalCount', title: '进入终审数' },
-                        { field: 'finalCount', title: '终审完成数' },
+                        { field: 'joinCount', title: '参评作品数', width: 100 },
+                        { field: 'assignCount', title: '作品分派数', width: 100 },
+                        { field: 'reviewCount', title: '复审完成数', width: 100 },
+                        { field: 'joinFinalCount', title: '进入终审数', width: 100 },
+                        { field: 'finalCount', title: '终审完成数', width: 100 },
                         { field: 'isVotes', title: '是否录入投票数' },
                         { field: 'opt', title: '操作', width: 160, toolbar: '#person_detail_btn' },
                     ],
@@ -122,7 +121,7 @@
             })
         }
         getAllWorks = function (id) {
-            $.get(baseUrl + '/works/worksList?noticeId=' + selectNotify.id, function (res) {
+            $.get(baseUrl + '/works/worksList?noticeId=' + sessionStorage.getItem('notifyId'), function (res) {
                 if (res.code === 200) {
                     activityDataGrid = res.data
                     renderTable()
@@ -135,12 +134,14 @@
             if (res.code === 200) {
                 notifyList = res.data
                 if (notifyList.length) {
+                    selectNotify = res.data[0]
+                    if (!sessionStorage.getItem('notifyId')) {
+                        sessionStorage.setItem('notifyId', selectNotify.id)
+                    }
                     for (var i = 0; i < notifyList.length; i++) {
                         $('.activity_search').append('<option value="' + notifyList[i].id + '">' + notifyList[i].shortName + '</option>')
                     }
                     form.render('select')
-                    selectNotify = res.data[0]
-                    sessionStorage.setItem('notifyId', selectNotify.id)
                     getAllWorks()
                 }
             }

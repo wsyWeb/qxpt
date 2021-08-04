@@ -18,6 +18,9 @@
             .layui-table tr.checked td {
                 color: #666;
             }
+            .none {
+                display: none;
+            }
         </style>
     </head>
 
@@ -42,14 +45,6 @@
                         <li lay-id="{{item.id}}">{{item.name}}</li>
                         {{# }); }}
                     </script>
-                    <!-- <div class="layui-tab-content">
-                        <div class="layui-tab-item layui-show">
-                            <table class="layui-hide" id="worksInfoTable0" lay-filter="works_info_table" style="width: 100%"></table>
-                        </div>
-                        <div class="layui-tab-item">
-                            <table class="layui-hide" id="worksInfoTable1" lay-filter="works_info_table" style="width: 100%"></table>
-                        </div>
-                    </div> -->
                 </div>
                 <div class="layui-row m-t-md">
                     <div class="layui-col-md4">
@@ -79,7 +74,8 @@
                 <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
                 <div class="m-t-lg text-center">
                     <button class="layui-btn layui-btn-primary" onclick="loadMore()">加载更多</button>
-                    <button class="layui-btn" onclick="saveFun()">保存</button>
+                    <button class="layui-btn save-btn" onclick="saveFun()">保存</button>
+                    <button class="layui-btn none submit-btn" onclick="submitFun()">提交</button>
                 </div>
             </div>
         </div>
@@ -106,33 +102,49 @@
             titleWrap = document.getElementById('tabTitle')
 
         element.on('tab(worktype_tab)', function () {
+            worksTypeId = this.getAttribute('lay-id')
+            if (Number(worksTypeId) === 0) {
+                $('.submit-btn').show()
+                $('.save-btn').hide()
+                getNumStatistic()
+            } else {
+                $('.submit-btn').hide()
+                $('.save-btn').show()
+            }
             getWorks()
+            getStatistic()
         })
-        //获取按单位统计的数据
-        var getWorks = function () {
-            $.ajax({
-                type: 'post',
-                url: baseUrl + '/works/pageListById',
-                data: JSON.stringify({
-                    noticeId,
-                    worksTypeId: $('#tabTitle li.layui-this').attr('lay-id'),
-                    limit: 10000,
-                    page: 1,
-                }),
-                contentType: 'application/json',
-                success: function (workRes) {
-                    if (workRes.code === 200) {
-                        activityDataGrid = workRes.data.data
-                        renderTable()
-                    }
-                },
+        // 获取作品统计数量
+        var getNumStatistic = function () {
+            $.get(baseUrl + '/works/finalCountByType?noticeId=' + noticeId, function (res) {
+                console.log(res.data)
             })
         }
-        $.get(baseUrl + '/works/listByCompany', function (statisticRes) {
-            if (statisticRes.code === 200) {
-                renderStatisticsTable(statisticRes.data)
-            }
-        })
+        // 获取进入终审的作品
+        var getWorks = function () {
+            var url =
+                Number(worksTypeId) === 0
+                    ? '/works/reviewList?noticeId=' + noticeId
+                    : '/works/reviewList?noticeId=' + noticeId + '&worksTypeId=' + worksTypeId
+            $.get(baseUrl + '/works/reviewList?noticeId=' + noticeId + '&worksTypeId=' + worksTypeId, function (res) {
+                if (res.code === 200) {
+                    activityDataGrid = res.data
+                    renderTable()
+                }
+            })
+        }
+        //获取按单位统计的数据
+        var getStatistic = function () {
+            var url =
+                Number(worksTypeId) === 0
+                    ? '/works/listByCompany?noticeId=' + noticeId
+                    : '/works/listByCompany?noticeId=' + noticeId + '&worksTypeId=' + worksTypeId
+            $.get(baseUrl + url, function (statisticRes) {
+                if (statisticRes.code === 200) {
+                    renderStatisticsTable(statisticRes.data)
+                }
+            })
+        }
         $.get(baseUrl + '/notice/detail?noticeId=' + noticeId, function (res) {
             if (res.code === 200) {
                 notifyDetail = res.data
@@ -143,7 +155,9 @@
                     titleWrap.innerHTML = html
                 })
                 $('#tabTitle li:first-child').addClass('layui-this')
+                worksTypeId = $('#tabTitle li.layui-this').attr('lay-id')
                 getWorks()
+                getStatistic()
             }
         })
         renderStatisticsTable = function (d) {
@@ -152,7 +166,7 @@
                 data: d,
                 cols: [
                     [
-                        { field: 'company', title: '单位' },
+                        { field: 'recommendUnit', title: '单位' },
                         { field: 'workCount', title: '作品数' },
                         { field: 'awardCount', title: '拟终审作品数' },
                     ],
@@ -169,7 +183,7 @@
                         // { type: 'numbers', title: '排名' },
                         { field: 'name', title: '作品名称' },
                         { field: 'author', title: '作者' },
-                        { field: 'worksType', title: '单位' },
+                        { field: 'recommendUnit', title: '单位' },
                         { field: 'score', title: '得分', sort: true },
                     ],
                 ],
@@ -191,16 +205,20 @@
             })
         }
         table.on('checkbox(work_table)', function (obj) {
-            console.log(obj.tr, 'checkbox')
             var checkStatus = table.checkStatus('work_table'),
                 limitNum = $('.workNum').val()
 
-            console.log(checkStatus.data)
             if (obj.checked && checkStatus.data.length > Number(limitNum)) {
                 $(obj.tr).find('input[type="checkbox"]').prop('checked', false)
                 $(obj.tr).find('input[type="checkbox"]').next().removeClass('layui-form-checked')
+                for (var i = 0; i < activityDataGrid.length; i++) {
+                    if (activityDataGrid[i].id === obj.data.id) {
+                        activityDataGrid[i]['LAY_CHECKED'] = false
+                    }
+                }
                 return layer.msg('作品选择已达上限')
             }
+
             if (obj.checked) {
                 $(obj.tr).addClass('checked')
             } else {
@@ -234,12 +252,32 @@
     function saveFun() {
         var checkStatus = table.checkStatus('work_table'),
             data = checkStatus.data
+
         var workIds = data.map(function (item) {
             return item.id
         })
         if (workIds.length === 0) {
             return layer.msg('请选择作品')
         }
+        if (workIds.length > Number($('.workNum').val())) {
+            return layer.msg('选择的作品已超过最大限制')
+        }
+        $.ajax({
+            type: 'post',
+            url: baseUrl + '/works/cacheWorks',
+            data: JSON.stringify(workIds),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (res) {
+                if (res.code === 200) {
+                    layer.msg('保存成功')
+                }
+            },
+        })
+    }
+    function submitFun() {
+        var workIds = activityDataGrid.map(function (item) {
+            return item.id
+        })
         $.ajax({
             type: 'post',
             url: baseUrl + '/works/selectFinalWorkList',

@@ -101,6 +101,9 @@ layui.use(['form', 'upload', 'laydate'], function () {
         submitFun(obj, 'download')
     })
     form.on('submit(submit_form)', function (obj) {
+        if (!resFormData.url) {
+            return layer.msg('请上传作品')
+        }
         submitFun(obj, 'save')
     })
 })
@@ -277,7 +280,6 @@ function submitFun(obj, type) {
     formData.workFields = workFields
     formData.worksType = $('select[name="worksTypeId"] option:selected').text()
     formData.worksExtends = formatWorksExtends()
-    debugger
     $.ajax({
         type: 'post',
         url: baseUrl + '/works/saveOrEditWorks',

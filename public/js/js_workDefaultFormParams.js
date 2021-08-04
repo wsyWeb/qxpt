@@ -41,7 +41,7 @@ var defaultForm = {
         // { name: '手机号', sort: 1, value: '', placeholder: '' },
     ],
     // 媒体融合栏目类
-    mediaColumn: [
+    mediaBrand: [
         { name: '专栏名称', sort: 1, value: '', placeholder: '' },
         { name: '创办日期', sort: 1, value: '', placeholder: '' },
         { name: '参评项目', sort: 1, value: '', placeholder: '参评国际传播奖项请注明' },

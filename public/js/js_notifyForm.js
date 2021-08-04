@@ -147,8 +147,9 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             for (var i = 0; i < obj.arr.length; i++) {
                 $('#expert_leader').append('<option value="' + obj.arr[i].id + '">' + obj.arr[i].name + '</option>')
             }
+            $('#expert_leader').val('')
             form.render('select')
-            $('#expert_leader').next().find('.layui-unselect').val('')
+            // $('#expert_leader').next().find('.layui-unselect').val('')
         },
     })
     renderTable = function () {
@@ -357,11 +358,14 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
         submitFun(obj, 'draft')
     })
     form.on('submit(release)', function (obj) {
-        // if (!resFormData.filePath) {
-        //     return layer.msg('请先导入公告正文')
-        // }
+        if (!resFormData.filePath) {
+            return layer.msg('请先导入公告正文')
+        }
         if (Number(obj.field.isEnter) === 1 && !obj.field.shortName) {
             return layer.msg('请输入活动简称')
+        }
+        if (Number(obj.field.isCollection) === 1 && (!resFormData.finalExperts || resFormData.finalExperts.length === 0)) {
+            return layer.msg('请指派终审专家组员')
         }
         submitFun(obj, 'release')
     })
@@ -375,7 +379,7 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
         elem: '#upload_word', //绑定元素
         url: baseUrl + '/upload/fileUpload', //上传接口
         accept: 'file',
-        exts: 'doc|docx',
+        exts: 'doc|docx|pdf',
         done: function (res) {
             if (res.code != 200) {
                 layer.msg('上传失败')
@@ -515,6 +519,7 @@ function setAwardValue(laytpl, element) {
 }
 function submitFun(obj, type) {
     var formData = Object.assign(resFormData, obj.field)
+    var awards = formatAwardSetting()
     formData.state = type === 'draft' ? 0 : 1
     formData.type = Number(formData.type)
     formData.isEnter = Number(formData.isEnter)
@@ -522,14 +527,19 @@ function submitFun(obj, type) {
     formData.vote = Number(formData.vote)
     formData.enclosureParams = enclosureParams //附件
     formData.leaderName = $('#expert_leader option:selected').text() // 获取组长名字
-    formData.awardSetting = JSON.stringify(formatAwardSetting()) //奖项设定
+    formData.awardSetting = JSON.stringify(awards) //奖项设定
     formData.worksTypes = formatWorksTypes() //奖项类别
+    if (type === 'release' && formData.isEnter === 1 && formData.worksTypes.length === 0) {
+        return layer.msg('至少填写一条奖项类别')
+    }
+    if (type === 'release' && formData.isCollection === 1 && awards.length === 0) {
+        return layer.msg('至少填写一条奖项设定')
+    }
     if (formData.isEnter === 1 && formData.isCollection !== 1) {
         formData.activeInfos = activeInfos
     } else if (formData.isCollection === 1) {
         formData.worksInfos = workInfos
     }
-    console.log(JSON.stringify(formData))
     debugger
     $.ajax({
         type: 'post',
@@ -553,10 +563,14 @@ function formatAwardSetting() {
     var els = $('#awardSetting .item'),
         params = []
     for (var i = 0; i < els.length; i++) {
-        params.push({
-            level: $(els[i]).find('.label').val(),
-            value: $(els[i]).find('.content').val(),
-        })
+        var level = $(els[i]).find('.label').val(),
+            value = $(els[i]).find('.content').val()
+        if (level && value) {
+            params.push({
+                level: level,
+                value: value,
+            })
+        }
     }
     return params
 }
@@ -571,7 +585,7 @@ function formatWorksTypes() {
         for (var j = 0; j < childEls.length; j++) {
             types.push({
                 name: $(childEls[j]).find('input').val(),
-                worksTypes: [],
+                template: $(childEls[j]).attr('template'),
             })
         }
         params.push({
@@ -628,12 +642,12 @@ function addAwardTypeNode(target) {
 }
 function addAwardLevelNode(target) {
     $(target).before(
-        '<div>' +
+        '<div class="item">' +
             '<div class="layui-inline">' +
-            '<input type="text" class="layui-input"  />' +
+            '<input type="text" class="layui-input label"  />' +
             '</div>' +
             ' <div class="layui-inline">' +
-            '<input type="number" class="layui-input" />' +
+            '<input type="number" class="layui-input content" />' +
             '</div> 个' +
             ' <i class="layui-icon-reduce-circle layui-icon font-18 cursor-pointer del-level-btn p-l-md" title="删除" onclick="removeAwardLevelNode(this)"></i>' +
             '</div>'
