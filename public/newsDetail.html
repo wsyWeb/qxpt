@@ -55,7 +55,11 @@
                         <li>浏览：{{d.nums}}次浏览</li>
                         <li>字号：大 中 小</li>
                     </ul>
+
                     <div class="notify-content m-t-md p-t-md">
+                        <div style="text-align: center;">
+                            <img src="{{d.manPic}}" style="width: 400px;height: 200px; margin: 10px;"/>
+                        </div>
                         {{d.viceContext}}
                         <p class="text-indent-2">
                         </p>
@@ -85,7 +89,8 @@
         $.get(baseUrl + '/news/getNewsById?operation=client&id=' + GetQueryString("id"), function (res) {
             if (res.code === 200) {
                 var newsTpl = news_demo.innerHTML
-                var news_view = document.getElementById('news_view')
+                var news_view = document.getElementById('news_view');
+                res.data.manPic = imageUrl + res.data.manPic;
                 laytpl(newsTpl).render(res.data, function (html) {
                     news_view.innerHTML = html
                 })

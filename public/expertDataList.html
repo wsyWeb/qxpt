@@ -16,6 +16,8 @@
         .layui-btn{
             padding:0 12px;
         }
+        .layui-icon.layui-icon-rate:hover{cursor:pointer;}
+        .layui-icon.layui-icon-rate-solid:hover{cursor:pointer;}
     </style>
 </head>
 
@@ -97,7 +99,7 @@
 
         table.render({
             elem: '#expert_table',
-            url: baseUrl + '/expert/queryExperyList?examineStatus=-1',
+            url: baseUrl + '/expert/queryExperyList?examineStatus=0,1,2,3',
             limit: 20,
             limits: [20, 50, 80, 100],
             autoSort: false,
@@ -117,20 +119,46 @@
                     { type: 'numbers' },
                     { field: 'name', title: '姓名', sort: true },
                     { field: 'workUnit', title: '单位' },
-                    { field: 'entryField', title: '所属领域' },
+                    { field: 'positionJob', title: '职务' },
+                    { field: 'lyname', title: '所属领域' },
+                    // {
+                    //     field: 'score',
+                    //     title: '得分',
+                    //     sort: true,
+                    //     templet: function (d) {
+                    //         if (!d.score || d.score == 0) return '--'
+                    //         return d.score
+                    //     },
+                    // },
                     {
-                        field: 'score',
-                        title: '得分',
-                        sort: true,
+                        field: 'expertLevel',
+                        title: '级别',
                         templet: function (d) {
-                            if (!d.score || d.score == 0) return '--'
-                            return d.score
+                            if (Number(d.expertLevel) == 1) return '一级专家';
+                            if (Number(d.expertLevel) == 2) return '二级专家'
+                            return '未定级'
                         },
+                    },
+                    {
+                        field: 'periodical',
+                        title: '所属期数',
+                    },
+                    {
+                        field: 'istop',
+                        title: '推荐',
+                        templet: function (d) {
+                            if (d.istop === "1") {
+                                return '<i class="layui-icon layui-icon-rate-solid" style="color:#FF5722"></i>'
+                            }
+                            return '<i class="layui-icon layui-icon-rate"></i>'
+                        },
+                        width: 100,
+                        event: 'setTop',
                     },
                     {
                         field: 'sign',
                         title: '操作',
-                        width: 200,
+                        width: 100,
                         toolbar: '#person_detail_btn',
                     },
                 ],
@@ -153,47 +181,44 @@
                         iframe.child(data, index) //向此iframe层方法 传递参数
                     },
                 })
-            } else if (obj.event === 'check') {
-                layer.open({
-                    type: 2,
-                    id: 'check_iframe',
-                    title: '候选人简历',
-                    area: ['1200px', '90%'],
-                    fixed: true, //不固定
-                    maxmin: true,
-                    content: 'expertDetail.html',
-                    btn: ['提交', '关闭'],
-                    success: function (layero, index) {
-                        currentIndex = index
-                        var iframe = window['layui-layer-iframe' + index] //拿到iframe元素
-                        iframe.child(data, index) //向此iframe层方法 传递参数
+            }  else if(obj.event === "setTop"){
+                var data = {};
+                if(obj.data.examineStatus == "0" || obj.data.examineStatus == "1"){
+                    layer.msg("专家还在审核中,请审核完成再来推荐吧~")
+                    return ;
+                }
+                data.id = obj.data.id;
+                var str = "推荐";
+                if(obj.data.istop == "1"){
+                    str = "取消推荐";
+                }
+                layer.confirm('你确定'+str+'该专家吗?',{
+                        title: '提示',
+                        closeBtn: 0,
+                        btn: ['确定', '取消'], //按钮
                     },
-                    yes: function (index) {
-                        var submitForm = window['layui-layer-iframe' + index].callbackdata()
-                        if (!submitForm) return
+                    function () {
+                        data.istop = obj.data.istop === "1"?"2":"1"
                         $.ajax({
-                            type: 'post',
-                            url: baseUrl + '/expert/updateByExpert',
+                            type: 'get',
+                            url: baseUrl + '/expert/setTop',
                             contentType: 'application/json;charset=UTF-8',
-                            data: JSON.stringify(submitForm),
+                            data: data,
                             success: function (res) {
                                 if (res.code == 200) {
-                                    layer.close(index)
-                                    var currpage = $('.layui-laypage-em').next().text()
-                                    layer.close(index)
-                                    layer.msg('评分成功')
+                                    layer.close(layer.index);
                                     table.reload('expert_table', {
                                         page: {
-                                            curr: currpage,
+                                            curr: 1,
                                         },
                                     })
                                 } else {
-                                    layer.msg(res.message)
+                                    layer.msg(res.message);
                                 }
                             },
-                        })
-                    },
-                })
+                        });
+                    }
+                )
             }
         })
         table.on('sort(expert_table)', function (obj) {

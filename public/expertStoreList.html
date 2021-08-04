@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="http://10.168.0.218:8086/rsp-group-innovation/static/css/common.css"/>
+    <link rel="stylesheet" href="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/css/layui.css" />
+    <!-- 导入自己的样式表 -->
+    <link rel="stylesheet" href="css/font/iconfont.css" />
+    <link rel="stylesheet" href="css/runnet_common.css" />
+    <link rel="stylesheet" href="css/runnet_page.css" />
+    <title>专家智库</title>
+    <style>
+        .title {
+            height: 30px;
+            line-height: 30px;
+            padding:0 15px;
+            font-weight: bold;
+            float: left;
+        }
+
+        #search-letter p {
+            display: inline-block;
+            padding-right: 40px;
+            line-height: 35px;
+        }
+        .overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #cacad02b;
+            display: none;
+        }
+        .overlay button {
+            border-radius: 20px;
+        }
+        .activity .list:hover .overlay {
+            display: flex;
+        }
+        .ck-wrap h1 {
+            color: #fff;
+            text-align: center;
+            height: 100%;
+            width: 100%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .rzly{
+            /*border-bottom: 1px solid #eeeeee;*/
+            /*height: 50px;*/
+            width: 100%;
+        }
+        .rzly .more{
+            text-align: right;
+            justify-content: flex-end;
+            flex: 1;
+            margin-right: 15px;
+            color: #a5a5a5;
+            line-height: 32px;
+            float: right;
+            cursor:pointer;
+            background: linear-gradient(180deg,rgba(255,255,255,0),#fff);/*实现渐变效果，遮罩效果*/
+        }
+        .tag-ul li{
+            margin: 0px 7px 7px 7px;
+            padding: 2px 8px;
+            border: 1px solid #f7f7f7;
+            color: #737373;
+            border-radius: 3px;
+            cursor: pointer;
+            float: left;
+            transition: all .2s;
+            -webkit-transition: all .2s;
+        }
+        .tag-ul{
+            /*height: 30px;*/
+            line-height: 27px;
+            width: 575px;
+            float: left;
+            border: 1px solid transparent;
+            padding: 0px 10px;
+            overflow: hidden;
+            height: 41px;
+        }
+        .tag-ul li.on{
+            border: 1px solid #427ce7;
+            color: #427ce7;
+            border-radius: 3px;
+        }
+        .squery1{border-bottom: 1px solid #eeeeee;
+            height: 70px;
+            width: 100%;}
+        .squery2{height: 70px;
+            width: 100%;border-bottom:none;}
+        .squery1 .title{
+            height: 70px;
+            line-height: 70px;
+            width: 91px;
+            text-align: right;
+        }
+        .squery1 .layui-inline{
+            margin-top: 16px;
+        }
+        .layui-input{width:210px!important;}
+        #btnserach{background: #2a6be3;color: white;border-radius:5px;width: 91px;
+            text-align: center;}
+        .layui-btn .layui-icon{
+            background: white;
+            border-radius: 2px;
+            color: #2a6be3;
+        }
+        .hot-title{
+            font-weight: bold;
+            height: 48px;
+            line-height: 48px;
+            color: #4c82e7;
+            font-size:15px;
+        }
+        .hot-iocn{
+            width: 2px;
+            height: 20px;
+            display: inline-block;
+            background: #4c82e7;
+            line-height: 48px;
+            vertical-align: middle;
+            margin: 0px 5px 0px 10px;
+        }
+        .img-headpic{
+            vertical-align: middle;
+            height: 73px;
+            line-height: 73px;
+            width: 76px;
+            margin: 0 auto;
+            float: left;
+            text-align: center;
+            margin-right:6px;
+        }
+        .img-headpic img{
+            width: 52px;
+            height: 52px;
+            margin: 0 auto;
+        }
+        .expert-desc{
+            float: left;
+            width: calc(99% - 78.5px);
+            border-bottom: 1px solid #eeeeee;
+            padding-bottom: 15px;
+        }
+        .expert-desc .name{
+            font-size: 16px;
+            font-weight: bold;
+            height: 40px;
+            line-height: 40px;
+        }
+        .expert-delae{width: 4px;
+            height: 4px;
+            background: #6090ea;
+            display: inline-block;
+            border-radius: 4px;
+            vertical-align: middle;
+            margin: 0px 5px;}
+        .expert-from-context{
+            width: 100%;
+            margin-top: 20px;
+        }
+        .layui-tab-title{
+            height: 50px;
+        }
+        .layui-tab-brief>.layui-tab-title .layui-this{
+            color: #6090ea;
+        }
+        .layui-tab-brief>.layui-tab-more li.layui-this:after, .layui-tab-brief>.layui-tab-title .layui-this:after{border-bottom:2px solid #6090ea}
+        .layui-tab-title li{line-height: 50px;padding: 0 20px;}
+        .layui-tab-title .layui-this:after{height: 50px;}
+
+        .layui-tab-content .img-headpic1 img{width: 162px;height: 162px;}
+        .img-headpic1{    vertical-align: middle;
+            height:203px;
+            width: 170px;
+            margin: 0 auto;
+            float: left;
+            text-align: center;
+            margin-right: 10px;}
+        .expert-desc1{
+            float: left;
+            border-bottom: 1px solid #eeeeee;
+            padding-bottom: 15px;
+            width: calc(100% - 180px);
+        }
+        .expert-desc1 .name{
+            font-size: 16px;
+            font-weight: bold;
+            height: 40px;
+            line-height: 40px;
+        }
+        .expert-p-desc{
+            height: 98px;
+            margin-top:10px;
+            display:block;
+            display:inline;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            overflow: hidden;
+            text-overflow: -o-ellipsis-lastline;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            line-clamp: 4;
+            -webkit-box-orient: vertical;
+            line-height: 26px;
+            color: #6b6b6b;
+        }
+        li:last-child .expert-desc{border-bottom:none;}
+        li:last-child .expert-desc1{border-bottom:none;}
+        .request-more{    color: #787878;
+            background: #ededed;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;cursor:pointer;}
+        .two-rzly-ul{
+            padding-left: 91px;
+            margin-top: 10px;
+            line-height: 30px;
+            background:#F3F5F6;
+        }
+        .two-rzly-ul li{
+            float: left;
+            margin: 10px 10px;
+            color:#737373;
+            cursor: pointer;
+            height: 25px;
+            line-height: 25px;
+            border: 1px solid transparent;
+            padding: 0px 5px;
+            transition: all .2s;
+            -webkit-transition: all .2s;
+        }
+        .two-rzly-ul li.on{
+            border: 1px solid #427ce7;
+            color: #427ce7;
+            border-radius: 3px;
+        }
+
+    </style>
+</head>
+
+<body>
+<div id="headDiv"></div>
+<div id="searchDiv"></div>
+
+<div class="runnet_main_body">
+    <div class="wrap">
+        <div style="height:35px;width: 100%;"></div>
+        <form class="layui-form search_form m-b-lg" action="" lay-filter="search_form" style="width: 60%;float: left;">
+        <div class="block activity p-t-md p-b-md">
+            <div class="rzly clearfix">
+                <span class="title">入驻领域:</span>
+                    <script id="entryField_demo" type="text/html">
+                        <li data-id="all" class="on">全部</li>
+                        {{# layui.each(d , function(index, item){ }}
+                        <li data-id="{{item.id}}">{{item.title}}</li>
+                        {{# }); }}
+                        <li class="clearfix"></li>
+                    </script>
+                <ul class="tag-ul" id="entryField_view"></ul>
+                <div class="more">更多</div>
+            </div>
+
+            <script id="entryField_two_demo" type="text/html">
+                <li data-id="all" class="on">不限</li>
+                {{# layui.each(d , function(index, item){ }}
+                <li data-id="{{item.id}}">{{item.title}}</li>
+                {{# }); }}
+            </script>
+            <ul class="two-rzly-ul clearfix" id="entryField_two_view"></ul>
+            <div class="flex squery1">
+                <span class="title" style="height:70px;line-height:70px;">专家级别:</span>
+                <div class="layui-inline">
+                    <select class="activity_search" name="positionLevel" lay-verify="" lay-filter="activity_search" style="width: 100px">
+                        <option value="">全部</option>
+                        <option value="1">一级专家</option>
+                        <option value="2">二级专家</option>
+                    </select>
+                </div>
+                <span class="title" style="height:70px;line-height:70px;">入驻时间:</span>
+                <div class="layui-inline">
+                    <input type="text" name="createtime" id="createtime" lay-verify="" placeholder="" autocomplete="off" class="layui-input"/>
+                </div>
+            </div>
+            <div class="flex squery1 squery2">
+                <span class="title" style="height:70px;line-height:70px;">专家姓名:</span>
+                <div class="layui-inline">
+                    <input type="text" name="name" placeholder="请输入专家姓名" autocomplete="off" class="layui-input"/>
+                </div>
+                <span class="title" style="height:70px;line-height:70px;">单位:</span>
+                <div class="layui-inline">
+                    <input type="text" name="workUnit" placeholder="请输入工作单位" autocomplete="off" class="layui-input"/>
+                </div>
+                <div class="layui-inline" style="flex:1;text-align:right;margin-right:15px;">
+                    <button type="button" id="btnserach" class="layui-btn layui-btn-primary"  lay-submit data-type="reload" lay-filter="data-search-btn"><i class="layui-icon"></i>搜索</button>
+                </div>
+            </div>
+
+        </div>
+        <div class="block m-b-lg expert-from-context">
+            <div class="layui-tab layui-tab-brief" lay-filter="">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">综合</li>
+                    <li>最高级别</li>
+                    <li>最新</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <script id="expert_demo" type="text/html">
+                            {{# layui.each(d , function(index, item){ }}
+                            <li class="clearfix">
+                                <div class="img-headpic1">
+                                    <img src="{{item.headPortrait}}" />
+                                </div>
+                                <div class="expert-desc1">
+                                    <p class="name"><a href="expertStoreDetail.html">{{item.name}}</a></p>
+                                    <p>
+                                        <span>{{item.positionTitle}}</span>
+                                        <span class="expert-delae"></span>
+                                        <span style="color:#6090ea;">{{item.workUnit}}</span>
+                                    </p>
+                                    <p class="expert-p-desc">{{item.desc}}</p>
+                                </div>
+                            </li>
+                            {{# }); }}
+                            {{#  if(d.length === 0){ }}
+                            无数据
+                            {{#  } }}
+                        </script>
+                        <ul id="expert_warp"></ul>
+                    </div>
+                </div>
+
+                <div class="request-more">加载更多</div>
+
+            </div>
+
+
+        </div>
+        </form>
+
+        <div class="block activity" style="width:38.5%;float: right;">
+            <div style="border-bottom:1px solid #4c82e7">
+                <span class="hot-iocn"></span>
+                <span class="hot-title">热门专家</span>
+            </div>
+            <script id="hot_expert_demo" type="text/html">
+                {{# layui.each(d , function(index, item){ }}
+                <li class="clearfix">
+                    <div class="img-headpic">
+                        <img src="{{imageUrl+item.headPortrait}}"/>
+                    </div>
+                    <div class="expert-desc">
+                        <p class="name">{{item.name}}</p>
+                        <p>
+                            <span>{{item.positionTitle}}</span>
+                            <span class="expert-delae"></span>
+                            <span style="color:#6090ea;">{{item.workUnit}}</span>
+                        </p>
+                    </div>
+                </li>
+                {{# }); }}
+                {{#  if(d.length === 0){ }}
+                无数据
+                {{#  } }}
+            </script>
+            <ul id="hot_expert_warp"></ul>
+
+        </div>
+        <div class="clearfix"></div>
+
+    </div>
+</div>
+
+</body>
+</html>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/jquery.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/js/common.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
+<script type="text/javascript" src="js/base.js"></script>
+<script type="text/javascript">
+    var request_expert_params = new Object();
+    var entry_field_patams = new Array();
+    $(function () {
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+            //执行一个laydate实例
+            laydate.render({
+                elem: '#createtime' //指定元素
+            });
+        });
+        layui.use(['laytpl'], function () {
+            var laytpl = layui.laytpl
+
+            var entryFieldTpl = entryField_demo.innerHTML
+            var entryFieldView = document.getElementById('entryField_view');
+            var entryFieldTwoView = document.getElementById('entryField_two_view');
+            var entryFieldTwoTpl = entryField_two_demo.innerHTML;
+            var renderEntryField = function(data){
+                laytpl(entryFieldTpl).render(data, function (html) {
+                    entryFieldView.innerHTML = html
+                })
+            }
+            var renderEntryFieldTwo = function(data){
+                laytpl(entryFieldTwoTpl).render(data, function (html) {
+                    entryFieldTwoView.innerHTML = html
+                })
+            }
+            queryEntryFieldList(1,'/entryField/queryEntryFieldList?type=1');
+
+            function queryEntryFieldList(type,url){
+                $.ajax({
+                    type: 'get',
+                    url: baseUrl + url,//examineStatus设置为2审核通过
+                    contentType: 'application/json;charset=UTF-8',
+                    success: function (res) {
+                        if (res.code == 200) {
+                            if(type === 1){
+                                renderEntryField(res.data);
+                                var width = $("#entryField_view").width();
+                                // if(width>570){
+                                //     $(".rzly .more").show();
+                                // }else{
+                                //     $(".rzly .more").hide();
+                                // }
+                            }else if(type === 2){
+                                renderEntryFieldTwo(res.data);
+                            }
+                        }
+                    },
+                })
+            }
+
+            $("body").on("click",'.tag-ul li',function(){
+                var c = this;
+                if($(c).attr("data-id") == "all"){
+                    $('.tag-ul li').each(function(index,o){
+                        if(index===0){
+                            $($('.tag-ul li').get(0)).addClass("on");
+                        }
+                        if(index!=0){
+                            $(o).removeClass("on");
+                            entry_field_patams.push($(o).attr("data-id"));
+                        }
+                    });
+
+                }else{
+                    $($('.tag-ul li').get(0)).removeClass("on");
+                    if($(c).hasClass("on")){
+                        $(c).removeClass("on")
+                    }else{
+                        $(c).addClass("on");
+                    }
+                }
+               var str = "";
+               $('.tag-ul li').each(function(r){
+                    if($(this).hasClass("on")){
+                        str = str + $(this).attr("data-id")+",";
+                        entry_field_patams.push($(this).attr("data-id"));
+                    }
+                });
+                str = str.substring(0,str.length-1);
+                if(str!=null && str!=''){
+                    queryEntryFieldList(2,'/entryField/queryEntryFieldList?parentIds='+str);
+                }
+                reqExpertList();
+               console.log(this.textContent.trim());
+            });
+
+            $("body").on("click",".two-rzly-ul li",function(){
+                var c = this;
+                if($(c).attr("data-id") == "all"){
+                    $('.two-rzly-ul li').each(function(index,o){
+                        if(index===0){
+                            $($('.two-rzly-ul li').get(0)).addClass("on");
+                        }
+                        if(index!=0){
+                            $(o).removeClass("on");
+                            entry_field_patams.push($(o).attr("data-id"));
+                        }
+                    });
+                }else{
+                    $($('.two-rzly-ul li').get(0)).removeClass("on");
+                    if($(c).hasClass("on")){
+                        $(c).removeClass("on")
+                    }else{
+                        $(c).addClass("on");
+                    }
+                }
+                $('.two-rzly-ul li').each(function(r){
+                    if($(this).hasClass("on")){
+                        entry_field_patams.push($(this).attr("data-id"));
+                    }
+                });
+                reqExpertList();
+                console.log(this.textContent.trim());
+            })
+
+            var expertTpl = expert_demo.innerHTML;
+            var expert_warp = document.getElementById("expert_warp");
+            var hotExpertTpl = hot_expert_demo.innerHTML;
+            var hot_expert_warp = document.getElementById("hot_expert_warp");
+            var renderExpert = function(data){
+                laytpl(expertTpl).render(data, function (html) {
+                    expert_warp.innerHTML = html
+                })
+            }
+            var renderHotExpert = function(data){
+                laytpl(hotExpertTpl).render(data, function (html) {
+                    hot_expert_warp.innerHTML = html
+                })
+            }
+
+            reqExpertList();
+            //渲染专家数据
+            function reqExpertList(){
+                var str = "";
+                entry_field_patams = [...new Set(entry_field_patams)];
+                entry_field_patams.forEach(v=>{
+                    str = str + v+",";
+                });
+                request_expert_params.entryField = str;
+                var params = $.param(request_expert_params);
+                $.ajax({
+                    type: 'get',
+                    url: baseUrl + "/expert/queryExperyList?examineStatus=2&page=1&limit=10&request=istop"+"&"+params,
+                    contentType: 'application/json;charset=UTF-8',
+                    success: function (res) {
+                        if (res.code == 200) {
+                            var arr = [];
+                            res.data.data.forEach((value1)=>{
+                                value1.headPortrait = imageUrl+value1.headPortrait;
+                                value1.desc = "";
+                                if(value1.dataArr!=null&&value1.dataArr!=''){
+                                    for(var i=0;i<value1.dataArr.length;i++) {
+                                        if((value1.dataArr[0].title).trim() == "国内外相关团体任职情况"){
+                                            value1.desc = value1.dataArr[0].value;//就这样
+                                        }
+                                    }
+                                }
+                                arr.push(value1);
+                            });
+                            if(res.totalPage>1){
+                                $(".request-more").show();
+                            }
+                            renderExpert(arr);
+                        }
+                    },
+                })
+            }
+
+            $('#btnserach').on('click', function(){
+                request_expert_params.positionLevel = $("select[name='positionLevel']").val();//专家级别
+                request_expert_params.createtime = $("input[name='createtime']").val();//专家级别
+                request_expert_params.workUnit = $("input[name='workUnit']").val();//专家工作单位
+                request_expert_params.name = $("input[name='name']").val();//专家姓名
+
+                console.log(request_expert_params);
+                reqExpertList();
+            });
+            //热门数据渲染
+            $.ajax({
+                type: 'get',
+                url: baseUrl + "/expert/queryExperyList?examineStatus=2,1&page=1&limit=10",//examineStatus设置为2审核通过
+                contentType: 'application/json;charset=UTF-8',
+                success: function (res) {
+                    if (res.code == 200) {
+                        renderHotExpert(res.data.data);
+                    }
+                }
+            })
+            $(".request-more").hide();
+
+            $("body").on("click",".rzly .more",function(){
+                $("#entryField_view").height("auto");//取消文字容器高度限制
+                $(".rzly .more").hide();//隐藏查看更多按钮
+
+            });
+        });
+
+    })
+
+</script>

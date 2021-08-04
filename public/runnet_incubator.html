@@ -117,23 +117,23 @@
                 </div>
                 <div class="page-nav m-b-lg">
                     <i class="layui-icon-friends layui-icon color-icon"></i>
-                    <span>专家信息 >></span>
+                    <a href="expertStoreList.html"><span>专家信息 >></span></a>
                 </div>
                 <div class="flex block p-md">
                     <ul class="p-r-lg" style="width: 50%">
                         <li class="p-b-sm font-14">>> 明星专家推荐</li>
-                        <li class="flex p-b-md">
-                            <div>
-                                <img src="images/incubator/4.png" height="100px;" width="150px" />
-                            </div>
-                            <div class="m-l-sm text-ellipsis-3 color-detail text-indent-2" style="line-height: 26px">河南省气象研究院高级工程师，中国气象学会注册会员，河南省作家协会会员，河南省摄影协会会员...</div>
-                        </li>
-                        <li class="flex p-b-md">
-                            <div>
-                                <img src="images/incubator/5.png" height="100px;" width="150px" />
-                            </div>
-                            <div class="m-l-sm text-ellipsis-3 color-detail text-indent-2" style="line-height: 26px">目前为中国气象局气象干部培训学院副研究员，主要研究领域是气象信息研究，担任《气象科技进展》杂志副主任...</div>
-                        </li>
+                        <script id="expertTop_demo" type="text/html">
+                            {{# layui.each(d , function(index, item){ }}
+                            <li class="flex p-b-md">
+                                <div>
+                                    <img src="{{item.headPortrait}}" height="100px;" width="150px" />
+                                </div>
+                                <div class="m-l-sm text-ellipsis-3 color-detail text-indent-2" style="line-height: 26px">
+                                    {{item.desc}}</div>
+                            </li>
+                            {{# }); }}
+                        </script>
+                        <div id="expertTop_wrap"></div>
                     </ul>
                     <ul class="p-l-lg" style="width: 50%">
                         <li class="p-b-sm">
@@ -225,17 +225,53 @@
 <script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/jquery.js"></script>
 <script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/js/common.js"></script>
 <script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
+<script type="text/javascript" src="js/base.js"></script>
 <script>
     var letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     $(function () {
         layui.use(['laytpl'], function () {
             var laytpl = layui.laytpl
 
-            var getTpl = letter_demo.innerHTML
-            var view = document.getElementById('search-letter')
+            var getTpl = letter_demo.innerHTML,
+                expertTopTpl = expertTop_demo.innerHTML;
+
+            var view = document.getElementById('search-letter');
+            var expertTopTView = document.getElementById('expertTop_wrap');
             laytpl(getTpl).render(letter, function (html) {
                 view.innerHTML = html
             })
-        })
+
+            var renderExpertTop = function(v){
+                laytpl(expertTopTpl).render(v, function (html) {
+                    expertTopTView.innerHTML = html
+                })
+            }
+            $.ajax({
+                type: 'get',
+                url: baseUrl + '/expert/queryExperyList?istop=1&limit=2&page=1&examineStatus=2&request=istop',//examineStatus设置为2审核通过
+                contentType: 'application/json;charset=UTF-8',
+                success: function (res) {
+                    if (res.code == 200) {
+                        var arr = [];
+                        res.data.data.forEach((value1)=>{
+                            console.log(value1);
+                            value1.headPortrait = imageUrl+value1.headPortrait;
+                            value1.desc = "";
+                            if(value1.dataArr!=null&&value1.dataArr!=''){
+                                for(var i=0;i<value1.dataArr.length;i++) {
+                                    if((value1.dataArr[0].title).trim() == "国内外相关团体任职情况"){
+                                        value1.desc = value1.dataArr[0].value;//就这样
+                                    }
+                                }
+                            }
+                            arr.push(value1);
+                        })
+                        console.log(arr);
+                        renderExpertTop(arr)
+                    }
+                },
+            })
+
+        });
     })
 </script>

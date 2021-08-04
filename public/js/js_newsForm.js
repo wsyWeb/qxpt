@@ -25,7 +25,7 @@ if(sessionStorage.getItem('newsId')!=null && sessionStorage.getItem('newsId')!='
 
 function setFormDefaultValue() {
     if (resFormData.manPic) {
-        $('#upload_img_btn').hide()
+        // $('#upload_img_btn').hide()
         $('#headPortrait-img').show()
         document.getElementById('headPortrait-img').setAttribute('src', imageUrl + resFormData.manPic)
     }

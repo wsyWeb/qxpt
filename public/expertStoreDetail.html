@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="http://10.168.0.218:8086/rsp-group-innovation/static/css/common.css"/>
+    <link rel="stylesheet" href="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/css/layui.css" />
+    <!-- 导入自己的样式表 -->
+    <link rel="stylesheet" href="css/font/iconfont.css" />
+    <link rel="stylesheet" href="css/runnet_common.css" />
+    <link rel="stylesheet" href="css/runnet_page.css" />
+    <title>专家介绍</title>
+    <style>
+        .title {
+            height: 30px;
+            line-height: 30px;
+            padding:0 15px;
+            font-weight: bold;
+            float: left;
+        }
+
+        #search-letter p {
+            display: inline-block;
+            padding-right: 40px;
+            line-height: 35px;
+        }
+        .overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #cacad02b;
+            display: none;
+        }
+        .overlay button {
+            border-radius: 20px;
+        }
+        .activity .list:hover .overlay {
+            display: flex;
+        }
+        .ck-wrap h1 {
+            color: #fff;
+            text-align: center;
+            height: 100%;
+            width: 100%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .rzly{
+            /*border-bottom: 1px solid #eeeeee;*/
+            /*height: 50px;*/
+            width: 100%;
+        }
+        .rzly .more{
+            text-align: right;
+            justify-content: flex-end;
+            flex: 1;
+            margin-right: 15px;
+            color: #a5a5a5;
+            line-height: 32px;
+            float: right;
+            cursor:pointer;
+            background: linear-gradient(180deg,rgba(255,255,255,0),#fff);/*实现渐变效果，遮罩效果*/
+        }
+        .tag-ul li{
+            margin: 0px 7px 7px 7px;
+            padding: 2px 8px;
+            border: 1px solid #f7f7f7;
+            color: #737373;
+            border-radius: 3px;
+            cursor: pointer;
+            float: left;
+            transition: all .2s;
+            -webkit-transition: all .2s;
+        }
+        .tag-ul{
+            /*height: 30px;*/
+            line-height: 27px;
+            width: 575px;
+            float: left;
+            border: 1px solid transparent;
+            padding: 0px 10px;
+            overflow: hidden;
+            height: 41px;
+        }
+        .tag-ul li.on{
+            border: 1px solid #427ce7;
+            color: #427ce7;
+            border-radius: 3px;
+        }
+        .squery1{border-bottom: 1px solid #eeeeee;
+            height: 70px;
+            width: 100%;}
+        .squery2{height: 70px;
+            width: 100%;border-bottom:none;}
+        .squery1 .title{
+            height: 70px;
+            line-height: 70px;
+            width: 91px;
+            text-align: right;
+        }
+        .squery1 .layui-inline{
+            margin-top: 16px;
+        }
+        .layui-input{width:210px!important;}
+        #btnserach{background: #2a6be3;color: white;border-radius:5px;width: 91px;
+            text-align: center;}
+        .layui-btn .layui-icon{
+            background: white;
+            border-radius: 2px;
+            color: #2a6be3;
+        }
+        .hot-title{
+            font-weight: bold;
+            height: 48px;
+            line-height: 48px;
+            color: #4c82e7;
+            font-size:15px;
+        }
+        .hot-iocn{
+            width: 2px;
+            height: 20px;
+            display: inline-block;
+            background: #4c82e7;
+            line-height: 48px;
+            vertical-align: middle;
+            margin: 0px 5px 0px 10px;
+        }
+        .img-headpic{
+            vertical-align: middle;
+            height: 73px;
+            line-height: 73px;
+            width: 76px;
+            margin: 0 auto;
+            float: left;
+            text-align: center;
+            margin-right:6px;
+        }
+        .img-headpic img{
+            width: 52px;
+            height: 52px;
+            margin: 0 auto;
+        }
+        .expert-desc{
+            float: left;
+            width: calc(99% - 78.5px);
+            border-bottom: 1px solid #eeeeee;
+            padding-bottom: 15px;
+        }
+        .expert-desc .name{
+            font-size: 16px;
+            font-weight: bold;
+            height: 40px;
+            line-height: 40px;
+        }
+        .expert-delae{width: 4px;
+            height: 4px;
+            background: #6090ea;
+            display: inline-block;
+            border-radius: 4px;
+            vertical-align: middle;
+            margin: 0px 5px;}
+
+        .layui-tab-content .img-headpic1 img{width: 162px;height: 162px;}
+
+
+        .expert-p-desc{
+            height: 98px;
+            margin-top:10px;
+            display:block;
+            display:inline;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            overflow: hidden;
+            text-overflow: -o-ellipsis-lastline;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            line-clamp: 4;
+            -webkit-box-orient: vertical;
+            line-height: 26px;
+            color: #6b6b6b;
+        }
+        li:last-child .expert-desc{border-bottom:none;}
+        .expert_name_titlejob{
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            color: #6090ea;
+            margin-top: 10px;
+        }
+        .expert-data-desc{
+            line-height: 26px;
+            padding: 0px 10px;
+            margin-top: 20px;
+            color: #333333;
+        }
+        .expert-data-desc-more{
+            line-height: 26px;
+            padding: 0px 10px;
+            margin-top:5px;
+            color: #666666;
+        }
+
+    </style>
+</head>
+
+<body>
+<div id="headDiv"></div>
+<div id="searchDiv"></div>
+
+<div class="runnet_main_body">
+    <div class="wrap">
+        <div style="height:35px;width: 100%;"></div>
+        <form class="layui-form search_form m-b-lg" action="" lay-filter="search_form" style="width: 60%;float: left;">
+
+<!--                <script id="news_demo" type="text/html">-->
+                    <div class="block p-md m-t-lg">
+                        <h1 class="font-20 text-center">专家介绍</h1>
+                        <ul class="flex-around color-tip m-t-lg">
+                            <li>发布时间：1232</li>
+                            <li>浏览：5浏览</li>
+                            <li>字号：大 中 小</li>
+                        </ul>
+
+                        <div class="notify-content m-t-md p-t-md">
+                            <div style="text-align: center;">
+                                <img src="{{d.manPic}}" style="width:246px;height:246px; margin: 10px;"/>
+                            </div>
+                            <p class="expert_name_titlejob">
+                                <span>教授</span>
+                                <span >:</span>
+                                <span style="color:#6090ea;">李沐晓</span>
+                            </p>
+                            <p class="expert_name_titlejob" style="font-size:14px;font-weight:500;">成都市气象局</p>
+                        </div>
+                        <div class="expert-data-desc">在jquery中，可以通过获得checkbo在jquery中，可在jquery中，可以通过获在jquery中，可以通过获得checkbox对象，使用each()方法判断每一个checkbox状态，通过if语句判断，把选中的选项放进数组保存起来，便可以知道那些checkbox被选中了。下面小编举例讲解jquery如何获取checkbox,并判断是否选中。得checkbox对象，使用each()方法判断每一个checkbox状态，通过if语句判断，把选中的选项放进数组保存起来，便可以知道那些checkbox被选中了。下面小编举例讲解jquery如何获取checkbox,并判断是否选中。以通过获得checkbox对象，使用each()方法判断每一个checkbox状态，通过if语句判断，把选中的选项放进数组保存起来，便可以知道那些checkbox被选中了。下面小编举例讲解jquery如何获取checkbox,并判断是否选中。x对象，使用each()方法判断每一个checkbox状态，通过if语句判断，把选中的选项放进数组保存起来，便可以知道那些checkbox被选中了。下面小编举例讲解jquery如何获取checkbox,并判断是否选中。</div>
+                        <span class="hot-iocn"></span>
+                        <span class="hot-title">个人履历</span>
+                        <div class="expert-data-desc-more">在jquery中，可以通过获得checkbo在jquery中，可在jquery中，可以通过获在jquery中，可以通过获得checkbox对象，使用each()方法判断每一个checkbox状态，通过if语句判断，把选中的选项放进数组保存起来，便可以知道那些checkbox被选中了。下面小编举例讲解jquery如何获取checkbox,并判断是否选中。得checkbox对象，使用each()方法判断每一个checkbox状态，通过if语句判断，把选中的选项放进数组保存起来，便可以知道那些checkbox被选中了。下面小编举例讲解jquery如何获取checkbox,并判断是否选中。以通过获得checkbox对象，使用each()方法判断每一个checkbox状态，通过if语句判断，把选中的选项放进数组保存起来，便可以知道那些checkbox被选中了。下面小编举例讲解jquery如何获取checkbox,并判断是否选中。x对象，使用each()方法判断每一个checkbox状态，通过if语句判断，把选中的选项放进数组保存起来，便可以知道那些checkbox被选中了。下面小编举例讲解jquery如何获取checkbox,并判断是否选中。</div>
+                        <div class="expert-data-desc-more">在jquery中，可以通过获得checkbo在jquery中，可在jquery中，可以通过获在jquery中，可以通过获得checkbox对象，使用each()方法判断每一个checkbox状态，通过if语句判断，把选中的选项放进数组保存起来，便可以知道那些checkbox被选中了。下面小编举例讲解jquery如何获取checkbox,并判断是否选中。得checkbox对象，使用each()方法判断每一个checkbox状态，通过if语句判断，把选中的选项放进数组保存起来，便可以知道那些checkbox被选中了。下面小编举例讲解jquery如何获取checkbox,并判断是否选中。以通过获得checkbox对象，使用each()方法判断每一个checkbox状态，通过if语句判断，把选中的选项放进数组保存起来，便可以知道那些checkbox被选中了。下面小编举例讲解jquery如何获取checkbox,并判断是否选中。x对象，使用each()方法判断每一个checkbox状态，通过if语句判断，把选中的选项放进数组保存起来，便可以知道那些checkbox被选中了。下面小编举例讲解jquery如何获取checkbox,并判断是否选中。</div>
+                        <div class="expert-data-desc-more">在jquery中，可以通过获得checkbo在jquery中，可在jquery中，可以通过获在jquery中，可以通过获得checkbox对象，使用each()方法判断每一个checkbox状态，通过if语句判断，把选中的选项放进数组保存起来，便可以知道那些checkbox被选中了。下面小编举例讲解jquery如何获取checkbox,并判断是否选中。得checkbox对象，使用each()方法判断每一个checkbox状态，通过if语句判断，把选中的选项放进数组保存起来，便可以知道那些checkbox被选中了。下面小编举例讲解jquery如何获取checkbox,并判断是否选中。以通过获得checkbox对象，使用each()方法判断每一个checkbox状态，通过if语句判断，把选中的选项放进数组保存起来，便可以知道那些checkbox被选中了。下面小编举例讲解jquery如何获取checkbox,并判断是否选中。x对象，使用each()方法判断每一个checkbox状态，通过if语句判断，把选中的选项放进数组保存起来，便可以知道那些checkbox被选中了。下面小编举例讲解jquery如何获取checkbox,并判断是否选中。</div>
+
+                    </div>
+<!--                </script>-->
+<!--                <div id="news_view"></div>-->
+
+
+
+
+        </form>
+
+        <div class="block activity" style="width:38.5%;float: right;">
+            <div style="border-bottom:1px solid #4c82e7">
+                <span class="hot-iocn"></span>
+                <span class="hot-title">热门专家</span>
+            </div>
+            <script id="hot_expert_demo" type="text/html">
+                {{# layui.each(d , function(index, item){ }}
+                <li class="clearfix">
+                    <div class="img-headpic">
+                        <img src="{{imageUrl+item.headPortrait}}"/>
+                    </div>
+                    <div class="expert-desc">
+                        <p class="name">{{item.name}}</p>
+                        <p>
+                            <span>{{item.positionTitle}}</span>
+                            <span class="expert-delae"></span>
+                            <span style="color:#6090ea;">{{item.workUnit}}</span>
+                        </p>
+                    </div>
+                </li>
+                {{# }); }}
+                {{#  if(d.length === 0){ }}
+                无数据
+                {{#  } }}
+            </script>
+            <ul id="hot_expert_warp"></ul>
+
+        </div>
+        <div class="clearfix"></div>
+
+    </div>
+</div>
+
+</body>
+</html>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/jquery.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/js/common.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
+<script type="text/javascript" src="js/base.js"></script>
+<script type="text/javascript">
+
+    function GetQueryString(name){
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  unescape(r[2]); return null;
+    }
+    $(function () {
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+            //执行一个laydate实例
+            laydate.render({
+                elem: '#createtime' //指定元素
+            });
+        });
+        layui.use(['laytpl'], function () {
+            var laytpl = layui.laytpl
+
+
+
+
+            function queryEntryFieldList(type,url){
+                $.ajax({
+                    type: 'get',
+                    url: baseUrl + url,//examineStatus设置为2审核通过
+                    contentType: 'application/json;charset=UTF-8',
+                    success: function (res) {
+                        if (res.code == 200) {
+                            if(type === 1){
+                                renderEntryField(res.data);
+                                var width = $("#entryField_view").width();
+
+                            }else if(type === 2){
+                                renderEntryFieldTwo(res.data);
+                            }
+                        }
+                    },
+                })
+            }
+
+
+
+            var hotExpertTpl = hot_expert_demo.innerHTML;
+            var hot_expert_warp = document.getElementById("hot_expert_warp");
+
+            var renderHotExpert = function(data){
+                laytpl(hotExpertTpl).render(data, function (html) {
+                    hot_expert_warp.innerHTML = html
+                })
+            }
+
+
+            //热门数据渲染
+            $.ajax({
+                type: 'get',
+                url: baseUrl + "/expert/queryExperyList?examineStatus=2,1&page=1&limit=10",//examineStatus设置为2审核通过
+                contentType: 'application/json;charset=UTF-8',
+                success: function (res) {
+                    if (res.code == 200) {
+                        renderHotExpert(res.data.data);
+                    }
+                }
+            })
+            $(".request-more").hide();
+
+        });
+
+    })
+
+</script>
