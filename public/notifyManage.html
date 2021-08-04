@@ -80,7 +80,7 @@
                     {
                         field: 'top',
                         title: '置顶',
-                        // width: '80',
+                        width: 60,
                         templet: function (d) {
                             if (d.isTop === 1) {
                                 return '<i class="layui-icon layui-icon-rate-solid" style="color:#FF5722"></i>'
@@ -89,7 +89,14 @@
                         },
                     },
                     { field: 'title', title: '标题' },
-                    { field: 'updateTime', title: '更新时间' },
+                    {
+                        field: 'updateTime',
+                        title: '更新时间',
+                        templet: function (d) {
+                            if (d.updateTime) return formatTime(d.updateTime)
+                            return formatTime(d.createTime)
+                        },
+                    },
                     {
                         field: 'type',
                         title: '类别',
@@ -112,11 +119,12 @@
                             }
                         },
                     },
-                    { field: 'click', title: '点击数量' },
-                    { field: 'comments', title: '评论数量' },
+                    { field: 'click', title: '点击数量', width: 100 },
+                    { field: 'comments', title: '评论数量', width: 100 },
                     {
                         field: 'state',
                         title: '状态',
+                        width: 60,
                         templet: function (d) {
                             if (Number(d.state) === 1) {
                                 return '<i class="layui-icon-ok-circle layui-icon release"></i>'

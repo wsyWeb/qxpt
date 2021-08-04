@@ -25,7 +25,13 @@
                         <a onclick="showAssignExpertModal()" class="font-18">选举专家组长</a>
                     </div>
                     <div class="font-18 m-t-md">
-                        <a onclick="reviewWork()" class="font-18">专家组长作品审核</a>
+                        <a onclick="reviewWork(1)" class="font-18">专家组长作品审核</a>
+                    </div>
+                    <div class="font-18 m-t-md">
+                        <a onclick="reviewWork(2)" class="font-18">作品复审</a>
+                    </div>
+                    <div class="font-18 m-t-md">
+                        <a onclick="reviewWork(3)" class="font-18">作品终审</a>
                     </div>
                 </div>
             </div>
@@ -34,18 +40,12 @@
             <div class="layui-form-item">
                 <label class="layui-form-label" style="width: 100px">活动简称</label>
                 <div class="layui-input-block">
-                    <select name="shortName" id=""></select>
+                    <select name="shortName" id="" lay-filter="shortname"></select>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label" style="width: 100px">专家组名单</label>
-                <div class="layui-input-block">
-                    <input type="radio" value="1" title="张三" name="expert" />
-                    <input type="radio" value="2" title="张三" name="expert" />
-                    <input type="radio" value="3" title="张三" name="expert" />
-                    <input type="radio" value="4" title="张三" name="expert" />
-                    <input type="radio" value="5" title="张三" name="expert" />
-                </div>
+                <div class="layui-input-block experts"></div>
             </div>
         </form>
     </body>
@@ -56,22 +56,48 @@
 <script src="js/base.js"></script>
 <script>
     $('#my_space_nav').load('templates/my_space_nav.html')
-    function showVoteDialogFun() {}
-
+    var notifyLists = [],
+        selectNotify = { finalExperts: [] },
+        token = sessionStorage.getItem('token')
     layui.use(['form'], function () {
-        var form = layui.form
+        form = layui.form
 
-        form.on('submit(submit_form)', function (obj) {
-            var formData = obj.field
-            if (!formData.expert) {
-                return layer.msg('请选择一位专家')
+        setExpertSelect = function () {
+            console.log(selectNotify.finalExperts.length)
+            if (selectNotify.finalExperts.length > 0) {
+                for (var o = 0; o < selectNotify.finalExperts.length; o++) {
+                    $('.experts').append(
+                        '<input type="radio" value="' +
+                            selectNotify.finalExperts[o].expertId +
+                            '" title="' +
+                            selectNotify.finalExperts[o].expertName +
+                            '" name="expert" />'
+                    )
+                }
+                form.render('radio')
             }
-            debugger
+        }
+        $.get(baseUrl + '/notice/findListByExpertId?expertId=' + token, function (res) {
+            if (res.code === 200 && res.data) {
+                for (var i = 0; i < res.data.length; i++) {
+                    notifyLists = res.data || []
+                    selectNotify = notifyLists[0] || { finalExperts: [] }
+                    $('select[name="shortName"]').append('<option id="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
+                    form.render('select')
+                }
+                setExpertSelect()
+            }
+        })
+        form.on('select(shortname)', function (obj) {
+            selectNotify =
+                notifyLists.find(function (item) {
+                    return item.id === obj.value
+                }) || {}
+            setExpertSelect()
         })
     })
 
     function showAssignExpertModal() {
-        $('.assign_expert_form').show()
         layer.open({
             type: 1,
             title: '指定专家组长',
@@ -80,16 +106,34 @@
             area: ['500px', 'auto'],
             btn: ['确定', '取消'],
             yes: function (index) {
-                var v = form.val('work_info_form')
-
-                layer.close(index)
+                var v = form.val('assign_expert_form')
+                if (!v.expert) {
+                    return layer.msg('请选择专家')
+                }
+                $.get(
+                    baseUrl + '/finalExpert/election?expertId=' + token + '&voteExpertId=' + v.expert + '&noticeId=' + selectNotify.id,
+                    function (res) {
+                        if (res.code === 200) {
+                            layer.close(index)
+                            layer.msg('选举专家成功')
+                        }
+                    }
+                )
             },
             cancel: function () {
                 $('.assign_expert_form').hide()
             },
         })
     }
-    function reviewWork() {
-        window.location.href = 'workListForExpert.html'
+    function reviewWork(state) {
+        if (state === 1) {
+            window.location.href = 'workListForExpert.html'
+        } else if (state === 2) {
+            sessionStorage.setItem('reviewState', 3)
+            window.location.href = 'workListForScore.html'
+        } else {
+            sessionStorage.setItem('reviewState', 4)
+            window.location.href = 'workListForScore.html'
+        }
     }
 </script>

@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="./css/runnet_page.css" />
         <title>作品审核</title>
         <style>
-            .search_form select {
+            .review_form .layui-form-label {
                 width: 100px;
             }
         </style>
@@ -28,35 +28,38 @@
                     <span class="borderl"></span>
                     <span class="layui-breadcrumb" lay-separator=">">
                         <a href="mySpaceDashboard.html">个人信息</a>
-                        <a><cite id="curTitle">作品审核</cite></a>
+                        <a><cite id="curTitle">作品奖项设置</cite></a>
                     </span>
                 </div>
-                <div class="m-t-md">
-                    <div class="layui-inline">活动简称</div>
-                    <div class="layui-inline"><input type="text" class="layui-input" /></div>
+                <form action="" class="layui-form m-t-md">
+                    <div>
+                        <div class="layui-inline">活动简称</div>
+                        <div class="layui-inline">
+                            <select name="shortName" id="" lay-filter="shortname"></select>
+                        </div>
+                    </div>
+                </form>
+                <div>
+                    <div>奖项限额：</div>
+                    <div class="award_list"></div>
                 </div>
                 <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
-                <script type="text/html" id="person_detail_btn">
-                    <select name="" id="">
-                        <option value="已登记安">1</option>
-                        <option value="2">2</option>
-                    </select>
-                </script>
+                <div class="border-top m-t-lg m-b-lg"></div>
                 <form class="review_form layui-form" action lay-filter="review_form">
-                    <div class="layui-form-item">
+                    <!-- <div class="layui-form-item">
                         <label class="layui-form-label">审核结果</label>
                         <div class="layui-input-block">
-                            <select name="firstReviewState" lay-filter="firstReviewState">
+                            <select name="state" lay-filter="state">
                                 <option value="1">通过</option>
                                 <option value="2">不通过</option>
                                 <option value="3">修改</option>
                             </select>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="layui-form-item">
-                        <label class="layui-form-label">审核意见</label>
+                        <label class="layui-form-label required">审核意见</label>
                         <div class="layui-input-block">
-                            <textarea name="firstOpinion" lay-verify="" placeholder="" class="layui-textarea"></textarea>
+                            <textarea name="leaderOpinion" lay-verify="required" placeholder="" class="layui-textarea"></textarea>
                         </div>
                     </div>
                     <div class="layui-form-item m-t-lg p-l-md text-center">
@@ -74,62 +77,139 @@
 <script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
 <script src="js/base.js"></script>
 <script>
-    var userId = sessionStorage.getItem('token')
+    var token = sessionStorage.getItem('token')
     var activityDataGrid = [],
-        notifyDetail = {},
-        noticeId = JSON.parse(sessionStorage.getItem('findWorkByWorkType')).noticeId
+        selectNotify = { awardSetting: [] }
 
     $('#my_space_nav').load('templates/my_space_nav.html')
-    $.get(baseUrl + '/notice/detail?noticeId=' + noticeId, function (res) {
-        if (res.code === 200) {
-            notifyDetail = res.data
-        }
-    })
+
     layui.use(['table', 'form'], function () {
         var table = layui.table,
             form = layui.form
 
+        form.on('select(shortName)', function (obj) {
+            selectNotify =
+                notifyLists.find(function (item) {
+                    return item.id === obj.value
+                }) || {}
+            getWorks()
+        })
+        getWorks = function () {
+            $.get(baseUrl + '/works/finalList?expertId=' + token + '&noticeId=' + selectNotify.id, function (workRes) {
+                if (workRes.code === 200) {
+                    activityDataGrid = workRes.data
+                    renderTable()
+                }
+            })
+        }
+        // 获取活动
+        $.get(baseUrl + '/notice/findListByExpertId?expertId=' + token, function (res) {
+            if (res.code === 200 && res.data) {
+                for (var i = 0; i < res.data.length; i++) {
+                    notifyLists = res.data || []
+                    selectNotify = notifyLists[0] || { awardSetting: [] }
+                    awardSetting = JSON.parse(selectNotify.awardSetting) || []
+                    $('select[name="shortName"]').append('<option id="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
+
+                    form.render('select')
+                }
+                getWorks()
+            }
+        })
         renderTable = function () {
+            var optionEl = ''
+            for (var i = 0; i < awardSetting.length; i++) {
+                optionEl += '<option value="' + awardSetting[i].level + '">' + awardSetting[i].level + '</option>'
+                $('.award_list').append('<div>' + awardSetting[i].level + awardSetting[i].value + '个</div>')
+            }
             table.render({
                 elem: '#work_table',
-                url: baseUrl + '/works/pageListById',
-                contentType: 'application/json',
-                method: 'post',
-                where: JSON.parse(sessionStorage.getItem('findWorkByWorkType')),
-                limits: [10, 20, 50, 80, 100],
-                response: {
-                    statusCode: 200, //重新规定成功的状态码为 200，table 组件默认为 0
-                },
-                parseData: function (res) {
-                    activityDataGrid = res.data.data
-                    return {
-                        message: res.message,
-                        code: res.code,
-                        count: res.data.count, //解析数据长度
-                        data: res.data.data, //解析数据列表
-                    }
-                },
+                data: activityDataGrid,
                 cols: [
                     [
                         { type: 'numbers' },
                         { field: 'worksType', title: '作品类型' },
+                        { field: 'name', title: '作品名称' },
                         { field: 'author', title: '作者' },
                         { field: '', title: '单位' },
-                        { field: 'updateTime', title: '职务' },
                         { field: 'score', title: '得分/得票数' },
                         {
                             field: 'score',
                             title: '奖项',
-                            toolbar: '#person_detail_btn',
+                            templet: function (d, idx) {
+                                var el =
+                                    ' <form class="award_form layui-form" action lay-filter="award_form">' +
+                                    '<select name="" workId="' +
+                                    d.id +
+                                    '">' +
+                                    optionEl +
+                                    '</select>' +
+                                    '</form>'
+                                return el
+                            },
                         },
                     ],
                 ],
                 done: function (obj) {
-                    console.log(obj)
+                    $('.layui-table-body, .layui-table-box, .layui-table-cell').css('overflow', 'visible')
+                    // $('.layui-table-body, .layui-table-cell,td[data-field="score"]  ').css('overflow', 'visible')
+
+                    var cells = document.querySelectorAll('div[lay-id="work_table"] .layui-table-cell')
+                    for (var i = 0; i < cells.length; i++) {
+                        cells[i].style.height = 'auto'
+                    }
+                    $('.award_form select').val(' ')
+                    form.render('')
                 },
             })
         }
 
-        renderTable()
+        form.on('submit(submit_form)', function (obj) {
+            var formData = obj.field
+            var awardForms = $('.award_form'),
+                params = []
+            // 获取作品设置的奖项
+            for (var i = 0; i < awardForms.length; i++) {
+                var select = $(awardForms[i]).find('select'),
+                    v = $(select).val()
+                if (!!v) {
+                    params.push({
+                        id: $(select).attr('workId'),
+                        award: $(select).val(),
+                    })
+                }
+            }
+            if (params.length === 0) {
+                return layer.msg('请先设置作品奖项')
+            }
+            var msg = validateAward(params)
+            if (msg) return layer.msg(msg)
+            formData.noticeId = selectNotify.id
+            formData.awards = params
+            $.ajax({
+                type: 'post',
+                url: baseUrl + '/works/awardSetting',
+                data: JSON.stringify(formData),
+                contentType: 'application/json;charset=UTF-8',
+                success: function (res) {
+                    if (res.code === 200) {
+                        layer.msg('操作成功')
+                    }
+                },
+            })
+        })
     })
+
+    function validateAward(validateArr) {
+        var msg
+        for (var o = 0; o < awardSetting.length; o++) {
+            var levelList = validateArr.filter(function (item) {
+                return item.award === awardSetting[o].level
+            })
+            if (levelList.length > Number(awardSetting[o].value)) {
+                return (msg = awardSetting[o].level + '已超出最大个数限制')
+            }
+        }
+        return msg
+    }
 </script>

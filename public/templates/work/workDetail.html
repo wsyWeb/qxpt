@@ -69,14 +69,17 @@
 <div id="customDefineParmWrap"></div>
 <script>
     layui.use(['form'], function () {
-        var form = layui.form
+        form = layui.form
         setDefaultValue(form)
     })
     function setDefaultValue(form) {
         var worksInfo = '',
+            workTheme = []
+        if (workDetail.workFields) {
             workTheme = workDetail.workFields.map(function (item) {
                 return item.fieldName
             })
+        }
         switch (workDetail.worksInfo) {
             case 0:
                 worksInfo = '计划单列市'
@@ -133,6 +136,6 @@
         }
         $('#customDefineParmWrap').append(temp)
 
-        $('.workList').append('<a class="color-theme" blank="_target" href="' + imageUrl + workDetail.url + '">' + workDetail.filename + '</a>')
+        $('.workList').append('<a class="color-theme" target="_blank" href="' + imageUrl + workDetail.url + '">' + workDetail.filename + '</a>')
     }
 </script>

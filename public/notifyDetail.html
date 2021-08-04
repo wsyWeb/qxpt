@@ -26,6 +26,12 @@
             .message_form .layui-input-block {
                 margin-left: 150px;
             }
+            #notifyContent {
+                height: 300px;
+                frameborder: '0';
+                scrolling: 'no';
+                width: 100%;
+            }
         </style>
     </head>
 
@@ -44,8 +50,22 @@
                         <a><cite>通知详情</cite></a>
                     </span>
                 </div>
-                <div class="block p-md m-t-lg">
-                    <h1 class="font-20 text-center">李克强主持召开国务院党组会 学习贯彻习近平总书记在庆祝中国共产党成立100周年大会上重要讲话精神</h1>
+                <div class="block p-md m-t-lg overflow-hidden">
+                    <iframe
+                        id="notifyContent"
+                        name="notifyContent"
+                        marginwidth="0"
+                        marginheight="0"
+                        vspace="0"
+                        hspace="0"
+                        allowtransparency="true"
+                        allowfullscreen="true"
+                    ></iframe>
+                    <!-- <div id="handout_wrap_inner"></div> -->
+                    <!-- <object :src="previewUrl" id="notifyContent" type="application/pdf" width="100%" height="100%"></object> -->
+
+                    <!-- <iframe src="" frameborder="0" id="notifyContent" scrolling="no"></iframe> -->
+                    <!-- <h1 class="font-20 text-center">李克强主持召开国务院党组会 学习贯彻习近平总书记在庆祝中国共产党成立100周年大会上重要讲话精神</h1>
                     <ul class="flex-around color-tip m-t-lg">
                         <li>时间：2012-02-01</li>
                         <li>来源：中国日报</li>
@@ -56,7 +76,7 @@
                         <p class="text-indent-2">
                             7月2日，中共中央政治局常委、国务院总理、党组书记李克强主持召开国务院党组会议，学习贯彻习近平总书记在庆祝中国共产党成立100周年大会上的重要讲话精神，研究做好下一步工作。
                         </p>
-                    </div>
+                    </div> -->
                     <h3 class="font-16 m-t-lg">附件:</h3>
                     <ul class="attachments"></ul>
                     <div class="flex-between font-16 m-t-lg">
@@ -175,6 +195,12 @@
             if (res.code === 200) {
                 notifyDetail = res.data
                 setAttachement()
+                // $('#notifyContent').attr('src', imageUrl + '' + notifyDetail.filePath)
+
+                // var iframe = document.getElementById('notifyContent')
+                // var iwindow = iframe.contentWindow
+                // var idoc = iwindow.document
+                // iframe.height = idoc.body.offsetHeight
             }
         })
         form.on('submit(submit_message)', function (data) {
@@ -236,6 +262,7 @@
                     contentType: 'application/json;charset=UTF-8',
                     success: function (res) {
                         if (res.code === 200) {
+                            sessionStorage.setItem('workFormId', '')
                             window.location.href = 'workForm.html'
                             layer.msg('报名成功')
                             layer.close(index)

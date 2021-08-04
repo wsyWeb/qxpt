@@ -33,7 +33,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">审核结果</label>
                         <div class="layui-input-block">
-                            <select name="firstReviewState" lay-filter="firstReviewState">
+                            <select name="state" lay-filter="state">
                                 <option value="1">通过</option>
                                 <option value="2">不通过</option>
                                 <option value="3">修改</option>
@@ -43,17 +43,17 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">审核意见</label>
                         <div class="layui-input-block">
-                            <textarea name="firstOpinion" lay-verify="" placeholder="" class="layui-textarea"></textarea>
+                            <textarea name="opinion" lay-verify="" placeholder="" class="layui-textarea"></textarea>
                         </div>
                     </div>
                     <div class="layui-form-item assignExpert">
-                        <label class="layui-form-label required">分派专家</label>
+                        <label class="layui-form-label required">分派复审专家</label>
                         <div class="layui-input-block" id="experts"></div>
                     </div>
                     <div class="layui-form-item m-t-lg p-l-md text-center">
                         <div class="layui-input-block">
                             <a lay-submit class="layui-btn" lay-filter="submit_form">保存</a>
-                            <a lay-submit class="layui-btn layui-btn-primary next-btn" lay-filter="next">下一个</a>
+                            <a lay-submit class="layui-btn layui-btn-primary next-btn" onclick="next()">下一个</a>
                             <a class="layui-btn layui-btn-primary" href="workListForType.html">返回</a>
                         </div>
                     </div>
@@ -85,7 +85,7 @@
         },
         data: [],
     })
-    $.get(baseUrl + '/works/detail?id=' + sessionStorage.getItem('workId'), function (res) {
+    $.get(baseUrl + '/works/detail?id=' + sessionStorage.getItem('workId') + '&state=' + 2, function (res) {
         if (res.code === 200) {
             workDetail = res.data
             $('.detailForm').load('/templates/work/workDetail.html')
@@ -99,7 +99,7 @@
                 if (!workDetail.nextWorkId) {
                     $('.next-btn').hide()
                 }
-                form.on('select(firstReviewState)', function (obj) {
+                form.on('select(state)', function (obj) {
                     if (Number(obj.value) === 1) {
                         $('.assignExpert').show()
                     } else {
@@ -110,10 +110,10 @@
                     var expertIds = expert.getValue('value'),
                         formData = obj.field
 
-                    if (Number(formData.firstReviewState) === 1 && expertIds.length === 0 && Number(workDetail.distMethod) === 0) {
+                    if (Number(formData.state) === 1 && expertIds.length === 0 && Number(workDetail.distMethod) === 0) {
                         return layer.msg('请分派专家')
                     }
-                    if (Number(formData.firstReviewState) !== 1 && !formData.firstOpinion) {
+                    if (Number(formData.state) !== 1 && !formData.opinion) {
                         return layer.msg('请填写审核意见')
                     }
                     formData.workId = workDetail.id
@@ -141,8 +141,11 @@
                     window.location.href = 'workFirstReview.html'
                 })
             })
+        } else {
+            // window.location.href = 'workListForType.html'
         }
     })
+    // 获取同领域专家
     function getExpert() {
         var fieldIds = []
         if (workDetail.workFields) {
@@ -161,5 +164,9 @@
                 }
             },
         })
+    }
+    function next() {
+        sessionStorage.setItem('workId', workDetail.nextWorkId)
+        window.location.href = 'workFirstReview.html'
     }
 </script>

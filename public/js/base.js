@@ -29,3 +29,16 @@ function guid() {
         return v.toString(16)
     })
 }
+
+// 转换时间
+function formatTime(v) {
+    var date = new Date(v),
+        year = date.getFullYear(),
+        month = date.getMonth(),
+        day = date.getDate(),
+        hour = date.getHours(),
+        minute = date.getMinutes(),
+        seconds = date.getSeconds()
+
+    return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + seconds
+}
