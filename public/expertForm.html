@@ -13,24 +13,39 @@
         <title>注册专家</title>
         <style>
             .invitation_code_wrap {
-                width: 400px;
+                width: 682px;
                 margin: auto;
-                padding-top: 100px;
-                text-align: center;
+                /*padding-top: 100px;*/
+                /*text-align: center;*/
+                height: 359px;
+                margin-top: 60px;
             }
             .code_input_wrap {
-                width: 100%;
-                height: 100px;
-                padding: 30px;
+                width: 81%;
+                height: 54px;
+                margin: 0 auto;
+                background: #fafafa;
+                line-height: 54px;
+                margin-top: 60px;
             }
             .code_input_wrap .layui-input {
                 /* width: 100px; */
-                /* background-color: rgb(242, 242, 242); */
-                border-color: transparent;
+                 background-color:#fafafa;
+                border-color: #fafafa;
+                height: 51px;
+                line-height: 54px;
             }
             .code_input_wrap .layui-input:hover,
             .code_input_wrap .layui-input:focus {
                 border-color: transparent !important;
+            }
+            .invitation_code_wrap .layui-btn{
+                background: #2a6be3;
+                width: 80%;
+                height: 50px;
+                display: block;
+                margin: 0 auto;
+                margin-top: 40px;
             }
             .register_expert_form {
                 /* padding: 20px 50px; */
@@ -91,6 +106,7 @@
             .defaultExpertParams .layui-form-item[disable='1'] .layui-input-block {
                 display: none;
             }
+
         </style>
     </head>
 
@@ -109,12 +125,19 @@
                         <a><cite>专家入驻</cite></a>
                     </span>
                 </div>
-                <div class="invitation_code_wrap">
+
+                <div class="invitation_code_wrap block">
+                    <div class="hot-windows">
+                        <span class="hot-iocn-line"></span>
+                        <span class="hot-title-pulic">请输入邀请码</span>
+                        <span class="layui-layer-setwin colsed-icon"><a class="layui-layer-ico layui-layer-close layui-layer-close1" href="runnet_createLeague.html"></a></span>
+                    </div>
                     <div class="border code_input_wrap border m-b-lg">
                         <input type="text" placeholder="请输入邀请码" autocomplete="off" class="layui-input" />
                     </div>
-                    <button class="layui-btn" onclick="validateCode()">验证</button>
+                    <div style="text-align: center;"><button class="layui-btn" onclick="validateCode()">验证</button></div>
                 </div>
+
                 <form class="layui-form m-t-md register_expert_form" lay-filter="register_expert_form">
                     <div class="font-15 font-bold m-b-md">基本信息</div>
                     <div class="block p-md">

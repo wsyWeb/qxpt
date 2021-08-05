@@ -521,6 +521,14 @@ input::-moz-focus-inner {
     text-overflow: ellipsis;
     overflow: hidden;
 }
+.text-ellipsis-4 {
+    -webkit-line-clamp: 4;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
 
 .text-center {
     text-align: center;
@@ -708,3 +716,29 @@ input::-moz-focus-inner {
 .clearfix:before, .clearfix:after{content:'.';display:block;overflow:hidden;visibility:hidden;font-size:0;line-height:0;width:0;height:0}
 .clearfix:after{clear:both;}
 .clearfix{zoom:1}
+.hot-iocn-line{
+    width: 2px;
+    height: 20px;
+    display: inline-block;
+    background: #4c82e7;
+    line-height: 48px;
+    vertical-align: middle;
+    margin:0px 10px 0px 20px;
+}
+.hot-title-pulic{
+    font-weight: bold;
+    height: 48px;
+    line-height: 48px;
+    color: #4c82e7;
+    font-size: 17px;
+}
+.hot-windows{
+    background: #f1f5fd;
+    height: 71px;
+    line-height: 71px;
+    border-bottom: 1px solid #94b4f1;
+    position: relative;
+}
+.colsed-icon{
+    top: 15px;
+}

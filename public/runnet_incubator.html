@@ -50,6 +50,43 @@
                 left: 50%;
                 transform: translate(-50%, -50%);
             }
+            .layui-tj-qxx{
+                border-width: 2px 0 0;
+                margin: 0px 20px;
+                font-size: 23px;
+                height: 20px;
+                border-color: #4c82e7;
+            }
+            .layui-elem-field legend{
+                color: #4c82e7;
+                text-align: center;
+                font-weight: bold;
+                padding: 0 20px;
+            }
+            .layui-elem-field-p{
+                text-align: center;
+                color: #4c82e7;
+                height: 56px;
+                line-height: 40px;
+            }
+            .layui-top10{
+                margin: 0px 20px;
+                border-width: 2px 0px 0px;
+                height: 40px;
+                line-height: 30px;
+            }
+            .layui-carousel>[carousel-item]>*{
+                background-color: transparent;
+            }
+            .layui-carousel>[carousel-item]:before{
+                content:"";
+            }
+            .layui-carousel-ind{
+                display: none;
+            }
+            .layui-carousel{
+                background-color: transparent;
+            }
         </style>
     </head>
 
@@ -113,16 +150,112 @@
 
                 <div style="height: 300px" class="block ck-wrap relative m-t-lg m-b-lg">
                     <img src="images/incubator/6.png" height="100%;" width="100%" />
-                    <!-- <h1 class="absolute font-32">邀请你来做创客</h1> -->
                 </div>
                 <div class="page-nav m-b-lg">
                     <i class="layui-icon-friends layui-icon color-icon"></i>
-                    <a href="expertStoreList.html"><span>专家信息 >></span></a>
+                    <a href="expertStoreList.html"><span>明星专家信息推荐 >></span></a>
                 </div>
-                <div class="flex block p-md">
-                    <ul class="p-r-lg" style="width: 50%">
-                        <li class="p-b-sm font-14">>> 明星专家推荐</li>
-                        <script id="expertTop_demo" type="text/html">
+
+
+                <div class="block activity p-t-md p-b-md">
+                    <div>
+                        <fieldset class="layui-elem-field layui-field-title layui-tj-qxx">
+                            <legend>中国气象学家</legend>
+                        </fieldset>
+                        <p class="layui-elem-field-p">著名中国气象学家,具有知名度高的中国气象学简历,提供他们的权威资料及介绍,欢迎阅读收藏</p>
+                    </div>
+                    <div class="layui-carousel" id="expert_tuijian">
+                        <div carousel-item id="expertTop_wrap">
+                            <script id="expertTop_demo" type="text/html">
+                                {{# layui.each(d , function(index, item2){ }}
+                                    <div>
+                                        <div class="flex">
+                                            {{# layui.each(item2 , function(index, item1){ }}
+                                            <div style="width: 33.33%" class="relative m-l-md m-r-md relative list">
+                                                <a href="expertStoreDetail.html?id={{item1.id}}"><img class="p-b-sm" src="{{item1.headPortrait}}" style="height:200px; width: 100%" /></a>
+                                                <div class="font-16 text-indent-3">{{item1.name}}</div>
+                                                <div class="p-t-sm font-13 color-tip text-ellipsis-4" style="line-height: 24px;">
+                                                    <span>{{item1.desc}}</span>
+                                                </div>
+                                            </div>
+                                            {{# }); }}
+                                        </div>
+                                    </div>
+                                {{# }); }}
+                            </script>
+                            <div ></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="block activity p-t-md p-b-md" style="margin-top:40px;">
+                    <div>
+                        <fieldset class="layui-elem-field layui-field-title layui-top10">
+                            <legend>十大气象科普创客</legend>
+                        </fieldset>
+                    </div>
+                    <div class="layui-carousel " id="carousel" lay-filter="test1">
+                        <div carousel-item="">
+                            <div>
+                                <div class="flex activity">
+                                    <div style="width: 33.33%" class="p-xs relative m-r-md relative list">
+                                        <img src="images/researchBase/t.png" style="height: 180px; width: 100%" />
+                                        <p class="font-bold p-b-xs p-t-xs text-center font-16">一品集美创客基地</p>
+                                        <div class="text-ellipsis-3 text-indent-2" style="line-height: 26px">国家级众创空间，位于厦门市集美区软件园三期，面积 4000平方米，主要孵化方向为电子商务、移动互联网、TMT 与一品威客网平台主营业务相关项目等。</div>
+                                    </div>
+                                    <div style="width: 33.33%" class="p-xs relative m-r-md relative list">
+                                        <img src="images/researchBase/t.png" style="height: 180px; width: 100%" />
+                                        <p class="font-bold p-b-xs p-t-xs text-center font-16">一品创客海洛基地</p>
+                                        <div class="text-ellipsis-3 text-indent-2" style="line-height: 26px">国家级众创空间，位于厦门市海沧自贸区，面积8000平 方米，主题为“海峡两岸智能机器人孵化空间”，旨在孵化 无人机、机器人、智能硬件等方向创新创业项目。</div>
+                                    </div>
+                                    <div style="width: 33.33%" class="p-xs relative relative list">
+                                        <img src="images/researchBase/t.png" style="height: 180px; width: 100%" />
+                                        <p class="font-bold p-b-xs p-t-xs text-center font-16">一品创客加速器</p>
+                                        <div class="text-ellipsis-3 text-indent-2" style="line-height: 26px">国家级众创空间，位于厦门市集美区软件园三期，以两 岸成长期企业为主要服务对象，提供办公空间设备，政务代 理、路演对接、战略规划、市场营销、培训等专业服务。</div>
+                                    </div>
+                                    <div style="width: 33.33%" class="p-xs relative relative list">
+                                        <img src="images/researchBase/t.png" style="height: 180px; width: 100%" />
+                                        <p class="font-bold p-b-xs p-t-xs text-center font-16">一品创客加速器</p>
+                                        <div class="text-ellipsis-3 text-indent-2" style="line-height: 26px">国家级众创空间，位于厦门市集美区软件园三期，以两 岸成长期企业为主要服务对象，提供办公空间设备，政务代 理、路演对接、战略规划、市场营销、培训等专业服务。</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex activity">
+                                    <div style="width: 33.33%" class="p-xs relative m-r-md relative list">
+                                        <img src="images/researchBase/t.png" style="height: 180px; width: 100%" />
+                                        <p class="font-bold p-b-xs p-t-xs text-center font-16">一品集美创客基地</p>
+                                        <div class="text-ellipsis-3 text-indent-2" style="line-height: 26px">国家级众创空间，位于厦门市集美区软件园三期，面积 4000平方米，主要孵化方向为电子商务、移动互联网、TMT 与一品威客网平台主营业务相关项目等。</div>
+                                    </div>
+                                    <div style="width: 33.33%" class="p-xs relative m-r-md relative list">
+                                        <img src="images/researchBase/t.png" style="height: 180px; width: 100%" />
+                                        <p class="font-bold p-b-xs p-t-xs text-center font-16">一品创客海洛基地</p>
+                                        <div class="text-ellipsis-3 text-indent-2" style="line-height: 26px">国家级众创空间，位于厦门市海沧自贸区，面积8000平 方米，主题为“海峡两岸智能机器人孵化空间”，旨在孵化 无人机、机器人、智能硬件等方向创新创业项目。</div>
+                                    </div>
+                                    <div style="width: 33.33%" class="p-xs relative m-r-md relative list">
+                                        <img src="images/researchBase/t.png" style="height: 180px; width: 100%" />
+                                        <p class="font-bold p-b-xs p-t-xs text-center font-16">一品创客加速器</p>
+                                        <div class="text-ellipsis-3 text-indent-2" style="line-height: 26px">国家级众创空间，位于厦门市集美区软件园三期，以两 岸成长期企业为主要服务对象，提供办公空间设备，政务代 理、路演对接、战略规划、市场营销、培训等专业服务。</div>
+                                    </div>
+                                    <div style="width: 33.33%" class="p-xs relative relative list">
+                                        <img src="images/researchBase/t.png" style="height: 180px; width: 100%" />
+                                        <p class="font-bold p-b-xs p-t-xs text-center font-16">一品创客加速器</p>
+                                        <div class="text-ellipsis-3 text-indent-2" style="line-height: 26px">国家级众创空间，位于厦门市集美区软件园三期，以两 岸成长期企业为主要服务对象，提供办公空间设备，政务代 理、路演对接、战略规划、市场营销、培训等专业服务。</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+<!--                <div class="flex block p-md">-->
+<!--                    <ul class="p-r-lg" style="width: 50%">-->
+<!--                        <li class="p-b-sm font-14">>> 明星专家推荐</li>-->
+                        <script id="expertTop_demo1" type="text/html">
                             {{# layui.each(d , function(index, item){ }}
                             <li class="flex p-b-md">
                                 <div>
@@ -133,30 +266,30 @@
                             </li>
                             {{# }); }}
                         </script>
-                        <div id="expertTop_wrap"></div>
-                    </ul>
-                    <ul class="p-l-lg" style="width: 50%">
-                        <li class="p-b-sm">
-                            <span class="font-14">
-                                <a class="link-hover" href="expertForm.html">专家入驻 >></a>
-                            </span>
-                        </li>
-                        <li style="height: 100px">
-                            <p class="color-detail">专家入驻流程简介</p>
-                        </li>
-                        <li>
-                            <span class="font-14">所有专家 >></span>
-                        </li>
-                        <script id="letter_demo" type="text/html">
-                            {{# layui.each(d, function(index, item){ }}
-                            <p>
-                                <span class="cursor-pointer link-hover">{{item}}</span>
-                            </p>
-                            {{# }); }}
-                        </script>
-                        <li id="search-letter" class=""></li>
-                    </ul>
-                </div>
+                        <div id="expertTop_wrap1"></div>
+<!--                    </ul>-->
+<!--                    <ul class="p-l-lg" style="width: 50%">-->
+<!--                        <li class="p-b-sm">-->
+<!--                            <span class="font-14">-->
+<!--                                <a class="link-hover" href="expertForm.html">专家入驻 >></a>-->
+<!--                            </span>-->
+<!--                        </li>-->
+<!--                        <li style="height: 100px">-->
+<!--                            <p class="color-detail">专家入驻流程简介</p>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <span class="font-14">所有专家 >></span>-->
+<!--                        </li>-->
+<!--                        <script id="letter_demo" type="text/html">-->
+<!--                            {{# layui.each(d, function(index, item){ }}-->
+<!--                            <p>-->
+<!--                                <span class="cursor-pointer link-hover">{{item}}</span>-->
+<!--                            </p>-->
+<!--                            {{# }); }}-->
+<!--                        </script>-->
+<!--                        <li id="search-letter" class=""></li>-->
+<!--                    </ul>-->
+<!--                </div>-->
 
                 <div class="page-nav">
                     <i class="iconfont icon-fuwu color-icon"></i>
@@ -227,51 +360,74 @@
 <script type="text/javascript" src="/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
 <script type="text/javascript" src="js/base.js"></script>
 <script>
-    var letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     $(function () {
-        layui.use(['laytpl'], function () {
-            var laytpl = layui.laytpl
 
-            var getTpl = letter_demo.innerHTML,
-                expertTopTpl = expertTop_demo.innerHTML;
-
-            var view = document.getElementById('search-letter');
-            var expertTopTView = document.getElementById('expertTop_wrap');
-            laytpl(getTpl).render(letter, function (html) {
-                view.innerHTML = html
-            })
-
-            var renderExpertTop = function(v){
-                laytpl(expertTopTpl).render(v, function (html) {
-                    expertTopTView.innerHTML = html
-                })
-            }
+        layui.use(['laytpl','carousel'], function () {
+            var laytpl = layui.laytpl,carousel = layui.carousel
             $.ajax({
                 type: 'get',
-                url: baseUrl + '/expert/queryExperyList?istop=1&limit=2&page=1&examineStatus=2&request=istop',//examineStatus设置为2审核通过
+                url: baseUrl + '/expert/queryExperyList?istop=1&limit=100&page=1&examineStatus=1,2&request=istop',//examineStatus设置为2审核通过
                 contentType: 'application/json;charset=UTF-8',
                 success: function (res) {
                     if (res.code == 200) {
                         var arr = [];
-                        res.data.data.forEach((value1)=>{
-                            console.log(value1);
-                            value1.headPortrait = imageUrl+value1.headPortrait;
-                            value1.desc = "";
-                            if(value1.dataArr!=null&&value1.dataArr!=''){
-                                for(var i=0;i<value1.dataArr.length;i++) {
-                                    if((value1.dataArr[0].title).trim() == "国内外相关团体任职情况"){
-                                        value1.desc = value1.dataArr[0].value;//就这样
+                        var count = res.data.count;
+                        var page = Math.ceil(parseInt(count)/3);
+                        var index = 0;
+                        var objArr = [];
+
+                        res.data.data.forEach((value)=>{
+                            if(index === 3){
+                                arr.push(objArr);
+                                objArr = [];
+                                index = 0;
+                            }else{
+                                value.headPortrait = imageUrl+value.headPortrait;
+                                value.desc = "";
+                                if(value.dataArr!=null&&value.dataArr!=''){
+                                    for(var i=0;i<value.dataArr.length;i++) {
+                                        if((value.dataArr[0].title).trim() == "国内外相关团体任职情况"){
+                                            value.desc = value.dataArr[0].value;//就这样
+                                        }
                                     }
                                 }
+                                objArr.push(value);
+                                index++;
                             }
-                            arr.push(value1);
                         })
+                        arr.push(objArr);
                         console.log(arr);
+                        var expertTopTpl = expertTop_demo.innerHTML;
+                        var expertTopTView = document.getElementById('expertTop_wrap');
+                        renderExpertTop = function(v){
+                            laytpl(expertTopTpl).render(v, function (html) {
+                                expertTopTView.innerHTML = html
+                            })
+                            var options = {};
+                            options.elem='#expert_tuijian';
+                            ins.reload(options);
+                        }
                         renderExpertTop(arr)
                     }
                 },
             })
 
+            var ins = carousel.render({
+                elem: '#expert_tuijian',
+                arrow: 'always',
+                width: '1200px',
+                height: '310px',
+                autoplay:false
+            })
+            carousel.render({
+                elem: '#carousel',
+                arrow: 'always',
+                width: '1200px',
+                height: '310px',
+                autoplay:false
+            })
+
         });
     })
+
 </script>
