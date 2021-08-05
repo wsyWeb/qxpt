@@ -30,52 +30,62 @@
 
         <div class="runnet_main_body">
             <div class="wrap">
-                <div class="runnut_head">
-                    <span class="borderl"></span>
-                    <span class="layui-breadcrumb" lay-separator=">">
-                        <a href="workManage.html">作品管理</a>
-                        <a><cite id="curTitle">作品复审结果</cite></a>
-                    </span>
-                </div>
-
-                <div class="layui-tab layui-tab-brief" lay-filter="worktype_tab">
-                    <ul class="layui-tab-title" id="tabTitle"></ul>
-                    <script id="tab_title" type="text/html">
-                        {{# layui.each(d, function(idx1, item){ }}
-                        <li lay-id="{{item.id}}">{{item.name}}</li>
-                        {{# }); }}
-                    </script>
-                </div>
-                <div class="layui-row m-t-md">
-                    <div class="layui-col-md4">
-                        <div class="layui-inline">终审作品数</div>
-                        <div class="layui-inline">
-                            <input type="number" class="layui-input workNum" onblur="changeWorkNum(this)" value="5" />
+                <div id="my_space_content" class="m-t-lg">
+                    <div class="runnut_head">
+                        <span class="layui-breadcrumb">
+                            <a href="workManage.html">作品管理</a>
+                            <a><cite id="curTitle">作品复审结果</cite></a>
+                        </span>
+                    </div>
+                    <div class="p-md">
+                        <div class="layui-tab layui-tab-brief" lay-filter="worktype_tab">
+                            <ul class="layui-tab-title" id="tabTitle"></ul>
+                            <script id="tab_title" type="text/html">
+                                {{# layui.each(d, function(idx1, item){ }}
+                                <li lay-id="{{item.id}}">{{item.name}}</li>
+                                {{# }); }}
+                            </script>
                         </div>
-                        <div class="layui-inline">个</div>
-                    </div>
-                    <div class="layui-col-md8">
-                        <form class="layui-form search_form m-b-xs" action="" lay-filter="search_form">
-                            <div>
-                                <div class="layui-inline">参赛情况</div>
-                                <div class="layui-inline">
-                                    <select class="activity_search" lay-verify="" lay-filter="activity_search" style="width: 100px">
-                                        <option value="">按单位统计</option>
-                                    </select>
+                        <div class="layui-row m-t-md">
+                            <div class="layui-col-md4">
+                                <div class="setting-wrap">
+                                    <div class="layui-inline">终审作品数</div>
+                                    <div class="layui-inline">
+                                        <input type="number" class="layui-input workNum" onblur="changeWorkNum(this)" value="5" />
+                                    </div>
+                                    <div class="layui-inline">个</div>
                                 </div>
+                                <div class="m-t-md setting-wrap">
+                                    <div class="layui-inline">已选择</div>
+                                    <div class="layui-inline selectNum">5</div>
+                                    <div class="layui-inline">个作品</div>
+                                </div>
+                                <div class="total-wrap"></div>
                             </div>
-                        </form>
-                        <table lay-filter="statisticsTable" id="statisticsTable"></table>
+                            <div class="layui-col-md8">
+                                <form class="layui-form search_form m-b-xs" action="" lay-filter="search_form">
+                                    <div>
+                                        <div class="layui-inline">参赛情况</div>
+                                        <div class="layui-inline">
+                                            <select class="activity_search" lay-verify="" lay-filter="activity_search" style="width: 100px">
+                                                <option value="">按单位统计</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                                <table lay-filter="statisticsTable" id="statisticsTable"></table>
+                            </div>
+                        </div>
+
+                        <div class="border-top m-t-lg m-b-lg"></div>
+                        <div class="text-center font-bold font-15">拟终审作品名单</div>
+                        <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
+                        <div class="m-t-lg text-center optWrap none">
+                            <!-- <button class="layui-btn layui-btn-primary" onclick="loadMore()">加载更多</button> -->
+                            <button class="layui-btn save-btn" onclick="saveFun()">保存</button>
+                            <button class="layui-btn none submit-btn" onclick="submitFun()">提交</button>
+                        </div>
                     </div>
-                </div>
-
-                <div class="border-top m-t-lg m-b-lg"></div>
-
-                <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
-                <div class="m-t-lg text-center">
-                    <button class="layui-btn layui-btn-primary" onclick="loadMore()">加载更多</button>
-                    <button class="layui-btn save-btn" onclick="saveFun()">保存</button>
-                    <button class="layui-btn none submit-btn" onclick="submitFun()">提交</button>
                 </div>
             </div>
         </div>
@@ -87,7 +97,8 @@
 <script src="js/base.js"></script>
 <script>
     var userId = sessionStorage.getItem('token')
-    var activityDataGrid = [],
+    var activityDataGrid = [], //活动列表
+        companyStatisticsData = [], //统计列表
         notifyDetail = {},
         noticeId = sessionStorage.getItem('notifyId'),
         worksTypeId = ''
@@ -106,27 +117,40 @@
             if (Number(worksTypeId) === 0) {
                 $('.submit-btn').show()
                 $('.save-btn').hide()
-                getNumStatistic()
+                $('.setting-wrap').hide()
+                $('.total-wrap').show()
+                getTotalNum()
             } else {
                 $('.submit-btn').hide()
                 $('.save-btn').show()
+                $('.setting-wrap').show()
+                $('.total-wrap').hide()
             }
+            getCompanyStatistic()
             getWorks()
-            getStatistic()
         })
         // 获取作品统计数量
-        var getNumStatistic = function () {
+        var getTotalNum = function () {
+            $('.total-wrap').empty()
             $.get(baseUrl + '/works/finalCountByType?noticeId=' + noticeId, function (res) {
-                console.log(res.data)
+                var el = ''
+                if (res.code === 200) {
+                    for (var i = 0; i < res.data.length; i++) {
+                        el += '<div class="m-b-sm">' + res.data[i].worksType + '：' + res.data[i].count + '</div>'
+                    }
+                }
+                $('.total-wrap').append(el)
+                $('.setting-wrap').hide()
+                $('.total-wrap').show()
             })
         }
         // 获取进入终审的作品
         var getWorks = function () {
             var url =
                 Number(worksTypeId) === 0
-                    ? '/works/reviewList?noticeId=' + noticeId
+                    ? '/works/allCacheList?noticeId=' + noticeId
                     : '/works/reviewList?noticeId=' + noticeId + '&worksTypeId=' + worksTypeId
-            $.get(baseUrl + '/works/reviewList?noticeId=' + noticeId + '&worksTypeId=' + worksTypeId, function (res) {
+            $.get(baseUrl + url, function (res) {
                 if (res.code === 200) {
                     activityDataGrid = res.data
                     renderTable()
@@ -134,14 +158,15 @@
             })
         }
         //获取按单位统计的数据
-        var getStatistic = function () {
+        var getCompanyStatistic = function () {
             var url =
                 Number(worksTypeId) === 0
-                    ? '/works/listByCompany?noticeId=' + noticeId
+                    ? '/works/allListByCompany?noticeId=' + noticeId
                     : '/works/listByCompany?noticeId=' + noticeId + '&worksTypeId=' + worksTypeId
             $.get(baseUrl + url, function (statisticRes) {
                 if (statisticRes.code === 200) {
-                    renderStatisticsTable(statisticRes.data)
+                    companyStatisticsData = statisticRes.data
+                    renderStatisticsTable()
                 }
             })
         }
@@ -156,50 +181,87 @@
                 })
                 $('#tabTitle li:first-child').addClass('layui-this')
                 worksTypeId = $('#tabTitle li.layui-this').attr('lay-id')
+                getCompanyStatistic()
                 getWorks()
-                getStatistic()
             }
         })
-        renderStatisticsTable = function (d) {
+        renderStatisticsTable = function () {
             table.render({
                 elem: '#statisticsTable',
-                data: d,
+                data: companyStatisticsData,
                 cols: [
                     [
-                        { field: 'recommendUnit', title: '单位' },
-                        { field: 'workCount', title: '作品数' },
-                        { field: 'awardCount', title: '拟终审作品数' },
+                        { field: 'RECOMMENDUNIT', title: '单位' },
+                        { field: 'COUNT', title: '作品数' },
+                        { field: 'FINALCOUNT', title: '拟终审作品数' },
                     ],
                 ],
             })
         }
         renderTable = function () {
+            cols = [
+                { field: 'name', title: '作品名称' },
+                { field: 'author', title: '作者' },
+                { field: 'recommendUnit', title: '单位' },
+                { field: 'score', title: '得分', sort: true },
+            ]
+            if (Number(worksTypeId) !== 0) {
+                cols.unshift({ type: 'checkbox' })
+            }
             table.render({
                 elem: '#work_table',
                 data: activityDataGrid,
-                cols: [
-                    [
-                        { type: 'checkbox' },
-                        // { type: 'numbers', title: '排名' },
-                        { field: 'name', title: '作品名称' },
-                        { field: 'author', title: '作者' },
-                        { field: 'recommendUnit', title: '单位' },
-                        { field: 'score', title: '得分', sort: true },
-                    ],
-                ],
+                cols: [cols],
                 done: function (res) {
                     // 去掉全选
-                    $('thead .laytable-cell-checkbox').children().remove()
-                    for (var i = 0; i < res.data.length; i++) {
-                        // var check = res.data[i]['isCheked']
-                        if (i < 5) {
-                            res.data[i]['LAY_CHECKED'] = true
-                            $('tr[data-index=' + i + ']').addClass('checked')
-                            $('tr[data-index=' + i + '] input[type="checkbox"]').prop('checked', true)
-                            $('tr[data-index=' + i + '] input[type="checkbox"]')
-                                .next()
-                                .addClass('layui-form-checked')
+                    if (res.data.length === 0) {
+                        $('.optWrap').hide()
+                        $('.workNum').val(0)
+                        $('.selectNum').html(0)
+                        return
+                    }
+                    $('.optWrap').show()
+                    if (Number(worksTypeId) !== 0) {
+                        $('thead .laytable-cell-checkbox').children().remove()
+                        cacheList = res.data.filter((item) => item.isCache === 1)
+                        if (cacheList.length > 0) {
+                            for (var i = 0; i < res.data.length; i++) {
+                                if (res.data[i].isCache === 1) {
+                                    res.data[i]['LAY_CHECKED'] = true
+                                    $('tr[data-index=' + i + ']').addClass('checked')
+                                    $('tr[data-index=' + i + '] input[type="checkbox"]').prop('checked', true)
+                                    $('tr[data-index=' + i + '] input[type="checkbox"]')
+                                        .next()
+                                        .addClass('layui-form-checked')
+                                }
+                            }
+                            $('.workNum').val(cacheList.length)
+                            $('.selectNum').html(cacheList.length)
+                        } else {
+                            var num = res.data.length
+                            if (num > 5) num = 5
+                            for (var i = 0; i < res.data.length; i++) {
+                                if (i < num) {
+                                    res.data[i]['LAY_CHECKED'] = true
+                                    $('tr[data-index=' + i + ']').addClass('checked')
+                                    $('tr[data-index=' + i + '] input[type="checkbox"]').prop('checked', true)
+                                    $('tr[data-index=' + i + '] input[type="checkbox"]')
+                                        .next()
+                                        .addClass('layui-form-checked')
+                                }
+                            }
+                            $('.workNum').val(num)
+                            $('.selectNum').html(num)
                         }
+                        for (var j = 0; j < companyStatisticsData.length; j++) {
+                            var list = res.data.filter((item) => {
+                                return item.LAY_CHECKED && item.recommendUnit === companyStatisticsData[j].RECOMMENDUNIT
+                            })
+                            companyStatisticsData[j]['FINALCOUNT'] = list.length
+                        }
+                        renderStatisticsTable()
+                    } else {
+                        $('div[lay-id="work_table"] tbody tr').addClass('checked')
                     }
                 },
             })
@@ -224,13 +286,26 @@
             } else {
                 $(obj.tr).removeClass('checked')
             }
-
-            // obj.update({
-            //     isCheked: obj.checked ? 1 : 0,
-            // })
-            // selectExpert = datagrid.filter(function (i) {
-            //     return Number(i.isCheked) == 1
-            // })
+            $('.selectNum').html(checkStatus.data.length)
+            // 动态获取终审作品数
+            companyStatisticsData.forEach(function (item) {
+                if (item.RECOMMENDUNIT === obj.data.recommendUnit) {
+                    if (obj.checked) {
+                        if (item.FINALCOUNT) {
+                            item.FINALCOUNT += 1
+                        } else {
+                            item.FINALCOUNT = 1
+                        }
+                    } else {
+                        if (item.FINALCOUNT) {
+                            item.FINALCOUNT -= 1
+                        } else {
+                            item.FINALCOUNT = 0
+                        }
+                    }
+                }
+            })
+            renderStatisticsTable()
         })
         // table.on('sort(work_table)', function (obj) {
         //     table.reload('expert_table', {
@@ -256,16 +331,18 @@
         var workIds = data.map(function (item) {
             return item.id
         })
-        if (workIds.length === 0) {
-            return layer.msg('请选择作品')
+        if (workIds.length !== Number($('.workNum').val())) {
+            return layer.msg('请选择' + $('.workNum').val() + '个作品')
         }
-        if (workIds.length > Number($('.workNum').val())) {
-            return layer.msg('选择的作品已超过最大限制')
+        var formData = {
+            workIds,
+            noticeId,
+            worksTypeId,
         }
         $.ajax({
             type: 'post',
             url: baseUrl + '/works/cacheWorks',
-            data: JSON.stringify(workIds),
+            data: JSON.stringify(formData),
             contentType: 'application/json;charset=UTF-8',
             success: function (res) {
                 if (res.code === 200) {
@@ -278,16 +355,18 @@
         var workIds = activityDataGrid.map(function (item) {
             return item.id
         })
-        $.ajax({
-            type: 'post',
-            url: baseUrl + '/works/selectFinalWorkList',
-            data: JSON.stringify(workIds),
-            contentType: 'application/json;charset=UTF-8',
-            success: function (res) {
-                if (res.code === 200) {
-                    layer.msg('作品已进入终审')
-                }
-            },
+        layer.confirm('是否提交作品进入终审', { title: '提示', btn: ['确定', '取消'] }, function () {
+            $.ajax({
+                type: 'post',
+                url: baseUrl + '/works/selectFinalWorkList',
+                data: JSON.stringify(workIds),
+                contentType: 'application/json;charset=UTF-8',
+                success: function (res) {
+                    if (res.code === 200) {
+                        layer.msg('作品已进入终审')
+                    }
+                },
+            })
         })
     }
 </script>

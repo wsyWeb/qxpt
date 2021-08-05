@@ -16,6 +16,13 @@
             .wrok_form .layui-input-block {
                 margin-left: 130px;
             }
+            .tip-title {
+                font-weight: bold;
+                padding: 20px 0;
+            }
+            .none {
+                display: none;
+            }
         </style>
     </head>
 
@@ -39,6 +46,8 @@
                 <form class="layui-form m-t-md wrok_form" action="" lay-filter="work_form">
                     <input name="noticeId" type="hidden" />
                     <div class="block p-md">
+                        <div class="layui-form-item font-bold font-15">基本信息</div>
+
                         <div class="layui-form-item">
                             <label class="layui-form-label">所属活动</label>
                             <div class="layui-input-block">
@@ -106,7 +115,56 @@
                                 <input type="text" lay-verify="" placeholder="" class="layui-input" />
                             </div>
                         </div>
-                        <div id="customDefineParmWrap"></div>
+                        <div class="layui-form-item font-bold font-15">推荐表信息</div>
+                        <div id="customDefineParmWrap" class="border p-md">
+                            <div id="formBasic"></div>
+                            <div id="formOther"></div>
+                            <div id="formList" class="none">
+                                <div class="tip-title">参评作品目录</div>
+                                <table class="layui-table">
+                                    <colgroup>
+                                        <col width="150" />
+                                        <col width="150" />
+                                        <col width="150" />
+                                        <col width="150" />
+                                        <col width="120" />
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>作品标题</th>
+                                            <th>刊发媒体</th>
+                                            <th>刊发日期</th>
+                                            <th>版面</th>
+                                            <th>字数</th>
+                                            <th>备注（标出代表作）</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><input type="text" class="layui-input" /></td>
+                                            <td><input type="text" class="layui-input" /></td>
+                                            <td><input type="text" class="layui-input" /></td>
+                                            <td><input type="text" class="layui-input" /></td>
+                                            <td><input type="text" class="layui-input" /></td>
+                                            <td><input type="text" class="layui-input" /></td>
+                                            <td>
+                                                <i
+                                                    class="layui-icon-reduce-circle layui-icon font-18 cursor-pointer del-award-btn"
+                                                    title="删除"
+                                                    onclick="removeColunmNode(this)"
+                                                ></i>
+                                                <i
+                                                    class="layui-icon-add-circle layui-icon font-18 cursor-pointer"
+                                                    title="新增"
+                                                    onclick="addColunmNode(this)"
+                                                ></i>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                     <div class="layui-form-item m-t-lg p-l-md text-center">
                         <div class="layui-input-block">

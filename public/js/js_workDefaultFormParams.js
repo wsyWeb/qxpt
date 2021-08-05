@@ -1,15 +1,19 @@
+var defaultFormTitle = {
+    newspapers: '',
+}
+
 var defaultForm = {
     // 报刊类
     newspapers: [
-        { name: '参评奖项', sort: 1, value: '', placeholder: '' },
-        { name: '责任编辑', sort: 1, value: '', placeholder: '' },
-        { name: '刊播版面/频道/栏目', sort: 1, value: '', placeholder: '' },
-        { name: '作品字数/时长', sort: 1, value: '', placeholder: '' },
-        { name: '刊播单位', sort: 1, value: '', placeholder: '' },
-        { name: '首发日期', sort: 1, type: 'date', value: '', placeholder: '' },
-        { name: '作品评价', sort: 2, value: '', placeholder: '' },
-        { name: '采编过程', sort: 2, value: '', placeholder: '' },
-        { name: '社会效果', sort: 2, value: '', placeholder: '' },
+        { name: '参评奖项', sort: 1, value: '', placeholder: '', title: 'award' },
+        { name: '责任编辑', sort: 1, value: '', placeholder: '', title: 'author' },
+        { name: '刊播版面/频道/栏目', sort: 1, value: '', placeholder: '', title: 'column' },
+        { name: '作品字数/时长', sort: 1, value: '', placeholder: '', title: 'duration' },
+        { name: '刊播单位', sort: 1, value: '', placeholder: '', title: 'publishUnit' },
+        { name: '首发日期', sort: 1, type: 'date', value: '', placeholder: '', title: 'publishDate' },
+        { name: '作品评价', sort: 2, value: '', placeholder: '', title: 'comment' },
+        { name: '采编过程', sort: 2, value: '', placeholder: '', title: 'proccess' },
+        { name: '社会效果', sort: 2, value: '', placeholder: '', title: 'effect' },
         { name: '推荐单位盖章', sort: 0, value: '', placeholder: '' },
     ],
     // 媒体融合类

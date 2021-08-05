@@ -1,383 +1,395 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
-    <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/lib/layui/css/layui.css" />
-    <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/css/common.css"/>
-    <!-- 导入自己的样式表 -->
-    <link rel="stylesheet" href="css/font/iconfont.css" />
-    <link rel="stylesheet" href="css/runnet_common.css" />
-    <link rel="stylesheet" href="css/runnet_page.css" />
-    <title>专家介绍</title>
-    <style>
-        .title {
-            height: 30px;
-            line-height: 30px;
-            padding:0 15px;
-            font-weight: bold;
-            float: left;
-        }
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+        <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/lib/layui/css/layui.css" />
+        <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/css/common.css" />
+        <!-- 导入自己的样式表 -->
+        <link rel="stylesheet" href="css/font/iconfont.css" />
+        <link rel="stylesheet" href="css/runnet_common.css" />
+        <link rel="stylesheet" href="css/runnet_page.css" />
+        <title>专家介绍</title>
+        <style>
+            .title {
+                height: 30px;
+                line-height: 30px;
+                padding: 0 15px;
+                font-weight: bold;
+                float: left;
+            }
 
-        #search-letter p {
-            display: inline-block;
-            padding-right: 40px;
-            line-height: 35px;
-        }
-        .overlay {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            left: 0;
-            top: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #cacad02b;
-            display: none;
-        }
-        .overlay button {
-            border-radius: 20px;
-        }
-        .activity .list:hover .overlay {
-            display: flex;
-        }
-        .ck-wrap h1 {
-            color: #fff;
-            text-align: center;
-            height: 100%;
-            width: 100%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .rzly{
-            /*border-bottom: 1px solid #eeeeee;*/
-            /*height: 50px;*/
-            width: 100%;
-        }
-        .rzly .more{
-            text-align: right;
-            justify-content: flex-end;
-            flex: 1;
-            margin-right: 15px;
-            color: #a5a5a5;
-            line-height: 32px;
-            float: right;
-            cursor:pointer;
-            background: linear-gradient(180deg,rgba(255,255,255,0),#fff);/*实现渐变效果，遮罩效果*/
-        }
-        .tag-ul li{
-            margin: 0px 7px 7px 7px;
-            padding: 2px 8px;
-            border: 1px solid #f7f7f7;
-            color: #737373;
-            border-radius: 3px;
-            cursor: pointer;
-            float: left;
-            transition: all .2s;
-            -webkit-transition: all .2s;
-        }
-        .tag-ul{
-            /*height: 30px;*/
-            line-height: 27px;
-            width: 575px;
-            float: left;
-            border: 1px solid transparent;
-            padding: 0px 10px;
-            overflow: hidden;
-            height: 41px;
-        }
-        .tag-ul li.on{
-            border: 1px solid #427ce7;
-            color: #427ce7;
-            border-radius: 3px;
-        }
-        .squery1{border-bottom: 1px solid #eeeeee;
-            height: 70px;
-            width: 100%;}
-        .squery2{height: 70px;
-            width: 100%;border-bottom:none;}
-        .squery1 .title{
-            height: 70px;
-            line-height: 70px;
-            width: 91px;
-            text-align: right;
-        }
-        .squery1 .layui-inline{
-            margin-top: 16px;
-        }
-        .layui-input{width:210px!important;}
-        #btnserach{background: #2a6be3;color: white;border-radius:5px;width: 91px;
-            text-align: center;}
-        .layui-btn .layui-icon{
-            background: white;
-            border-radius: 2px;
-            color: #2a6be3;
-        }
-        .hot-title{
-            font-weight: bold;
-            height: 48px;
-            line-height: 48px;
-            color: #4c82e7;
-            font-size:15px;
-        }
-        .hot-iocn{
-            width: 2px;
-            height: 20px;
-            display: inline-block;
-            background: #4c82e7;
-            line-height: 48px;
-            vertical-align: middle;
-            margin: 0px 5px 0px 10px;
-        }
-        .img-headpic{
-            vertical-align: middle;
-            height: 73px;
-            line-height: 73px;
-            width: 76px;
-            margin: 0 auto;
-            float: left;
-            text-align: center;
-            margin-right:6px;
-        }
-        .img-headpic img{
-            width: 52px;
-            height: 52px;
-            margin: 0 auto;
-        }
-        .expert-desc{
-            float: left;
-            width: calc(99% - 78.5px);
-            border-bottom: 1px solid #eeeeee;
-            padding-bottom: 15px;
-        }
-        .expert-desc .name{
-            font-size: 16px;
-            font-weight: bold;
-            height: 40px;
-            line-height: 40px;
-        }
-        .expert-delae{width: 4px;
-            height: 4px;
-            background: #6090ea;
-            display: inline-block;
-            border-radius: 4px;
-            vertical-align: middle;
-            margin: 0px 5px;}
+            #search-letter p {
+                display: inline-block;
+                padding-right: 40px;
+                line-height: 35px;
+            }
+            .overlay {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                left: 0;
+                top: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #cacad02b;
+                display: none;
+            }
+            .overlay button {
+                border-radius: 20px;
+            }
+            .activity .list:hover .overlay {
+                display: flex;
+            }
+            .ck-wrap h1 {
+                color: #fff;
+                text-align: center;
+                height: 100%;
+                width: 100%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+            .rzly {
+                /*border-bottom: 1px solid #eeeeee;*/
+                /*height: 50px;*/
+                width: 100%;
+            }
+            .rzly .more {
+                text-align: right;
+                justify-content: flex-end;
+                flex: 1;
+                margin-right: 15px;
+                color: #a5a5a5;
+                line-height: 32px;
+                float: right;
+                cursor: pointer;
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0), #fff); /*实现渐变效果，遮罩效果*/
+            }
+            .tag-ul li {
+                margin: 0px 7px 7px 7px;
+                padding: 2px 8px;
+                border: 1px solid #f7f7f7;
+                color: #737373;
+                border-radius: 3px;
+                cursor: pointer;
+                float: left;
+                transition: all 0.2s;
+                -webkit-transition: all 0.2s;
+            }
+            .tag-ul {
+                /*height: 30px;*/
+                line-height: 27px;
+                width: 575px;
+                float: left;
+                border: 1px solid transparent;
+                padding: 0px 10px;
+                overflow: hidden;
+                height: 41px;
+            }
+            .tag-ul li.on {
+                border: 1px solid #427ce7;
+                color: #427ce7;
+                border-radius: 3px;
+            }
+            .squery1 {
+                border-bottom: 1px solid #eeeeee;
+                height: 70px;
+                width: 100%;
+            }
+            .squery2 {
+                height: 70px;
+                width: 100%;
+                border-bottom: none;
+            }
+            .squery1 .title {
+                height: 70px;
+                line-height: 70px;
+                width: 91px;
+                text-align: right;
+            }
+            .squery1 .layui-inline {
+                margin-top: 16px;
+            }
+            .layui-input {
+                width: 210px !important;
+            }
+            #btnserach {
+                background: #2a6be3;
+                color: white;
+                border-radius: 5px;
+                width: 91px;
+                text-align: center;
+            }
+            .layui-btn .layui-icon {
+                background: white;
+                border-radius: 2px;
+                color: #2a6be3;
+            }
+            .hot-title {
+                font-weight: bold;
+                height: 48px;
+                line-height: 48px;
+                color: #4c82e7;
+                font-size: 15px;
+            }
+            .hot-iocn {
+                width: 2px;
+                height: 20px;
+                display: inline-block;
+                background: #4c82e7;
+                line-height: 48px;
+                vertical-align: middle;
+                margin: 0px 5px 0px 10px;
+            }
+            .img-headpic {
+                vertical-align: middle;
+                height: 73px;
+                line-height: 73px;
+                width: 76px;
+                margin: 0 auto;
+                float: left;
+                text-align: center;
+                margin-right: 6px;
+            }
+            .img-headpic img {
+                width: 52px;
+                height: 52px;
+                margin: 0 auto;
+            }
+            .expert-desc {
+                float: left;
+                width: calc(99% - 78.5px);
+                border-bottom: 1px solid #eeeeee;
+                padding-bottom: 15px;
+            }
+            .expert-desc .name {
+                font-size: 16px;
+                font-weight: bold;
+                height: 40px;
+                line-height: 40px;
+            }
+            .expert-delae {
+                width: 4px;
+                height: 4px;
+                background: #6090ea;
+                display: inline-block;
+                border-radius: 4px;
+                vertical-align: middle;
+                margin: 0px 5px;
+            }
 
-        .layui-tab-content .img-headpic1 img{width: 162px;height: 162px;}
+            .layui-tab-content .img-headpic1 img {
+                width: 162px;
+                height: 162px;
+            }
 
+            .expert-p-desc {
+                height: 98px;
+                margin-top: 10px;
+                display: block;
+                display: inline;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 3;
+                line-clamp: 3;
+                overflow: hidden;
+                text-overflow: -o-ellipsis-lastline;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 4;
+                line-clamp: 4;
+                -webkit-box-orient: vertical;
+                line-height: 26px;
+                color: #6b6b6b;
+            }
+            li:last-child .expert-desc {
+                border-bottom: none;
+            }
+            .expert_name_titlejob {
+                text-align: center;
+                font-weight: bold;
+                font-size: 16px;
+                color: #6090ea;
+                margin-top: 10px;
+            }
+            .expert-data-desc {
+                line-height: 26px;
+                padding: 0px 20px;
+                margin-top: 10px;
+                color: #333333;
+            }
+            .expert-data-desc-more {
+                line-height: 26px;
+                padding: 5px 20px 15px 20px;
+                margin-top: 5px;
+                color: #666666;
+            }
+            .expert-nums {
+                text-align: right;
+                float: right;
+                margin-right: 15px;
+                color: #666666;
+                font-size: 12px;
+            }
+            .expert-titile {
+                color: #333333;
+                font-weight: bold;
+                font-size: 15px;
+                height: 50px;
+                line-height: 50px;
+                border-bottom: 2px solid #ddd;
+                margin-left: 20px;
+            }
 
-        .expert-p-desc{
-            height: 98px;
-            margin-top:10px;
-            display:block;
-            display:inline;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 3;
-            line-clamp: 3;
-            overflow: hidden;
-            text-overflow: -o-ellipsis-lastline;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 4;
-            line-clamp: 4;
-            -webkit-box-orient: vertical;
-            line-height: 26px;
-            color: #6b6b6b;
-        }
-        li:last-child .expert-desc{border-bottom:none;}
-        .expert_name_titlejob{
-            text-align: center;
-            font-weight: bold;
-            font-size: 16px;
-            color: #6090ea;
-            margin-top: 10px;
-        }
-        .expert-data-desc{
-            line-height: 26px;
-            padding: 0px 20px;
-            margin-top: 10px;
-            color: #333333;
-        }
-        .expert-data-desc-more{
-            line-height: 26px;
-            padding: 5px 20px 15px 20px;
-            margin-top:5px;
-            color: #666666;
-        }
-        .expert-nums{
-            text-align: right;
-            float: right;
-            margin-right: 15px;
-            color: #666666;
-            font-size: 12px;
-        }
-        .expert-titile{
-            color: #333333;
-            font-weight: bold;
-            font-size: 15px;
-            height: 50px;
-            line-height: 50px;
-            border-bottom: 2px solid #ddd;
-            margin-left: 20px;
-        }
+            .expert-ms {
+                color: #666;
+                line-height: 26px;
+                background: #eff1f1;
+                padding: 20px 20px 20px 190px;
+                height: 105px;
+            }
 
-        .expert-ms{
-            color: #666;
-            line-height: 26px;
-            background: #EFF1F1;
-            padding: 20px 20px 20px 190px;
-            height: 105px;
-        }
+            .expert-name {
+                font-weight: bold;
+                color: #6090ea;
+                height: 70px;
+                line-height: 80px;
+                font-size: 17px;
+                margin-left: 190px;
+            }
+            .expert-img {
+                top: 20px;
+                left: 10px;
+            }
+            .expert-img img {
+                margin: 10px;
+                width: 150px;
+                height: 150px;
+            }
+        </style>
+    </head>
 
-        .expert-name{
-            font-weight: bold;
-            color: #6090ea;
-            height: 70px;
-            line-height: 80px;
-            font-size: 17px;
-            margin-left: 190px;
-        }
-        .expert-img{
-            top: 20px;
-            left: 10px;
-        }
-        .expert-img img{
-            margin: 10px;
-            width:150px;height:150px;
-        }
-    </style>
-</head>
+    <body>
+        <div id="headDiv"></div>
+        <div id="searchDiv"></div>
 
-<body>
-<div id="headDiv"></div>
-<div id="searchDiv"></div>
+        <div class="runnet_main_body">
+            <div class="wrap">
+                <div style="height: 35px; width: 100%"></div>
+                <form class="layui-form search_form m-b-lg" action="" lay-filter="search_form" style="width: 60%; float: left">
+                    <script id="expertDetail_demo" type="text/html">
+                        <div class="block">
+                            <div class="notify-content m-t-md p-t-md clearfix relative">
+                                <div class="expert-name">{{d.name}}</div>
+                                <div class="expert-ms text-ellipsis-3">{{d.desc}}</div>
+                                <div class="absolute expert-img">
+                                    <img class="block" src="{{imageUrl+d.headPortrait}}" />
+                                </div>
+                            </div>
+                            <div class="expert-titile">{{d.name}}-人物简介</div>
+                            <div class="expert-data-desc">{{d.grjj}}</div>
+                            <div class="expert-titile" style="border-bottom:1px solid #dddddd;">{{d.name}}-个人成就</div>
+                            <div class="expert-data-desc-more">{{d.grcj}}</div>
+                        </div>
+                    </script>
+                    <div id="expertDetail_view"></div>
+                </form>
 
-<div class="runnet_main_body">
-    <div class="wrap">
-        <div style="height:35px;width: 100%;"></div>
-        <form class="layui-form search_form m-b-lg" action="" lay-filter="search_form" style="width: 60%;float: left;">
-
-        <script id="expertDetail_demo" type="text/html">
-        <div class="block">
-            <div class="notify-content m-t-md p-t-md clearfix relative">
-                <div class="expert-name">{{d.name}}</div>
-                <div class="expert-ms text-ellipsis-3">
-                    {{d.desc}}</div>
-                <div class="absolute expert-img">
-                    <img class="block" src="{{imageUrl+d.headPortrait}}"/>
+                <div class="block activity" style="width: 38.5%; float: right">
+                    <div style="border-bottom: 1px solid #4c82e7">
+                        <span class="hot-iocn"></span>
+                        <span class="hot-title">热门专家</span>
+                    </div>
+                    <script id="hot_expert_demo" type="text/html">
+                        {{# layui.each(d , function(index, item){ }}
+                        <li class="clearfix">
+                            <div class="img-headpic">
+                                <a href="expertStoreDetail.html?id={{item.id}}"><img src="{{imageUrl+item.headPortrait}}" /></a>
+                            </div>
+                            <div class="expert-desc">
+                                <a href="expertStoreDetail.html?id={{item.id}}"><p class="name">{{item.name}}</p></a>
+                                <p>
+                                    <span>{{item.positionTitle}}</span>
+                                    <span class="expert-delae"></span>
+                                    <span style="color:#6090ea;">{{item.workUnit}}</span>
+                                    <span class="expert-nums">浏览:12浏览</span>
+                                    <span class="clearfix"></span>
+                                </p>
+                            </div>
+                        </li>
+                        {{# }); }} {{# if(d.length === 0){ }} 无数据 {{# } }}
+                    </script>
+                    <ul id="hot_expert_warp"></ul>
                 </div>
+                <div class="clearfix"></div>
             </div>
-            <div class="expert-titile">{{d.name}}-人物简介</div>
-            <div class="expert-data-desc">{{d.grjj}}</div>
-            <div class="expert-titile" style="border-bottom:1px solid #dddddd;">{{d.name}}-个人成就</div>
-            <div class="expert-data-desc-more">{{d.grcj}}</div>
         </div>
-        </script>
-        <div id="expertDetail_view"></div>
-        </form>
-
-        <div class="block activity" style="width:38.5%;float: right;">
-            <div style="border-bottom:1px solid #4c82e7">
-                <span class="hot-iocn"></span>
-                <span class="hot-title">热门专家</span>
-            </div>
-            <script id="hot_expert_demo" type="text/html">
-                {{# layui.each(d , function(index, item){ }}
-                <li class="clearfix">
-                    <div class="img-headpic">
-                        <a href="expertStoreDetail.html?id={{item.id}}"><img src="{{imageUrl+item.headPortrait}}"/></a>
-                    </div>
-                    <div class="expert-desc">
-                        <a href="expertStoreDetail.html?id={{item.id}}"><p class="name">{{item.name}}</p></a>
-                        <p>
-                            <span>{{item.positionTitle}}</span>
-                            <span class="expert-delae"></span>
-                            <span style="color:#6090ea;">{{item.workUnit}}</span>
-                            <span class="expert-nums">浏览:12浏览</span>
-                            <span class="clearfix"></span>
-                        </p>
-                    </div>
-                </li>
-                {{# }); }}
-                {{#  if(d.length === 0){ }}
-                无数据
-                {{#  } }}
-            </script>
-            <ul id="hot_expert_warp"></ul>
-
-        </div>
-        <div class="clearfix"></div>
-
-    </div>
-</div>
-
-</body>
+    </body>
 </html>
 <script type="text/javascript" src="/rsp-group-innovation/static/lib/jquery.js"></script>
 <script type="text/javascript" src="/rsp-group-innovation/static/js/common.js"></script>
 <script type="text/javascript" src="/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
 <script type="text/javascript" src="js/base.js"></script>
 <script type="text/javascript">
-
-    function GetQueryString(name){
-        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-        var r = window.location.search.substr(1).match(reg);
-        if(r!=null)return  unescape(r[2]); return null;
+    function GetQueryString(name) {
+        var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')
+        var r = window.location.search.substr(1).match(reg)
+        if (r != null) return unescape(r[2])
+        return null
     }
     $(function () {
-        layui.use(['laytpl','laydate'], function(){
-            var laydate = layui.laydate,laytpl = layui.laytpl;
+        layui.use(['laytpl', 'laydate'], function () {
+            var laydate = layui.laydate,
+                laytpl = layui.laytpl
             //执行一个laydate实例
             laydate.render({
-                elem: '#createtime' //指定元素
-            });
+                elem: '#createtime', //指定元素
+            })
 
             $.ajax({
                 type: 'get',
-                url: baseUrl + "/expert/queryExpertByUserId?operation=client&expertId="+GetQueryString("id"),
+                url: baseUrl + '/expert/queryExpertByUserId?operation=client&expertId=' + GetQueryString('id'),
                 contentType: 'application/json;charset=UTF-8',
                 success: function (res) {
                     if (res.code == 200) {
-                        var dataArr = res.data.dataArr;
-                        var obj = res.data;
-                        obj.grjj = "";//个人简介
-                        obj.desc = "";//任务描述
-                        obj.grcj = "";//个人成就
-                        if(dataArr!=null && dataArr.length>0){
-                            dataArr.forEach((value)=>{
-                                if(value.title.search("主要专业技术") && value.title.search("工作经历")){
-                                    obj.grjj = value.value;
+                        var dataArr = res.data.dataArr
+                        var obj = res.data
+                        obj.grjj = '' //个人简介
+                        obj.desc = '' //任务描述
+                        obj.grcj = '' //个人成就
+                        if (dataArr != null && dataArr.length > 0) {
+                            dataArr.forEach((value) => {
+                                if (value.title.search('主要专业技术') && value.title.search('工作经历')) {
+                                    obj.grjj = value.value
                                 }
-                                if(value.title.search("国内外") && value.title.search("任职")){
-                                    obj.desc = value.value;
+                                if (value.title.search('国内外') && value.title.search('任职')) {
+                                    obj.desc = value.value
                                 }
-                                if(value.title.search("相关论文") && value.title.search("专著")){
-                                    obj.grcj = value.value;
+                                if (value.title.search('相关论文') && value.title.search('专著')) {
+                                    obj.grcj = value.value
                                 }
                             })
                         }
-                        console.log(obj);
-                        renderExpertDetail(obj);
+                        console.log(obj)
+                        renderExpertDetail(obj)
                     }
                 },
             })
 
-            var hotExpertTpl = hot_expert_demo.innerHTML;
-            var expertDetailTpl = expertDetail_demo.innerHTML;
-            var hot_expert_warp = document.getElementById("hot_expert_warp");
-            var expertDetailWarp = document.getElementById("expertDetail_view");
+            var hotExpertTpl = hot_expert_demo.innerHTML
+            var expertDetailTpl = expertDetail_demo.innerHTML
+            var hot_expert_warp = document.getElementById('hot_expert_warp')
+            var expertDetailWarp = document.getElementById('expertDetail_view')
 
-            var renderExpertDetail = function(data){
+            var renderExpertDetail = function (data) {
                 laytpl(expertDetailTpl).render(data, function (html) {
                     expertDetailWarp.innerHTML = html
                 })
             }
 
-            var renderHotExpert = function(data){
+            var renderHotExpert = function (data) {
                 laytpl(hotExpertTpl).render(data, function (html) {
                     hot_expert_warp.innerHTML = html
                 })
@@ -385,18 +397,15 @@
             //热门数据渲染
             $.ajax({
                 type: 'get',
-                url: baseUrl + "/expert/queryExperyList?examineStatus=2,1&page=1&limit=10",//examineStatus设置为2审核通过
+                url: baseUrl + '/expert/queryExperyList?examineStatus=2,1&page=1&limit=10', //examineStatus设置为2审核通过
                 contentType: 'application/json;charset=UTF-8',
                 success: function (res) {
                     if (res.code == 200) {
-                        renderHotExpert(res.data.data);
+                        renderHotExpert(res.data.data)
                     }
-                }
+                },
             })
-            $(".request-more").hide();
-
-        });
-
+            $('.request-more').hide()
+        })
     })
-
 </script>

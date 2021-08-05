@@ -31,11 +31,11 @@
                         <a><cite id="curTitle">作品奖项设置</cite></a>
                     </span>
                 </div>
-                <form action="" class="layui-form m-t-md">
-                    <div>
+                <form class="layui-form m-t-md" action lay-filter="search_form">
+                    <div class="layui-form-item">
                         <div class="layui-inline">活动简称</div>
                         <div class="layui-inline">
-                            <select name="shortName" id="" lay-filter="shortname"></select>
+                            <select name="shortName" lay-filter="shortName"></select>
                         </div>
                     </div>
                 </form>
@@ -46,16 +46,6 @@
                 <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
                 <div class="border-top m-t-lg m-b-lg"></div>
                 <form class="review_form layui-form" action lay-filter="review_form">
-                    <!-- <div class="layui-form-item">
-                        <label class="layui-form-label">审核结果</label>
-                        <div class="layui-input-block">
-                            <select name="state" lay-filter="state">
-                                <option value="1">通过</option>
-                                <option value="2">不通过</option>
-                                <option value="3">修改</option>
-                            </select>
-                        </div>
-                    </div> -->
                     <div class="layui-form-item">
                         <label class="layui-form-label required">审核意见</label>
                         <div class="layui-input-block">
@@ -82,7 +72,9 @@
         selectNotify = { awardSetting: [] }
 
     $('#my_space_nav').load('templates/my_space_nav.html')
-
+    function changeShortName(e) {
+        console.log(e)
+    }
     layui.use(['table', 'form'], function () {
         var table = layui.table,
             form = layui.form
@@ -95,7 +87,7 @@
             getWorks()
         })
         getWorks = function () {
-            $.get(baseUrl + '/works/finalList?expertId=' + token + '&noticeId=' + selectNotify.id, function (workRes) {
+            $.get(baseUrl + '/works/awardList?expertId=' + token + '&noticeId=' + selectNotify.id, function (workRes) {
                 if (workRes.code === 200) {
                     activityDataGrid = workRes.data
                     renderTable()
@@ -109,7 +101,7 @@
                     notifyLists = res.data || []
                     selectNotify = notifyLists[0] || { awardSetting: [] }
                     awardSetting = JSON.parse(selectNotify.awardSetting) || []
-                    $('select[name="shortName"]').append('<option id="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
+                    $('select[name="shortName"]').append('<option value="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
 
                     form.render('select')
                 }
@@ -118,6 +110,7 @@
         })
         renderTable = function () {
             var optionEl = ''
+            $('.award_list').empty()
             for (var i = 0; i < awardSetting.length; i++) {
                 optionEl += '<option value="' + awardSetting[i].level + '">' + awardSetting[i].level + '</option>'
                 $('.award_list').append('<div>' + awardSetting[i].level + awardSetting[i].value + '个</div>')

@@ -28,18 +28,22 @@
                 <div id="my_space_content" class="float-right" style="width: 1000px"> -->
                 <div class="runnut_head">
                     <span class="borderl"></span>
-                    <span class="layui-breadcrumb" lay-separator=">">
+                    <span class="layui-breadcrumb">
                         <a href="mySpaceDashboard.html">个人信息</a>
                         <a><cite id="curTitle">作品审核</cite></a>
                     </span>
                 </div>
                 <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
                 <script type="text/html" id="person_detail_btn">
-                    {{# if(Number(d.isReview) !== 1){ }}
+                    {{# if(Number(reviewState) === 3){ }} {{# if(Number(d.reviewState) === -1){ }}
                     <a class="layui-btn layui-btn-xs" lay-event="review">评分</a>
-                    {{# } }} {{# if(Number(d.isReview) === 1){ }}
+                    {{# } }} {{# if(d.reviewState !== -1){ }}
                     <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
-                    {{# } }}
+                    {{# } }} {{# } }} {{# if(Number(reviewState) === 4){ }} {{# if(Number(d.reviewState) === -1){ }}
+                    <a class="layui-btn layui-btn-xs" lay-event="review">评分</a>
+                    {{# } }} {{# if(d.reviewState !== -1){ }}
+                    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+                    {{# } }} {{# } }}
                 </script>
                 <!-- </div> -->
             </div>
@@ -51,16 +55,14 @@
 <script type="text/javascript" src="/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
 <script src="js/base.js"></script>
 <script>
-    var userId = sessionStorage.getItem('token')
     var activityDataGrid = [],
-        notifyDetail = {},
-        reviewState = sessionStorage.getItem('reviewState')
+        notifyDetail = {}
 
     if (Number(reviewState) === 3) {
-        url = '/works/reviewWorkListByExpertId?expertId=' + userId
+        url = '/works/reviewWorkListByExpertId?expertId=' + token
         $('#curTitle').html('复审作品')
     } else {
-        url = '/works/finalList?expertId=' + userId
+        url = '/works/finalList?expertId=' + token
         $('#curTitle').html('终审作品')
     }
     layui.use(['table', 'form'], function () {
@@ -85,12 +87,25 @@
                             field: 'updateTime',
                             title: '更新时间',
                             templet: function (d) {
-                                if (d.updateTime) return d.updateTime
-                                return d.createTime
+                                if (d.updateTime) return formatTime(d.updateTime)
+                                return formatTime(d.createTime)
                             },
                         },
                         { field: 'worksType', title: '类别' },
-                        { field: 'score', title: '得分' },
+                        {
+                            field: 'score',
+                            title: '得分',
+                            templet: function (d) {
+                                if (Number(reviewState) === 3) {
+                                    if (d.reviewState === 1) return '已否决'
+                                    return d.score || ''
+                                }
+                                if (Number(reviewState) === 4) {
+                                    if (d.finalReviewState === 1) return '已否决'
+                                    return d.score || ''
+                                }
+                            },
+                        },
                         {
                             field: 'sign',
                             title: '操作',

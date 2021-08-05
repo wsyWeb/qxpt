@@ -11,7 +11,11 @@
         <link rel="stylesheet" href="./css/runnet_common.css" />
         <link rel="stylesheet" href="./css/runnet_page.css" />
         <title>个人空间</title>
-        <style></style>
+        <style>
+            .layui-layer-page .layui-layer-content {
+                overflow: visible !important;
+            }
+        </style>
     </head>
     <body>
         <div id="headDiv"></div>
@@ -28,10 +32,10 @@
                         <a onclick="reviewWork(1)" class="font-18">专家组长作品审核</a>
                     </div>
                     <div class="font-18 m-t-md">
-                        <a onclick="reviewWork(2)" class="font-18">作品复审</a>
+                        <a onclick="reviewWork(3)" class="font-18">作品复审</a>
                     </div>
                     <div class="font-18 m-t-md">
-                        <a onclick="reviewWork(3)" class="font-18">作品终审</a>
+                        <a onclick="reviewWork(4)" class="font-18">作品终审</a>
                     </div>
                 </div>
             </div>
@@ -63,7 +67,7 @@
         form = layui.form
 
         setExpertSelect = function () {
-            console.log(selectNotify.finalExperts.length)
+            $('.experts').empty()
             if (selectNotify.finalExperts.length > 0) {
                 for (var o = 0; o < selectNotify.finalExperts.length; o++) {
                     $('.experts').append(
@@ -77,12 +81,12 @@
                 form.render('radio')
             }
         }
-        $.get(baseUrl + '/notice/findListByExpertId?expertId=' + token, function (res) {
+        $.get(baseUrl + '/notice/finalNoticeList?expertId=' + token, function (res) {
             if (res.code === 200 && res.data) {
                 for (var i = 0; i < res.data.length; i++) {
                     notifyLists = res.data || []
                     selectNotify = notifyLists[0] || { finalExperts: [] }
-                    $('select[name="shortName"]').append('<option id="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
+                    $('select[name="shortName"]').append('<option value="' + res.data[i].id + '">' + res.data[i].shortName + '</option>')
                     form.render('select')
                 }
                 setExpertSelect()
@@ -128,11 +132,8 @@
     function reviewWork(state) {
         if (state === 1) {
             window.location.href = 'workListForExpert.html'
-        } else if (state === 2) {
-            sessionStorage.setItem('reviewState', 3)
-            window.location.href = 'workListForScore.html'
         } else {
-            sessionStorage.setItem('reviewState', 4)
+            sessionStorage.setItem('reviewState', state)
             window.location.href = 'workListForScore.html'
         }
     }
