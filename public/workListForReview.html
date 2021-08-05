@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
         <!-- 导入 layui 的样式表 -->
         <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/lib/layui/css/layui.css" />
-        <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/css/common.css"/>
+        <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/css/common.css" />
         <!-- 导入自己的样式表 -->
         <link rel="stylesheet" href="./css/runnet_common.css" />
         <link rel="stylesheet" href="./css/runnet_page.css" />
@@ -38,20 +38,20 @@
                         </span>
                     </div>
                     <div class="p-md">
-                        <ul id="tabTitle" class="flex-around-w"></ul>
+                        <!-- <ul id="tabTitle" class="flex-around-w"></ul>
                         <script id="tab_title" type="text/html">
                             {{# layui.each(d, function(idx1, item){ }}
                             <li lay-id="{{item.id}}">{{item.name}}</li>
                             {{# }); }}
-                        </script>
-                        <!-- <div class="layui-tab layui-tab-brief" lay-filter="worktype_tab">
+                        </script> -->
+                        <div class="layui-tab layui-tab-brief" lay-filter="worktype_tab">
                             <ul class="layui-tab-title" id="tabTitle"></ul>
                             <script id="tab_title" type="text/html">
                                 {{# layui.each(d, function(idx1, item){ }}
                                 <li lay-id="{{item.id}}">{{item.name}}</li>
                                 {{# }); }}
                             </script>
-                        </div> -->
+                        </div>
                         <div class="layui-row m-t-md">
                             <div class="layui-col-md4">
                                 <div class="setting-wrap">

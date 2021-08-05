@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
         <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/lib/layui/css/layui.css" />
-        <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/css/common.css"/>
+        <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/css/common.css" />
         <link rel="stylesheet" href="css/runnet_common.css" />
         <link rel="stylesheet" href="css/runnet_page.css" />
         <title>注册专家</title>
@@ -49,10 +49,71 @@
             }
             #awardType .item .del-work-btn {
                 position: absolute;
-                right: 0;
-                top: 0;
+                border: 0;
+                right: 1px;
+                top: 1px;
                 border-top-left-radius: 0;
                 border-bottom-left-radius: 0;
+                border-left: 1px solid #dedede;
+                height: 36px;
+                line-height: 36px;
+                background: #fff;
+                width: 40px;
+                text-align: center;
+                display: block;
+                cursor: pointer;
+            }
+            #awardType .add-work-btn {
+                display: inline-block;
+                text-align: center;
+                border-radius: 2px;
+                border: 1px dashed #2a6be3;
+                padding: 5px 8px;
+            }
+            #awardSetting .layui-input {
+                width: 50%;
+                display: inline;
+                margin-right: 0;
+                float: left;
+            }
+            .add-work-type-wrap {
+                color: #2a6be3;
+                text-align: center;
+                height: 38px;
+                line-height: 38px;
+                border: 1px dashed #2a6be3;
+            }
+            #awardSetting .item .content {
+                border-left: 0;
+                border-bottom-left-radius: 0;
+                border-top-left-radius: 0;
+            }
+            #awardSetting .item .label {
+                border-bottom-right-radius: 0;
+                border-top-right-radius: 0;
+            }
+            #awardSetting .del-level-btn {
+                position: absolute;
+                top: 1px;
+                right: 1px;
+                width: 40px;
+                background: #fff;
+                height: 35px;
+                line-height: 35px;
+                border-left: 1px solid #dedede;
+            }
+            #awardSetting .add-level-btn {
+                position: absolute;
+                top: 1px;
+                right: 41px;
+                width: 40px;
+                background: #fff;
+                height: 35px;
+                line-height: 35px;
+                border-left: 1px solid #dedede;
+            }
+            #awardType .layui-colla-content {
+                padding-top: 20px;
             }
             #awardSetting .layui-input {
                 width: 50%;
@@ -183,12 +244,11 @@
                                 <label class="layui-form-label required">奖项类别</label>
                                 <div class="layui-input-block">
                                     <div class="layui-collapse" id="awardType"></div>
-                                    <i
-                                        style="position: relative; top: 8px"
-                                        class="layui-icon-add-circle layui-icon font-18 cursor-pointer p-t-md"
-                                        title="新增"
-                                        onclick="addAwardTypeNode(this)"
-                                    ></i>
+                                    <div class="add-work-type-wrap m-t-xs cursor-pointer" onclick="addAwardTypeNode(this)">
+                                        <i style="position: relative; top: 2px" class="layui-icon-add-circle layui-icon font-18 p-t-md"></i>
+                                        新增
+                                    </div>
+
                                     <script id="award_type" type="text/html">
                                         {{# layui.each(d, function(idx1, item){ }}
                                         <div class="layui-colla-item" id="{{item.id}}">
@@ -204,14 +264,13 @@
                                                 {{# layui.each(item.worksTypes, function(idx2, work){ }}
                                                 <div class="layui-inline item relative" template="{{work.template}}">
                                                     <input type="text" class="layui-input" value="{{work.name}}" />
-                                                    <a class="layui-btn layui-btn-primary del-work-btn" onclick="removeAwardItemNode(this)">
-                                                        <i class="layui-icon-delete layui-icon "></i>
+                                                    <a class="del-work-btn" onclick="removeAwardItemNode(this)">
+                                                        <i class="del layui-icon-reduce-circle layui-icon font-18"></i>
                                                     </a>
                                                 </div>
                                                 {{# }); }}
                                                 <i
-                                                    class="layui-icon-add-circle layui-icon font-18 cursor-pointer"
-                                                    title="新增"
+                                                    class="add layui-icon-add-circle layui-icon font-18 cursor-pointer add-work-btn"
                                                     onclick="addAwardItemNode(this)"
                                                 ></i>
                                             </div>
@@ -331,6 +390,10 @@
                                         <input type="number" name="assignCount" value="3" class="layui-input" />
                                     </div>
                                 </div>
+                                <!-- <div class="layui-form-item">
+                                <label class="layui-form-label">分配工作人员</label>
+                                <div class="layui-input-block"></div>
+                            </div> -->
                                 <div class="layui-form-item">
                                     <label class="layui-form-label required">指派终审专家</label>
                                     <div class="layui-input-block" id="expert_members"></div>
