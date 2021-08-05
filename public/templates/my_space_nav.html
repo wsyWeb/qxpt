@@ -1,27 +1,49 @@
+<style>
+    #my_space_nav {
+        box-shadow: 0 0px 1px #fff, 3px 0 5px #00000017, 0 3px 5px #00000017, -3px 0 5px #00000017;
+    }
+    #my_space_nav .layui-nav {
+        background-color: #fff;
+        width: 180px;
+    }
+    #my_space_nav .layui-nav-child a,
+    #my_space_nav .layui-nav-item a,
+    #my_space_nav .layui-nav-itemed > a {
+        color: #333 !important;
+    }
+    #my_space_nav .layui-nav .layui-nav-item:not(.layui-this) a:hover {
+        background-color: #fff;
+        color: #2a6be3 !important;
+        border-left: 0;
+    }
+    #my_space_nav .layui-nav-tree .layui-nav-child dd.layui-this a,
+    #my_space_nav .layui-nav-item.layui-this > a {
+        background-color: #2a6be3;
+        color: #fff !important;
+    }
+    #my_space_nav .layui-nav-itemed > .layui-nav-child {
+        background-color: #fff !important;
+    }
+    #my_space_nav .layui-nav-tree .layui-nav-bar {
+        background-color: #2a6be3;
+    }
+    #my_space_nav .layui-nav-more {
+        border-color: #333 transparent transparent;
+    }
+    #my_space_nav .layui-nav-itemed .layui-nav-more {
+        border-color: transparent transparent #333;
+    }
+</style>
 <ul class="layui-nav layui-nav-tree" lay-filter="test">
-    <!-- 侧边导航: <ul class="layui-nav layui-nav-tree layui-nav-side"> -->
-    <!-- <li class="layui-nav-item">
-        <a href="javascript:;">作品管理</a>
-        <dl class="layui-nav-child">
-            <dd><a href="">移动模块</a></dd>
-            <dd><a href="">后台模版</a></dd>
-            <dd><a href="">电商平台</a></dd>
-        </dl>
-    </li> -->
     <li class="layui-nav-item"><a href="mySpaceDashboard.html">个人信息</a></li>
     <li class="layui-nav-item">
         <a href="workListForSubmit.html">我的作品(个人)</a>
     </li>
-    <!-- <li class="layui-nav-item">
-        <a href="workListForScore.html">作品复审和终审（专家）</a>
-    </li> -->
-
     <li class="layui-nav-item">
         <a href="workManage.html">作品管理（管理员）</a>
     </li>
-    <!-- <li class="layui-nav-item" class="layui-nav-item"><a href="workListForReviewResult.html">作品复审结果</a></li> -->
     <li class="layui-nav-item">
-        <a href="notifyManage.html">通知管理</a>
+        <a href="notifyManage.html">公告管理</a>
     </li>
     <li class="layui-nav-item layui-nav-itemed">
         <a>专家管理</a>
@@ -32,7 +54,6 @@
             <dd><a href="expertDataList.html">专家库</a></dd>
         </dl>
     </li>
-
     <li class="layui-nav-item">
         <a href="newsManage.html">新闻设置</a>
     </li>

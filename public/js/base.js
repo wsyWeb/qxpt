@@ -38,6 +38,11 @@ function formatTime(v) {
         hour = date.getHours(),
         minute = date.getMinutes(),
         seconds = date.getSeconds()
-
     return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + seconds
 }
+
+//获取缓存
+var reviewState = sessionStorage.getItem('reviewState'),
+    workId = sessionStorage.getItem('workId'),
+    noticeId = sessionStorage.getItem('notifyId'),
+    token = sessionStorage.getItem('token')

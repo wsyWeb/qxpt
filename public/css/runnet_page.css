@@ -7,25 +7,30 @@
     padding-bottom: 100px;
 }
 .runnut_head {
-    margin-top: 20px;
+    padding-top: 20px;
     position: relative;
+    border-bottom: 2px solid #2a6be3;
+    padding-bottom: 15px;
+    padding-left: 20px;
 }
 .runnut_head .borderl {
     display: inline-block;
     width: 4px;
     height: 14px;
-    background-color: rgb(21, 79, 174);
+    background-color: #2a6be3;
     position: relative;
     top: 2px;
     margin-right: 6px;
 }
-
+.runnut_head #curTitle {
+    color: #2a6be3;
+}
 .page-nav {
     font-size: 15px;
     padding: 30px 0 15px 0;
 }
 .page-nav .color-icon {
-    color: rgb(21, 79, 174);
+    color: #2a6be3;
 }
 .page-nav span {
     font-weight: bold;
@@ -65,7 +70,7 @@
     margin-bottom: 8px;
 }
 .runnet_tab_custom .tab-left .layui-this {
-    background-color: rgb(20, 80, 169);
+    background-color: #0b65b7;
     color: #fff !important;
 }
 .runnet_tab_custom .content-right {
@@ -91,13 +96,16 @@
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background-color: #31689b;
+    background-color: #0b65b7;
     margin-right: 10px;
     display: inline-block;
     vertical-align: middle;
 }
 .layui-btn a {
     color: inherit;
+}
+#my_space_content {
+    box-shadow: 0 0px 1px #fff, 3px 0 5px #00000017, 0 3px 5px #00000017, -3px 0 5px #00000017;
 }
 #my_space_content .layui-table,
 #my_space_content .layui-table-view {
@@ -126,6 +134,42 @@
     -ms-transform: scale(1.3);
     -o-transform: scale(1.3);
 }
-.wrap .layui-nav-tree {
-    width: 180px;
+.layui-table-page {
+    text-align: right;
+}
+/* 覆盖layui 样式 */
+/* CheckBox */
+.layui-form-checked[lay-skin='primary'] i {
+    background-color: #2a6be3 !important;
+    border-color: #2a6be3 !important;
+}
+.layui-table-view .layui-form-checkbox i:hover {
+    border-color: #2a6be3;
+}
+/* 按钮 */
+.layui-btn-normal {
+    background-color: #2a6be3;
+}
+.layui-btn.layui-btn-danger {
+    background-color: #f04040;
+}
+.layui-btn-primary.layui-border-blue {
+    border-color: #2a6be3 !important;
+    color: #2a6be3 !important;
+    background-color: #fff;
+}
+/* 表格 */
+.layui-table-view {
+    border-color: #ddd;
+}
+.layui-table thead tr {
+    background-color: #f6f9fe;
+}
+.layui-table thead tr th {
+    color: #0b65b7;
+    font-weight: bold;
+}
+/* 导航 */
+.runnut_head .layui-breadcrumb a:hover {
+    color: #0b65b7 !important;
 }

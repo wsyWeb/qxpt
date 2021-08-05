@@ -47,7 +47,7 @@
                         <a href="index.html">首页</a>
                         <a href="runnet_crowdCreate.html">众创平台</a>
                         <a href="notifyList.html">通知公告</a>
-                        <a><cite>通知详情</cite></a>
+                        <a><cite>公告详情</cite></a>
                     </span>
                 </div>
                 <div class="block p-md m-t-lg overflow-hidden">
@@ -238,6 +238,11 @@
         }
     }
     function signUp() {
+        var d1 = new Date(notifyDetail.submitDate),
+            d2 = new Date()
+        if (d2 > d1) {
+            return layer.msg('活动已结束')
+        }
         if (!sessionStorage.getItem('token')) {
             return layer.msg('请先登录')
         }

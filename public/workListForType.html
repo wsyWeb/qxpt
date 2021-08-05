@@ -24,33 +24,29 @@
 
         <div class="runnet_main_body">
             <div class="wrap">
-                <!-- <div id="my_space_nav" class="float-left" style="width: 180px"></div>
-                <div id="my_space_content" class="float-right" style="width: 1000px"> -->
-                <div class="runnut_head">
-                    <span class="borderl"></span>
-                    <span class="layui-breadcrumb" lay-separator=">">
-                        <a href="workManage.html">作品管理</a>
-                        <a><cite id="curTitle">作品列表</cite></a>
-                    </span>
+                <div id="my_space_content" class="m-t-lg">
+                    <div class="runnut_head">
+                        <span class="layui-breadcrumb">
+                            <a href="workManage.html">作品管理</a>
+                            <a><cite id="curTitle">作品列表</cite></a>
+                        </span>
+                    </div>
+                    <div class="p-md">
+                        <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
+                        <script type="text/html" id="person_detail_btn">
+                            {{# if(Number(d.firstReviewState) === 0){ }}
+                            <a class="layui-btn layui-btn-xs" lay-event="review">审核</a>
+                            {{# } }} {{# if(Number(d.firstReviewState) === 1){ }}
+                            <span class="">已通过</span>
+                            {{# } }} {{# if(Number(d.firstReviewState) === 2){ }}
+                            <span class="">未通过</span>
+                            {{# } }} {{# if(Number(d.firstReviewState) === 3){ }}
+                            <span class="">已退回</span>
+                            {{# } }}
+                        </script>
+                    </div>
                 </div>
-                <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
-                <!-- <div class="text-center assignExpertWrap" style="display: none">
-                    <a class="layui-btn" onclick="assignExpert()">批量分派专家</a>
-                </div> -->
-                <script type="text/html" id="person_detail_btn">
-                    {{# if(Number(d.firstReviewState) === 0){ }}
-                    <a class="layui-btn layui-btn-xs" lay-event="review">审核</a>
-                    {{# } }} {{# if(Number(d.firstReviewState) === 1){ }}
-                    <span class="">审核通过</span>
-                    {{# } }} {{# if(Number(d.firstReviewState) === 2){ }}
-                    <span class="">审核不通过</span>
-                    {{# } }} {{# if(Number(d.firstReviewState) === 3){ }}
-                    <span class="">已退回</span>
-                    {{# } }}
-                </script>
             </div>
-            <!-- </div>
-            </div> -->
         </div>
         <form class="layui-form p-md assign_expert_form" id="assign_expert_form" action="" lay-filter="assign_expert_form" style="display: none">
             <div class="layui-form-item">

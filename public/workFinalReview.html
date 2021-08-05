@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <div class="layui-form-item">
-                        <label class="layui-form-label required">作品打分</label>
+                        <label class="layui-form-label">作品打分</label>
                         <div class="layui-input-block">
                             <input type="number" name="score" class="layui-input" />
                         </div>
@@ -65,10 +65,8 @@
 <script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
 <script type="text/javascript" src="js/base.js"></script>
 <script>
-    var workDetail = {},
-        reviewState = sessionStorage.getItem('reviewState'),
-        workId = sessionStorage.getItem('workId'),
-        token = sessionStorage.getItem('token')
+    var workDetail = {}
+
     $.get(baseUrl + '/works/scoreDetail?workId=' + workId + '&state=' + reviewState + '&expertId=' + token, function (res) {
         if (res.data.reviewState === 1 || res.data.reviewState === 0) {
             $('.save-btn').hide()
@@ -96,7 +94,6 @@
                 form = layui.form
                 form.on('submit(submit_form)', function (obj) {
                     var formData = obj.field
-                    formData.expertId = sessionStorage.getItem('token')
                     if (Number(formData.reviewState) === 1 && !formData.opinion) {
                         return layer.msg('请填写否决原因')
                     } else if (Number(formData.reviewState) !== 1 && !formData.score) {
@@ -104,11 +101,12 @@
                     } else if (Math.abs(formData.score) > 100) {
                         return layer.msg('分数不能超过100')
                     }
-                    formData.state = reviewState
                     formData.workId = workDetail.id
+                    formData.expertId = token
+                    var url = Number(reviewState) === 3 ? '/works/review' : '/works/finalReview'
                     $.ajax({
                         type: 'post',
-                        url: baseUrl + '/works/review',
+                        url: baseUrl + url,
                         data: JSON.stringify(formData),
                         contentType: 'application/json;charset=UTF-8',
                         success: function (res) {

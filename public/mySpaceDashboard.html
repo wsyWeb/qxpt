@@ -33,10 +33,10 @@
                         <a onclick="reviewWork(1)" class="font-18">专家组长作品审核</a>
                     </div>
                     <div class="font-18 m-t-md">
-                        <a onclick="reviewWork(2)" class="font-18">作品复审</a>
+                        <a onclick="reviewWork(3)" class="font-18">作品复审</a>
                     </div>
                     <div class="font-18 m-t-md">
-                        <a onclick="reviewWork(3)" class="font-18">作品终审</a>
+                        <a onclick="reviewWork(4)" class="font-18">作品终审</a>
                     </div>
                 </div>
             </div>
@@ -133,11 +133,8 @@
     function reviewWork(state) {
         if (state === 1) {
             window.location.href = 'workListForExpert.html'
-        } else if (state === 2) {
-            sessionStorage.setItem('reviewState', 3)
-            window.location.href = 'workListForScore.html'
         } else {
-            sessionStorage.setItem('reviewState', 4)
+            sessionStorage.setItem('reviewState', state)
             window.location.href = 'workListForScore.html'
         }
     }

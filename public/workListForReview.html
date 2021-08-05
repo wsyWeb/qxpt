@@ -30,60 +30,62 @@
 
         <div class="runnet_main_body">
             <div class="wrap">
-                <div class="runnut_head">
-                    <span class="borderl"></span>
-                    <span class="layui-breadcrumb" lay-separator=">">
-                        <a href="workManage.html">作品管理</a>
-                        <a><cite id="curTitle">作品复审结果</cite></a>
-                    </span>
-                </div>
-
-                <div class="layui-tab layui-tab-brief" lay-filter="worktype_tab">
-                    <ul class="layui-tab-title" id="tabTitle"></ul>
-                    <script id="tab_title" type="text/html">
-                        {{# layui.each(d, function(idx1, item){ }}
-                        <li lay-id="{{item.id}}">{{item.name}}</li>
-                        {{# }); }}
-                    </script>
-                </div>
-                <div class="layui-row m-t-md">
-                    <div class="layui-col-md4">
-                        <div class="setting-wrap">
-                            <div class="layui-inline">终审作品数</div>
-                            <div class="layui-inline">
-                                <input type="number" class="layui-input workNum" onblur="changeWorkNum(this)" value="5" />
-                            </div>
-                            <div class="layui-inline">个</div>
-                        </div>
-                        <div class="m-t-md setting-wrap">
-                            <div class="layui-inline">已选择</div>
-                            <div class="layui-inline selectNum">5</div>
-                            <div class="layui-inline">个作品</div>
-                        </div>
-                        <div class="total-wrap"></div>
+                <div id="my_space_content" class="m-t-lg">
+                    <div class="runnut_head">
+                        <span class="layui-breadcrumb">
+                            <a href="workManage.html">作品管理</a>
+                            <a><cite id="curTitle">作品复审结果</cite></a>
+                        </span>
                     </div>
-                    <div class="layui-col-md8">
-                        <form class="layui-form search_form m-b-xs" action="" lay-filter="search_form">
-                            <div>
-                                <div class="layui-inline">参赛情况</div>
-                                <div class="layui-inline">
-                                    <select class="activity_search" lay-verify="" lay-filter="activity_search" style="width: 100px">
-                                        <option value="">按单位统计</option>
-                                    </select>
+                    <div class="p-md">
+                        <div class="layui-tab layui-tab-brief" lay-filter="worktype_tab">
+                            <ul class="layui-tab-title" id="tabTitle"></ul>
+                            <script id="tab_title" type="text/html">
+                                {{# layui.each(d, function(idx1, item){ }}
+                                <li lay-id="{{item.id}}">{{item.name}}</li>
+                                {{# }); }}
+                            </script>
+                        </div>
+                        <div class="layui-row m-t-md">
+                            <div class="layui-col-md4">
+                                <div class="setting-wrap">
+                                    <div class="layui-inline">终审作品数</div>
+                                    <div class="layui-inline">
+                                        <input type="number" class="layui-input workNum" onblur="changeWorkNum(this)" value="5" />
+                                    </div>
+                                    <div class="layui-inline">个</div>
                                 </div>
+                                <div class="m-t-md setting-wrap">
+                                    <div class="layui-inline">已选择</div>
+                                    <div class="layui-inline selectNum">5</div>
+                                    <div class="layui-inline">个作品</div>
+                                </div>
+                                <div class="total-wrap"></div>
                             </div>
-                        </form>
-                        <table lay-filter="statisticsTable" id="statisticsTable"></table>
-                    </div>
-                </div>
+                            <div class="layui-col-md8">
+                                <form class="layui-form search_form m-b-xs" action="" lay-filter="search_form">
+                                    <div>
+                                        <div class="layui-inline">参赛情况</div>
+                                        <div class="layui-inline">
+                                            <select class="activity_search" lay-verify="" lay-filter="activity_search" style="width: 100px">
+                                                <option value="">按单位统计</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                                <table lay-filter="statisticsTable" id="statisticsTable"></table>
+                            </div>
+                        </div>
 
-                <div class="border-top m-t-lg m-b-lg"></div>
-                <div class="text-center font-bold font-15">拟终审作品名单</div>
-                <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
-                <div class="m-t-lg text-center optWrap none">
-                    <!-- <button class="layui-btn layui-btn-primary" onclick="loadMore()">加载更多</button> -->
-                    <button class="layui-btn save-btn" onclick="saveFun()">保存</button>
-                    <button class="layui-btn none submit-btn" onclick="submitFun()">提交</button>
+                        <div class="border-top m-t-lg m-b-lg"></div>
+                        <div class="text-center font-bold font-15">拟终审作品名单</div>
+                        <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
+                        <div class="m-t-lg text-center optWrap none">
+                            <!-- <button class="layui-btn layui-btn-primary" onclick="loadMore()">加载更多</button> -->
+                            <button class="layui-btn save-btn" onclick="saveFun()">保存</button>
+                            <button class="layui-btn none submit-btn" onclick="submitFun()">提交</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -134,7 +136,7 @@
                 var el = ''
                 if (res.code === 200) {
                     for (var i = 0; i < res.data.length; i++) {
-                        el += '<div>' + res.data[i].worksType + ':' + res.data[i].count + '</div>'
+                        el += '<div class="m-b-sm">' + res.data[i].worksType + '：' + res.data[i].count + '</div>'
                     }
                 }
                 $('.total-wrap').append(el)
@@ -214,6 +216,8 @@
                     // 去掉全选
                     if (res.data.length === 0) {
                         $('.optWrap').hide()
+                        $('.workNum').val(0)
+                        $('.selectNum').html(0)
                         return
                     }
                     $('.optWrap').show()
@@ -234,8 +238,10 @@
                             $('.workNum').val(cacheList.length)
                             $('.selectNum').html(cacheList.length)
                         } else {
+                            var num = res.data.length
+                            if (num > 5) num = 5
                             for (var i = 0; i < res.data.length; i++) {
-                                if (i < 5) {
+                                if (i < num) {
                                     res.data[i]['LAY_CHECKED'] = true
                                     $('tr[data-index=' + i + ']').addClass('checked')
                                     $('tr[data-index=' + i + '] input[type="checkbox"]').prop('checked', true)
@@ -244,6 +250,8 @@
                                         .addClass('layui-form-checked')
                                 }
                             }
+                            $('.workNum').val(num)
+                            $('.selectNum').html(num)
                         }
                         for (var j = 0; j < companyStatisticsData.length; j++) {
                             var list = res.data.filter((item) => {
