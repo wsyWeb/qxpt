@@ -136,6 +136,8 @@
         }
         $('#customDefineParmWrap').append(temp)
 
-        $('.workList').append('<a class="color-theme" target="_blank" href="' + imageUrl + workDetail.url + '">' + workDetail.filename + '</a>')
+        $('.workList').append(
+            '<a class="color-theme" target="_blank" href="' + imageUrl + workDetail.url + '">' + (workDetail.filename || '') + '</a>'
+        )
     }
 </script>

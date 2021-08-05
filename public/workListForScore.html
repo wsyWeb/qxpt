@@ -85,8 +85,8 @@
                             field: 'updateTime',
                             title: '更新时间',
                             templet: function (d) {
-                                if (d.updateTime) return d.updateTime
-                                return d.createTime
+                                if (d.updateTime) return formatTime(d.updateTime)
+                                return formatTime(d.createTime)
                             },
                         },
                         { field: 'worksType', title: '类别' },

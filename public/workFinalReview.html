@@ -70,7 +70,7 @@
         workId = sessionStorage.getItem('workId'),
         token = sessionStorage.getItem('token')
     $.get(baseUrl + '/works/scoreDetail?workId=' + workId + '&state=' + reviewState + '&expertId=' + token, function (res) {
-        if (res.data.reviewState === 0 || res.data.reviewState === 1) {
+        if (res.data.reviewState === 1 || res.data.reviewState === 0) {
             $('.save-btn').hide()
             layui.use(['form'], function () {
                 var form = layui.form

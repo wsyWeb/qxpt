@@ -138,9 +138,18 @@
                     if (!sessionStorage.getItem('notifyId')) {
                         sessionStorage.setItem('notifyId', selectNotify.id)
                     }
+                    var temp = ''
                     for (var i = 0; i < notifyList.length; i++) {
-                        $('.activity_search').append('<option value="' + notifyList[i].id + '">' + notifyList[i].shortName + '</option>')
+                        var el = ''
+                        if (notifyList[i].id === sessionStorage.getItem('notifyId')) {
+                            el = '<option selected value="' + notifyList[i].id + '">' + notifyList[i].shortName + '</option>'
+                        } else {
+                            el = '<option value="' + notifyList[i].id + '">' + notifyList[i].shortName + '</option>'
+                        }
+                        temp += el
                     }
+                    $('.activity_search').append(temp)
+
                     form.render('select')
                     getAllWorks()
                 }

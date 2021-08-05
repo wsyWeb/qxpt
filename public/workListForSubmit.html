@@ -58,8 +58,11 @@
                     </div>
                     <script type="text/html" id="person_detail_btn">
                         <a class="layui-btn layui-btn-xs" lay-event="look_detail">查看</a>
+                        {{# if(d.state === 0 || d.firstReviewState === 2 || d.firstReviewState ===3){ }}
                         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                        {{# } }} {{# if(d.state === 0){ }}
                         <a class="layui-btn layui-btn-xs" lay-event="del">删除</a>
+                        {{# } }}
                     </script>
                 </div>
             </div>
@@ -99,7 +102,7 @@
             }
         })
 
-        var getAllWorks = function (id) {
+        getAllWorks = function (id) {
             $.ajax({
                 type: 'post',
                 url: baseUrl + '/works/getList',
@@ -120,6 +123,9 @@
                 { name: '团体组织（中学、社会性组织）', value: 3, data: [] },
             ]
             for (var i = 0; i < arr.length; i++) {
+                if (!arr[i].worksInfo && arr[i].worksInfo !== 0) {
+                    defaultList[0].data.push(arr[i])
+                }
                 for (var j = 0; j < defaultList.length; j++) {
                     if (defaultList[j].value === arr[i].worksInfo) {
                         defaultList[j].data.push(arr[i])
@@ -150,12 +156,34 @@
                             { type: 'checkbox' },
                             { field: 'worksType', title: '作品类型' },
                             { field: 'name', title: '作品名称' },
-                            { field: 'author', title: '作者姓名' },
+                            { field: 'author', title: '作者' },
                             { field: 'format', title: '格式' },
+                            {
+                                field: 'state',
+                                title: '审核状态',
+                                templet: function (d) {
+                                    if (d.state === 3) {
+                                        switch (d.firstReviewState) {
+                                            case 1:
+                                                return '已通过初审'
+                                                break
+                                            case 2:
+                                                return '初审未通过'
+                                                break
+                                            case 3:
+                                                return '修改'
+                                                break
+                                            default:
+                                                return '待审核'
+                                        }
+                                    }
+                                    return '待审核'
+                                },
+                            },
                             {
                                 field: 'sign',
                                 title: '操作',
-                                width: 200,
+                                width: 180,
                                 toolbar: '#person_detail_btn',
                             },
                         ],
@@ -189,7 +217,7 @@
                 sessionStorage.setItem('workFormId', data.id)
                 window.location.href = 'workForm.html'
             } else {
-                if (data.state === 1) {
+                if (data.state !== 0) {
                     return layer.msg('作品已提交，不能删除')
                 }
                 layer.confirm('你确定删除该作品吗', { title: '提示' }, function () {
@@ -245,6 +273,7 @@
             success: function (res) {
                 if (res.code === 200) {
                     layer.msg('作品提交成功，请耐心等待管理员审核')
+                    // getAllWorks()
                 }
             },
         })

@@ -6,7 +6,8 @@ var notifyId = sessionStorage.getItem('notifyId'),
     selectWorkformat = '', //选中的作品格式
     workFields = [], //选中的作品主题
     workTypes = [],
-    resumeAddress = [] //单位意见
+    resumeAddress = [] //单位意见,
+selectSmallTemplate = '' // 作品类型选中的二级
 var workId = sessionStorage.getItem('workFormId')
 
 if (!workId) {
@@ -67,13 +68,13 @@ layui.use(['form', 'upload', 'laydate'], function () {
         }
     })
     form.on('select(worksTypes)', function (obj) {
+        selectSmallTemplate = ''
         if (workTypes.length > 0) {
             selectWrokInfo = workTypes.find(function (item) {
                 return item.worksTypeId === obj.value
             })
         }
         setSmallOption(form, obj.value)
-
         renderFormParams(form)
         renderWorkFormats(form)
     })
@@ -87,7 +88,13 @@ layui.use(['form', 'upload', 'laydate'], function () {
         renderFormParams(form)
         renderWorkFormats(form)
     })
-    form.on('select(smallType)', function (obj) {})
+    form.on('select(smallType)', function (obj) {
+        var select = smallInfos.find(function (item) {
+            return item.id === obj.value
+        })
+        selectSmallTemplate = select && select.template
+        renderFormParams(form)
+    })
     form.on('select(work_format)', function (obj) {
         selectWorkformat = obj.value
 
@@ -101,9 +108,9 @@ layui.use(['form', 'upload', 'laydate'], function () {
         submitFun(obj, 'download')
     })
     form.on('submit(submit_form)', function (obj) {
-        if (!resFormData.url) {
-            return layer.msg('请上传作品')
-        }
+        // if (!resFormData.url) {
+        //     return layer.msg('请上传作品')
+        // }
         submitFun(obj, 'save')
     })
 })
@@ -144,7 +151,9 @@ function setSmallOption(form, id) {
     if (smallInfos.length > 0) {
         $('#small_type').empty()
         for (var i = 0; i < smallInfos.length; i++) {
-            $('#small_type').append('<option value="' + smallInfos[i].id + '">' + smallInfos[i].name + '</option>')
+            $('#small_type').append(
+                '<option template="' + smallInfos[i].template + '" value="' + smallInfos[i].id + '">' + smallInfos[i].name + '</option>'
+            )
         }
     }
     if (!!workId) {
@@ -217,11 +226,18 @@ function renderWorkUpload(upload) {
         },
     })
 }
+//获取动态表单字段 type 表示是否是编辑作品
+
 function renderFormParams(laydate, type) {
-    $('#customDefineParmWrap').empty()
-    formTemplate = selectWrokInfo.template || 'newspapers'
+    $('#formBasic').empty()
+    $('#formOther').empty()
+    $('#formList').hide()
+    //获取模板类型 如果是新媒体品牌栏目 需要增加栏目表
+    formTemplate = (selectSmallTemplate === 'mediaBrand' ? selectSmallTemplate : '') || selectWrokInfo.template || 'newspapers'
+
     var formParams = [],
-        temp = ''
+        temp = '',
+        clounmTemp = ''
     if (!!type) {
         formParams = resFormData.worksExtends || []
     } else {
@@ -255,14 +271,47 @@ function renderFormParams(laydate, type) {
             el +
             '</div></div>'
     }
-    $('#customDefineParmWrap').append(temp)
+    $('#formBasic').append(temp)
+    if (selectSmallTemplate === 'mediaBrand') {
+        $('#formOther').append('<div class="tip-title">栏目代表作</div>')
+        for (var j = 0; j < defaultForm.clounmWork.length; j++) {
+            var el = '',
+                v = defaultForm.clounmWork[j].value || ' '
+            if (defaultForm.clounmWork[j].sort === 1) {
+                el =
+                    '<input class="layui-input item" id="' +
+                    (defaultForm.clounmWork[j].type || j) +
+                    '" value="' +
+                    v +
+                    '" placeholder="' +
+                    defaultForm.clounmWork[j].placeholder +
+                    '"/>'
+            } else if (defaultForm.clounmWork[j].sort === 2) {
+                el = '<textarea class="layui-textarea item" placeholder="' + defaultForm.clounmWork[j].placeholder + '">' + v + '</textarea>'
+            }
+            clounmTemp +=
+                '<div class="layui-form-item" sort="' +
+                defaultForm.clounmWork[j].sort +
+                '">' +
+                '<label class="layui-form-label">' +
+                defaultForm.clounmWork[j].name +
+                '</label>' +
+                '<div class="layui-input-block">' +
+                el +
+                '</div></div>'
+        }
+        $('#formOther').append(clounmTemp)
+    }
+    if (selectSmallTemplate === 'serialReport') {
+        $('#formList').show()
+    }
     // laydate.render({
     //     elem: '#date',
     //     showBottom: false,
     // })
 }
 function formatWorksExtends() {
-    var els = $('#customDefineParmWrap').find('.layui-form-item'),
+    var els = $('#formBasic').find('.layui-form-item'),
         params = []
     for (var i = 0; i < els.length; i++) {
         params.push({
@@ -280,6 +329,7 @@ function submitFun(obj, type) {
     formData.workFields = workFields
     formData.worksType = $('select[name="worksTypeId"] option:selected').text()
     formData.worksExtends = formatWorksExtends()
+
     $.ajax({
         type: 'post',
         url: baseUrl + '/works/saveOrEditWorks',
@@ -321,4 +371,23 @@ function back() {
     } else {
         window.location.href = 'notifyList.html'
     }
+}
+function removeColunmNode(target) {
+    $(target).parent().parent().remove()
+}
+function addColunmNode(target) {
+    $('#formList tbody').append(
+        '<tr>' +
+            '<td><input type="text" class="layui-input" /></td>' +
+            '<td><input type="text" class="layui-input" /></td>' +
+            '<td><input type="text" class="layui-input" /></td>' +
+            '<td><input type="text" class="layui-input" /></td>' +
+            '<td><input type="text" class="layui-input" /></td>' +
+            '<td><input type="text" class="layui-input" /></td>' +
+            '<td>' +
+            '<i class="layui-icon-reduce-circle layui-icon font-18 cursor-pointer del-award-btn" title="删除" onclick="removeColunmNode(this)" ></i>' +
+            '<i class="layui-icon-add-circle layui-icon font-18 cursor-pointer" title="新增" onclick="addColunmNode(this)"></i>' +
+            '</td>' +
+            '</tr>'
+    )
 }

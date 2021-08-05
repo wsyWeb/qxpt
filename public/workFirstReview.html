@@ -52,7 +52,7 @@
                     </div>
                     <div class="layui-form-item m-t-lg p-l-md text-center">
                         <div class="layui-input-block">
-                            <a lay-submit class="layui-btn" lay-filter="submit_form">保存</a>
+                            <a lay-submit class="layui-btn submit-btn" lay-filter="submit_form">保存</a>
                             <a lay-submit class="layui-btn layui-btn-primary next-btn" onclick="next()">下一个</a>
                             <a class="layui-btn layui-btn-primary" href="workListForType.html">返回</a>
                         </div>
@@ -68,7 +68,8 @@
 <script src="lib/layui/xm-select.js"></script>
 <script type="text/javascript" src="js/base.js"></script>
 <script>
-    var workDetail = {}
+    var workDetail = {},
+        notifyDetail = {}
     var expert = xmSelect.render({
         el: '#experts',
         name: 'expertIds',
@@ -85,14 +86,33 @@
         },
         data: [],
     })
-    $.get(baseUrl + '/works/detail?id=' + sessionStorage.getItem('workId') + '&state=' + 2, function (res) {
+    $.get(baseUrl + '/notice/detail?noticeId=' + sessionStorage.getItem('notifyId'), function (res) {
+        if (res.code === 200) {
+            notifyDetail = res.data
+        }
+    })
+    $.get(baseUrl + '/works/detail?id=' + sessionStorage.getItem('workId') + '&state=' + 1, function (res) {
         if (res.code === 200) {
             workDetail = res.data
             $('.detailForm').load('/templates/work/workDetail.html')
+
             getExpert()
 
             layui.use(['form'], function () {
                 var form = layui.form
+
+                if (workDetail.firstReviewState !== 0) {
+                    form.val('review_form', {
+                        state: workDetail.firstReviewState,
+                        opinion: workDetail.firstOpinion,
+                    })
+                    $('.submit-btn').hide()
+                    $('.review_form select').attr('disabled', true)
+                    $('.review_form input').attr('disabled', true)
+                    $('.review_form textarea').attr('disabled', true)
+                    form.render()
+                }
+
                 if (workDetail.distMethod === 1) {
                     $('.assignExpert').hide()
                 }
@@ -112,6 +132,9 @@
 
                     if (Number(formData.state) === 1 && expertIds.length === 0 && Number(workDetail.distMethod) === 0) {
                         return layer.msg('请分派专家')
+                    }
+                    if (Number(formData.state) === 1 && notifyDetail.assignCount && expertIds.length !== notifyDetail.assignCount) {
+                        return layer.msg('请指派' + notifyDetail.assignCount + '个专家')
                     }
                     if (Number(formData.state) !== 1 && !formData.opinion) {
                         return layer.msg('请填写审核意见')

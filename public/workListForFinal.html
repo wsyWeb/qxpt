@@ -67,8 +67,8 @@
                     $('.workTitle').html(notifyDetail.shortName + '投票作品详情')
                     $('.saveBtn').show()
                     cols = [
-                        { field: 'author', title: '标题' },
-                        { field: 'updateTime', title: '作者' },
+                        { field: 'name', title: '标题' },
+                        { field: 'author', title: '作者' },
                         { field: 'recommendUnit', title: '单位' },
                         { field: 'votes', title: '得票数', edit: 'text' },
                         { field: 'opt', title: '操作' },
@@ -88,7 +88,7 @@
                         { field: 'author', title: '作者' },
                         { field: 'recommendUnit', title: '单位' },
                         { field: 'score', title: '得分/得票数' },
-                        { field: 'award', title: '奖项' },
+                        { field: 'awardSetting', title: '奖项' },
                     ]
                     $.get(baseUrl + '/works/resultList?noticeId=' + noticeId, function (workRes) {
                         if (workRes.code === 200) {
