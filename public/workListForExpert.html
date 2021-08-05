@@ -24,40 +24,44 @@
 
         <div class="runnet_main_body">
             <div class="wrap">
-                <div class="runnut_head">
-                    <span class="borderl"></span>
-                    <span class="layui-breadcrumb" lay-separator=">">
-                        <a href="mySpaceDashboard.html">个人信息</a>
-                        <a><cite id="curTitle">作品奖项设置</cite></a>
-                    </span>
+                <div id="my_space_content" class="m-t-lg">
+                    <div class="runnut_head">
+                        <span class="borderl"></span>
+                        <span class="layui-breadcrumb" lay-separator=">">
+                            <a href="mySpaceDashboard.html">个人信息</a>
+                            <a><cite id="curTitle">作品奖项设置</cite></a>
+                        </span>
+                    </div>
+                    <div class="p-md">
+                        <form class="layui-form m-t-md" action lay-filter="search_form">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">活动简称</div>
+                                <div class="layui-inline">
+                                    <select name="shortName" lay-filter="shortName"></select>
+                                </div>
+                            </div>
+                        </form>
+                        <div>
+                            <div>奖项限额：</div>
+                            <div class="award_list"></div>
+                        </div>
+                        <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
+                        <div class="border-top m-t-lg m-b-lg"></div>
+                        <form class="review_form layui-form" action lay-filter="review_form">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label required">审核意见</label>
+                                <div class="layui-input-block">
+                                    <textarea name="leaderOpinion" lay-verify="required" placeholder="" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item m-t-lg p-l-md text-center">
+                                <div class="layui-input-block">
+                                    <a lay-submit class="layui-btn" lay-filter="submit_form">提交</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <form class="layui-form m-t-md" action lay-filter="search_form">
-                    <div class="layui-form-item">
-                        <div class="layui-inline">活动简称</div>
-                        <div class="layui-inline">
-                            <select name="shortName" lay-filter="shortName"></select>
-                        </div>
-                    </div>
-                </form>
-                <div>
-                    <div>奖项限额：</div>
-                    <div class="award_list"></div>
-                </div>
-                <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
-                <div class="border-top m-t-lg m-b-lg"></div>
-                <form class="review_form layui-form" action lay-filter="review_form">
-                    <div class="layui-form-item">
-                        <label class="layui-form-label required">审核意见</label>
-                        <div class="layui-input-block">
-                            <textarea name="leaderOpinion" lay-verify="required" placeholder="" class="layui-textarea"></textarea>
-                        </div>
-                    </div>
-                    <div class="layui-form-item m-t-lg p-l-md text-center">
-                        <div class="layui-input-block">
-                            <a lay-submit class="layui-btn" lay-filter="submit_form">提交</a>
-                        </div>
-                    </div>
-                </form>
             </div>
         </div>
     </body>

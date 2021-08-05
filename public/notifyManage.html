@@ -11,10 +11,7 @@ i<!DOCTYPE html>
         <title>公告管理</title>
         <style>
             .release {
-                color: green;
-            }
-            .draft {
-                color: red;
+                color: #2a6be3;
             }
         </style>
     </head>
@@ -23,14 +20,21 @@ i<!DOCTYPE html>
         <div id="searchDiv"></div>
         <div class="runnet_main_body">
             <div class="wrap p-t-md">
-                <div id="my_space_nav" class="float-left" style="width: 200px"></div>
+                <div id="my_space_nav" class="float-left" style="width: 180px"></div>
                 <div id="my_space_content" style="width: 1000px" class="float-right">
-                    <table class="layui-hide" id="notify_table" lay-filter="notify_table"></table>
-                    <script type="text/html" id="header_toolbar_wrap">
+                    <div class="runnut_head">
+                        <span class="layui-breadcrumb">
+                            <a> <button class="layui-btn layui-btn-sm" onclick="window.location.href='notifyForm.html'">新增</button></a>
+                        </span>
+                    </div>
+                    <div class="p-md">
+                        <table class="layui-hide" id="notify_table" lay-filter="notify_table"></table>
+                    </div>
+                    <!-- <script type="text/html" id="header_toolbar_wrap">
                         <div class="layui-btn-container">
                             <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
                         </div>
-                    </script>
+                    </script> -->
                     <script type="text/html" id="operate_wrap">
                         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
                         <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
@@ -57,7 +61,7 @@ i<!DOCTYPE html>
 
         table.render({
             elem: '#notify_table',
-            toolbar: '#header_toolbar_wrap',
+            // toolbar: '#header_toolbar_wrap',
             defaultToolbar: [],
             skin: 'line',
             method: 'post',

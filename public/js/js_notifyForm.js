@@ -121,6 +121,9 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
     ]
     workFormat = xmSelect.render({
         el: '#workFormat',
+        theme: {
+            color: '#2a6be3',
+        },
         language: 'zn',
         name: 'format',
         data: formats,
@@ -129,6 +132,9 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
         el: '#expert_members',
         language: 'zn',
         filterable: true,
+        theme: {
+            color: '#2a6be3',
+        },
         // layVerify: 'required',
         // layVerType: 'msg',
         prop: {
@@ -641,15 +647,16 @@ function addAwardTypeNode(target) {
     renderTable()
 }
 function addAwardLevelNode(target) {
-    $(target).before(
-        '<div class="item">' +
-            '<div class="layui-inline">' +
-            '<input type="text" class="layui-input label"  />' +
+    $('#awardSetting').append(
+        '<div class="item relative overflow-hidden m-b-xs text-center">' +
+            '<input type="text" class="layui-input label"  placeholder="输入奖项等级" />' +
+            '<input type="number" class="layui-input content"  placeholder="输入奖项个数" />' +
+            '<div class="del-level-btn">' +
+            '<i class="del layui-icon-reduce-circle layui-icon font-18 cursor-pointer" title="删除" onclick="removeAwardLevelNode(this)"></i>' +
             '</div>' +
-            ' <div class="layui-inline">' +
-            '<input type="number" class="layui-input content" />' +
-            '</div> 个' +
-            ' <i class="layui-icon-reduce-circle layui-icon font-18 cursor-pointer del-level-btn p-l-md" title="删除" onclick="removeAwardLevelNode(this)"></i>' +
+            '<div class="add-level-btn">' +
+            ' <i class="add layui-icon-add-circle layui-icon font-18 cursor-pointer" title="新增" onclick="addAwardLevelNode(this)"></i>' +
+            '</div>' +
             '</div>'
     )
 }
@@ -670,5 +677,7 @@ function removeAwardItemNode(target) {
     $(target).parent().remove()
 }
 function removeAwardLevelNode(target) {
-    $(target).parent().remove()
+    var els = $('#awardSetting .item')
+    if (els.length === 1) return
+    $(target).parent().parent().remove()
 }

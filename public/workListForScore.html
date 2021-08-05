@@ -24,16 +24,17 @@
 
         <div class="runnet_main_body">
             <div class="wrap">
-                <!-- <div id="my_space_nav" class="float-left" style="width: 180px"></div>
-                <div id="my_space_content" class="float-right" style="width: 1000px"> -->
-                <div class="runnut_head">
-                    <span class="borderl"></span>
-                    <span class="layui-breadcrumb">
-                        <a href="mySpaceDashboard.html">个人信息</a>
-                        <a><cite id="curTitle">作品审核</cite></a>
-                    </span>
+                <div id="my_space_content" class="m-t-lg">
+                    <div class="runnut_head">
+                        <span class="layui-breadcrumb">
+                            <a href="mySpaceDashboard.html">个人信息</a>
+                            <a><cite id="curTitle">作品审核</cite></a>
+                        </span>
+                    </div>
+                    <div class="p-md">
+                        <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
+                    </div>
                 </div>
-                <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
                 <script type="text/html" id="person_detail_btn">
                     {{# if(Number(reviewState) === 3){ }} {{# if(Number(d.reviewState) === -1){ }}
                     <a class="layui-btn layui-btn-xs" lay-event="review">评分</a>
@@ -45,7 +46,6 @@
                     <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
                     {{# } }} {{# } }}
                 </script>
-                <!-- </div> -->
             </div>
         </div>
     </body>

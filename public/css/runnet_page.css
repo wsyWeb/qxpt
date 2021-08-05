@@ -46,6 +46,7 @@
     box-sizing: border-box;
 }
 .block {
+    border: 1px solid #dedede;
     box-shadow: 0 0 10px #0000003d;
     /* border-radius: 2px;
     -webkit-border-radius: 2px;
@@ -105,7 +106,10 @@
     color: inherit;
 }
 #my_space_content {
-    box-shadow: 0 0px 1px #fff, 3px 0 5px #00000017, 0 3px 5px #00000017, -3px 0 5px #00000017;
+    /* box-shadow: 0 0px 1px #fff, 3px 0 5px #dedede, 0 3px 5px #dedede, -3px 0 5px #dedede; */
+    border: 1px solid #dedede;
+    box-shadow: 0 0 10px #0000003d;
+    margin-bottom: 50px;
 }
 #my_space_content .layui-table,
 #my_space_content .layui-table-view {
@@ -134,10 +138,17 @@
     -ms-transform: scale(1.3);
     -o-transform: scale(1.3);
 }
+/* 覆盖layui 样式 */
+/*分页*/
 .layui-table-page {
     text-align: right;
+    padding-top: 30px;
+    height: 80px;
 }
-/* 覆盖layui 样式 */
+.layui-laypage .layui-laypage-curr .layui-laypage-em {
+    background-color: #2a6be3 !important;
+}
+
 /* CheckBox */
 .layui-form-checked[lay-skin='primary'] i {
     background-color: #2a6be3 !important;
@@ -146,9 +157,18 @@
 .layui-table-view .layui-form-checkbox i:hover {
     border-color: #2a6be3;
 }
+.layui-form-radio > i:hover,
+.layui-form-radioed > i {
+    color: #2a6be3;
+}
+
 /* 按钮 */
-.layui-btn-normal {
+.layui-btn,
+.layui-form-select dl dd.layui-this {
     background-color: #2a6be3;
+}
+.layui-btn.layui-btn-primary {
+    background-color: #fff;
 }
 .layui-btn.layui-btn-danger {
     background-color: #f04040;
@@ -172,4 +192,25 @@
 /* 导航 */
 .runnut_head .layui-breadcrumb a:hover {
     color: #0b65b7 !important;
+}
+/*i表单on*/
+.layui-form .layui-form-label {
+    padding-left: 0;
+}
+.layui-tab-brief > .layui-tab-title .layui-this {
+    color: #0b65b7;
+}
+.layui-tab-brief > .layui-tab-title .layui-this:after {
+    border-bottom: 2px solid #0b65b7;
+}
+
+/* 表单里增加删除按钮 */
+.layui-icon-reduce-circle.del {
+    color: #f04040;
+}
+.layui-icon-add-circle.add {
+    color: #0b65b7;
+}
+.layui-layer-page .layui-layer-content {
+    overflow: visible !important;
 }
