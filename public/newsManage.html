@@ -1,64 +1,70 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
-    <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/lib/layui/css/layui.css" />
-    <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/css/common.css"/>
-    <link rel="stylesheet" href="css/runnet_common.css" />
-    <link rel="stylesheet" href="css/runnet_page.css" />
-    <title>新闻管理</title>
-    <style>
-        .release {
-            color: green;
-        }
-        .draft {
-            color: red;
-        }
-    </style>
-</head>
-<body>
-<div id="headDiv"></div>
-<div id="searchDiv"></div>
-<div class="runnet_main_body">
-    <div class="wrap p-t-md">
-        <div id="my_space_nav" class="float-left" style="width: 200px"></div>
-        <div id="my_space_content" style="width: 1000px" class="float-right">
-            <form class="layui-form search_form m-b-lg" action="" lay-filter="search_form">
-                <div class="layui-inline">新闻类别</div>
-                <div class="layui-inline">
-                    <select class="activity_search" name="type" lay-verify="" lay-filter="activity_search" style="width: 100px">
-                        <option value="">全部</option>
-                        <option value="1">新闻动态</option>
-                        <option value="2">政策宣讲</option>
-                    </select>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+        <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/lib/layui/css/layui.css" />
+        <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/css/common.css" />
+        <link rel="stylesheet" href="css/runnet_common.css" />
+        <link rel="stylesheet" href="css/runnet_page.css" />
+        <title>新闻管理</title>
+        <style>
+            .release {
+                color: #2a6be3;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="headDiv"></div>
+        <div id="searchDiv"></div>
+        <div class="runnet_main_body">
+            <div class="wrap p-t-md">
+                <div id="my_space_nav" class="float-left" style="width: 200px"></div>
+                <div id="my_space_content" style="width: 1000px" class="float-right">
+                    <form class="layui-form search_form m-b-lg" action="" lay-filter="search_form">
+                        <div class="layui-inline">新闻类别</div>
+                        <div class="layui-inline">
+                            <select class="activity_search" name="type" lay-verify="" lay-filter="activity_search" style="width: 100px">
+                                <option value="">全部</option>
+                                <option value="1">新闻动态</option>
+                                <option value="2">政策宣讲</option>
+                            </select>
+                        </div>
+                        <div class="layui-inline" style="margin-left: 10px">新闻标题</div>
+                        <div class="layui-inline">
+                            <input type="text" name="title" placeholder="请输入新闻标题" autocomplete="off" class="layui-input" />
+                        </div>
+                        <div class="layui-inline">
+                            <button
+                                type="button"
+                                id="btnserach"
+                                class="layui-btn layui-btn-primary"
+                                lay-submit
+                                data-type="reload"
+                                lay-filter="data-search-btn"
+                            >
+                                <i class="layui-icon"></i> 搜 索
+                            </button>
+                        </div>
+                    </form>
+                    <table class="layui-hide" id="notify_table" lay-filter="notify_table"></table>
+                    <script type="text/html" id="header_toolbar_wrap">
+                        <div class="layui-btn-container">
+                            <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
+                        </div>
+                    </script>
+                    <script type="text/html" id="operate_wrap">
+                        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                        <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
+                        <a class="layui-btn layui-btn-xs" lay-event="top">
+                            {{# if(d.istop == 2){ }} 置顶 {{# } }} {{# if(d.istop == 1){ }} 取消置顶 {{# } }}
+                        </a>
+                    </script>
                 </div>
-                <div class="layui-inline" style="margin-left:10px;">新闻标题</div>
-                <div class="layui-inline">
-                    <input type="text" name="title" placeholder="请输入新闻标题" autocomplete="off" class="layui-input">
-                </div>
-                <div class="layui-inline">
-                    <button type="button" id="btnserach" class="layui-btn layui-btn-primary"  lay-submit data-type="reload" lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
-                </div>
-            </form>
-            <table class="layui-hide" id="notify_table" lay-filter="notify_table"></table>
-            <script type="text/html" id="header_toolbar_wrap">
-                <div class="layui-btn-container">
-                    <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
-                </div>
-            </script>
-            <script type="text/html" id="operate_wrap">
-                <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-                <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
-                <a class="layui-btn layui-btn-xs" lay-event="top">
-                    {{# if(d.istop == 2){ }} 置顶 {{# } }} {{# if(d.istop == 1){ }} 取消置顶 {{# } }}
-                </a>
-            </script>
+            </div>
         </div>
-    </div>
-</div>
-</body>
+    </body>
 </html>
 <script type="text/javascript" src="/rsp-group-innovation/static/lib/jquery.js"></script>
 <script type="text/javascript" src="/rsp-group-innovation/static/js/common.js"></script>
@@ -74,13 +80,11 @@
             toolbar: '#header_toolbar_wrap',
             defaultToolbar: [],
             skin: 'line',
-            method: 'post' ,
+            method: 'post',
             url: baseUrl + '/news/queryList',
             contentType: 'application/json',
             limits: [20, 50, 80, 100],
-            response: {
-
-            },
+            response: {},
             parseData: function (res) {
                 return {
                     message: res.message,
@@ -95,7 +99,7 @@
                         field: 'istop',
                         title: '置顶',
                         templet: function (d) {
-                            if (d.istop === "1") {
+                            if (d.istop === '1') {
                                 return '<i class="layui-icon layui-icon-rate-solid" style="color:#FF5722"></i>'
                             }
                             return '<i class="layui-icon layui-icon-rate"></i>'
@@ -106,7 +110,8 @@
                     // { field: 'vice_title', title: '副标题' },
                     {
                         field: 'type',
-                        title: '类别',align:"center",
+                        title: '类别',
+                        align: 'center',
                         templet: function (d) {
                             switch (Number(d.type)) {
                                 case 1:
@@ -121,7 +126,7 @@
                         },
                         width: 90,
                     },
-                   { field: 'nums', title: '点击数量',width:100,align:"center" },
+                    { field: 'nums', title: '点击数量', width: 100, align: 'center' },
                     {
                         field: 'sign',
                         title: '操作',
@@ -134,7 +139,7 @@
         })
         table.on('toolbar(notify_table)', function (obj) {
             if (obj.event === 'add') {
-                sessionStorage.removeItem("newsId");
+                sessionStorage.removeItem('newsId')
                 window.location.href = 'newsForm.html'
             }
         })
@@ -144,30 +149,34 @@
                 sessionStorage.setItem('newsId', data.id)
                 window.location.href = 'newsForm.html'
             } else if (obj.event === 'top') {
-                var title = "新闻动态";
-                if(data.type == 2){
-                    title = "政策宣讲";
+                var title = '新闻动态'
+                if (data.type == 2) {
+                    title = '政策宣讲'
                 }
-                layer.confirm(data.istop === "1" ? '你确认取消置顶该'+title+'吗？' : '你确定置顶该'+title+'吗？', { title: '提示' }, function () {
-                    var istop = data.istop === "1" ? 2 : 1
-                    var currpage = $('.layui-laypage-em').next().text()
-                    $.get(baseUrl + '/news/isTop?id=' + data.id + '&istop=' + istop, function (res) {
-                        if (res.code === 200) {
-                            layer.msg(data.istop === 1 ? '取消置顶成功' : '置顶成功')
-                            table.reload('notify_table', {
-                                page: {
-                                    curr: currpage,
-                                },
-                            })
-                        }
-                    })
-                })
+                layer.confirm(
+                    data.istop === '1' ? '你确认取消置顶该' + title + '吗？' : '你确定置顶该' + title + '吗？',
+                    { title: '提示' },
+                    function () {
+                        var istop = data.istop === '1' ? 2 : 1
+                        var currpage = $('.layui-laypage-em').next().text()
+                        $.get(baseUrl + '/news/isTop?id=' + data.id + '&istop=' + istop, function (res) {
+                            if (res.code === 200) {
+                                layer.msg(data.istop === 1 ? '取消置顶成功' : '置顶成功')
+                                table.reload('notify_table', {
+                                    page: {
+                                        curr: currpage,
+                                    },
+                                })
+                            }
+                        })
+                    }
+                )
             } else if (obj.event === 'delete') {
-                var title = "新闻动态";
-                if(data.type == 2){
-                    title = "政策宣讲";
+                var title = '新闻动态'
+                if (data.type == 2) {
+                    title = '政策宣讲'
                 }
-                layer.confirm('你确定删除该'+title+'吗', { title: '提示' }, function () {
+                layer.confirm('你确定删除该' + title + '吗', { title: '提示' }, function () {
                     $.get(baseUrl + '/news/delete/' + data.id, function (res) {
                         if (res.code === 200) {
                             layer.msg('删除成功')
@@ -179,25 +188,24 @@
         })
 
         var active = {
-            reload: function(){
-                var title = $("input[name='title']");//得到搜索框里已输入的数据
-                var type = $("select[name='type']");//得到搜索框里已输入的数据
+            reload: function () {
+                var title = $("input[name='title']") //得到搜索框里已输入的数据
+                var type = $("select[name='type']") //得到搜索框里已输入的数据
                 table.reload('notify_table', {
                     page: {
-                        curr: 1 //重新从第 1 页开始
-                    }
-                    ,where: {
-                        title:  title.val(),
-                        type:type.val()
-                    }
-                });
-            }
-        };
+                        curr: 1, //重新从第 1 页开始
+                    },
+                    where: {
+                        title: title.val(),
+                        type: type.val(),
+                    },
+                })
+            },
+        }
 
-        $('#btnserach').on('click', function(){
-            var type = $(this).data('type');
-            active[type] ? active[type].call(this) : '';
-        });
-    });
-
+        $('#btnserach').on('click', function () {
+            var type = $(this).data('type')
+            active[type] ? active[type].call(this) : ''
+        })
+    })
 </script>

@@ -54,6 +54,41 @@
                 border-top-left-radius: 0;
                 border-bottom-left-radius: 0;
             }
+            #awardSetting .layui-input {
+                width: 50%;
+                display: inline;
+                margin-right: 0;
+                float: left;
+            }
+            #awardSetting .item .content {
+                border-left: 0;
+                border-bottom-left-radius: 0;
+                border-top-left-radius: 0;
+            }
+            #awardSetting .item .label {
+                border-bottom-right-radius: 0;
+                border-top-right-radius: 0;
+            }
+            #awardSetting .del-level-btn {
+                position: absolute;
+                top: 1px;
+                right: 1px;
+                width: 40px;
+                background: #fff;
+                height: 35px;
+                line-height: 35px;
+                border-left: 1px solid #dedede;
+            }
+            #awardSetting .add-level-btn {
+                position: absolute;
+                top: 1px;
+                right: 41px;
+                width: 40px;
+                background: #fff;
+                height: 35px;
+                line-height: 35px;
+                border-left: 1px solid #dedede;
+            }
         </style>
     </head>
     <body>
@@ -61,278 +96,292 @@
         <div id="searchDiv"></div>
         <div class="runnet_main_body">
             <div class="wrap">
-                <div class="runnut_head">
-                    <span class="borderl"></span>
-                    <span class="layui-breadcrumb" lay-separator=">">
-                        <a href="notifyManage.html">公告管理</a>
-                        <a><cite id="curTitle">新增公告</cite></a>
-                    </span>
-                </div>
-                <form class="layui-form m-t-md notyfy_form" action="" lay-filter="notyfy_form">
-                    <div class="font-15 font-bold p-b-md basic-setting">基本信息设置</div>
-                    <div class="block p-md basic-setting">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label required">标题</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="title" lay-verify="required" placeholder="" class="layui-input" />
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">摘要</label>
-                            <div class="layui-input-block">
-                                <!-- <script id="editor" type="text/plain" style="width: 1040px; height: 400px"></script> -->
-                                <textarea placeholder="请输入内容" name="summary" lay-verify="" class="layui-textarea"></textarea>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label required">导入</label>
-                            <div class="layui-input-block">
-                                <a class="layui-btn layui-btn-primary" id="upload_word"><i class="layui-icon">&#xe67c;</i>上传word文档</a>
-                                <div class="layui-inline word_wrap"></div>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">附件</label>
-                            <div class="layui-input-block">
-                                <a class="layui-btn layui-btn-primary" id="upload_attachment"><i class="layui-icon">&#xe67c;</i>上传附件</a>
-                                <div class="attachment_list"></div>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">线上作品收集</label>
-                            <div class="layui-input-block">
-                                <input type="radio" name="isCollection" value="0" title="否" checked lay-filter="workCollection" />
-                                <input type="radio" name="isCollection" value="1" title="是" lay-filter="workCollection" />
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">线上活动报名</label>
-                            <div class="layui-input-block">
-                                <input type="radio" name="isEnter" value="0" title="否" checked lay-filter="activityRegistration" />
-                                <input type="radio" name="isEnter" value="1" title="是" id="isEnter_true" lay-filter="activityRegistration" />
-                            </div>
-                        </div>
+                <div id="my_space_content" class="m-t-lg">
+                    <div class="runnut_head">
+                        <span class="layui-breadcrumb">
+                            <a href="notifyManage.html">公告管理</a>
+                            <a><cite id="curTitle">新增公告</cite></a>
+                        </span>
                     </div>
-
-                    <div class="font-15 font-bold p-b-md collection-setting">线上活动设置</div>
-
-                    <div class="block collection-setting p-md">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label required">活动简称</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="shortName" lay-verify="" placeholder="" class="layui-input" />
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">类别</label>
-                            <div class="layui-input-block">
-                                <select name="type" lay-verify="" lay-filter="type">
-                                    <option value="1">短视频大赛</option>
-                                    <option value="2" selected>好新闻评选</option>
-                                    <option value="3">观摩交流活动</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label required">报名截止日期</label>
-                            <div class="layui-input-block">
-                                <input
-                                    type="text"
-                                    name="submitDate"
-                                    id="submit_date"
-                                    lay-verify=""
-                                    placeholder=""
-                                    autocomplete="off"
-                                    class="layui-input"
-                                />
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label required">奖项类别</label>
-                            <div class="layui-input-block">
-                                <div class="layui-collapse" id="awardType"></div>
-                                <i
-                                    style="position: relative; top: 8px"
-                                    class="layui-icon-add-circle layui-icon font-18 cursor-pointer p-t-md"
-                                    title="新增"
-                                    onclick="addAwardTypeNode(this)"
-                                ></i>
-                                <script id="award_type" type="text/html">
-                                    {{# layui.each(d, function(idx1, item){ }}
-                                    <div class="layui-colla-item" id="{{item.id}}">
-                                        <h2 class="layui-colla-title">
-                                            <input type="text" class="layui-input" lay-filter="work_type_input" value="{{item.name}}" />
-                                            <i
-                                                class="layui-icon-reduce-circle layui-icon font-18 cursor-pointer del-award-btn"
-                                                title="删除"
-                                                onclick="removeAwardTypeNode(this)"
-                                            ></i>
-                                        </h2>
-                                        <div class="layui-colla-content">
-                                            {{# layui.each(item.worksTypes, function(idx2, work){ }}
-                                            <div class="layui-inline item position-relative" template="{{work.template}}">
-                                                <input type="text" class="layui-input" value="{{work.name}}" />
-                                                <a class="layui-btn layui-btn-primary del-work-btn" onclick="removeAwardItemNode(this)">
-                                                    <i class="layui-icon-delete layui-icon "></i>
-                                                </a>
-                                            </div>
-                                            {{# }); }}
-                                            <i
-                                                class="layui-icon-add-circle layui-icon font-18 cursor-pointer"
-                                                title="新增"
-                                                onclick="addAwardItemNode(this)"
-                                            ></i>
-                                        </div>
-                                    </div>
-
-                                    {{# }); }}
-                                </script>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">作品信息</label>
-                            <div class="layui-input-block prize_setting">
-                                <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
-                                    <ul class="layui-tab-title">
-                                        <li class="layui-this">计划单列市</li>
-                                        <li>气象类高校</li>
-                                        <li>气象局单位</li>
-                                        <li>团体组织（中学、社会性组织）</li>
-                                    </ul>
-                                    <div class="layui-tab-content">
-                                        <div class="layui-tab-item layui-show">
-                                            <table class="layui-hide" id="worksInfoTable0" lay-filter="works_info_table" style="width: 100%"></table>
-                                        </div>
-                                        <div class="layui-tab-item">
-                                            <table class="layui-hide" id="worksInfoTable1" lay-filter="works_info_table" style="width: 100%"></table>
-                                        </div>
-                                        <div class="layui-tab-item">
-                                            <table class="layui-hide" id="worksInfoTable2" lay-filter="works_info_table" style="width: 100%"></table>
-                                        </div>
-                                        <div class="layui-tab-item">
-                                            <table class="layui-hide" id="worksInfoTable3" lay-filter="works_info_table" style="width: 100%"></table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <script type="text/html" id="work_format_btn">
-                                    <a class="layui-btn layui-btn-xs" lay-event="edit_format">编辑</a>
-                                </script>
-                            </div>
-                            <div class="layui-input-block activityInfoWrap">
-                                <table class="layui-hide" id="worksInfoTable" lay-filter="works_info_table" style="width: 100%"></table>
-                            </div>
-                        </div>
-                        <div class="layui-form-item prize_setting">
+                    <form class="layui-form m-t-md notyfy_form" action="" lay-filter="notyfy_form">
+                        <div class="p-md basic-setting">
                             <div class="layui-form-item">
-                                <label class="layui-form-label">奖项设定</label>
-                                <div class="layui-input-block" id="awardSetting">
-                                    <script id="award_setting" type="text/html">
+                                <label class="layui-form-label required">标题</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="title" lay-verify="required" placeholder="" class="layui-input" />
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">摘要</label>
+                                <div class="layui-input-block">
+                                    <!-- <script id="editor" type="text/plain" style="width: 1040px; height: 400px"></script> -->
+                                    <textarea placeholder="请输入内容" name="summary" lay-verify="" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label required">导入</label>
+                                <div class="layui-input-block">
+                                    <a class="layui-btn" id="upload_word"><i class="layui-icon">&#xe67c;</i>上传word文档</a>
+                                    <div class="layui-inline word_wrap"></div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">附件</label>
+                                <div class="layui-input-block">
+                                    <a class="layui-btn" id="upload_attachment"><i class="layui-icon">&#xe67c;</i>上传附件</a>
+                                    <div class="attachment_list"></div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">线上作品收集</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="isCollection" value="0" title="否" checked lay-filter="workCollection" />
+                                    <input type="radio" name="isCollection" value="1" title="是" lay-filter="workCollection" />
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">线上活动报名</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="isEnter" value="0" title="否" checked lay-filter="activityRegistration" />
+                                    <input type="radio" name="isEnter" value="1" title="是" id="isEnter_true" lay-filter="activityRegistration" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="collection-setting p-md">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label required">活动简称</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="shortName" lay-verify="" placeholder="" class="layui-input" />
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">类别</label>
+                                <div class="layui-input-block">
+                                    <select name="type" lay-verify="" lay-filter="type">
+                                        <option value="1">短视频大赛</option>
+                                        <option value="2" selected>好新闻评选</option>
+                                        <option value="3">观摩交流活动</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label required">报名截止日期</label>
+                                <div class="layui-input-block">
+                                    <input
+                                        type="text"
+                                        name="submitDate"
+                                        id="submit_date"
+                                        lay-verify=""
+                                        placeholder=""
+                                        autocomplete="off"
+                                        class="layui-input"
+                                    />
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label required">奖项类别</label>
+                                <div class="layui-input-block">
+                                    <div class="layui-collapse" id="awardType"></div>
+                                    <i
+                                        style="position: relative; top: 8px"
+                                        class="layui-icon-add-circle layui-icon font-18 cursor-pointer p-t-md"
+                                        title="新增"
+                                        onclick="addAwardTypeNode(this)"
+                                    ></i>
+                                    <script id="award_type" type="text/html">
                                         {{# layui.each(d, function(idx1, item){ }}
-                                        <div class="item">
-                                            <div class="layui-inline">
-                                                <input type="text" class="layui-input label" value="{{item.level}}" />
+                                        <div class="layui-colla-item" id="{{item.id}}">
+                                            <h2 class="layui-colla-title">
+                                                <input type="text" class="layui-input" lay-filter="work_type_input" value="{{item.name}}" />
+                                                <i
+                                                    class="layui-icon-reduce-circle layui-icon font-18 cursor-pointer del-award-btn"
+                                                    title="删除"
+                                                    onclick="removeAwardTypeNode(this)"
+                                                ></i>
+                                            </h2>
+                                            <div class="layui-colla-content">
+                                                {{# layui.each(item.worksTypes, function(idx2, work){ }}
+                                                <div class="layui-inline item relative" template="{{work.template}}">
+                                                    <input type="text" class="layui-input" value="{{work.name}}" />
+                                                    <a class="layui-btn layui-btn-primary del-work-btn" onclick="removeAwardItemNode(this)">
+                                                        <i class="layui-icon-delete layui-icon "></i>
+                                                    </a>
+                                                </div>
+                                                {{# }); }}
+                                                <i
+                                                    class="layui-icon-add-circle layui-icon font-18 cursor-pointer"
+                                                    title="新增"
+                                                    onclick="addAwardItemNode(this)"
+                                                ></i>
                                             </div>
-                                            <div class="layui-inline">
-                                                <input type="number" class="layui-input content" value="{{item.value}}" />
-                                            </div>
-                                            个
-                                            <i
-                                                class="layui-icon-reduce-circle layui-icon font-18 cursor-pointer del-level-btn p-l-md"
-                                                title="删除"
-                                                onclick="removeAwardLevelNode(this)"
-                                            ></i>
                                         </div>
+
                                         {{# }); }}
-                                        <i
-                                            style="position: relative; top: 8px"
-                                            class="layui-icon-add-circle layui-icon font-18 cursor-pointer"
-                                            title="新增"
-                                            onclick="addAwardLevelNode(this)"
-                                        ></i>
                                     </script>
                                 </div>
                             </div>
                             <div class="layui-form-item">
-                                <label class="layui-form-label">专家反馈模式</label>
-                                <div class="layui-input-block">
-                                    <input type="radio" name="feedBack" value="1" title="作品打分" checked lay-filter="feedBack" />
-                                    <input type="radio" name="feedBack" value="2" title="作品排序" lay-filter="feedBack" />
-                                    <input type="radio" name="feedBack" value="3" title="投票" lay-filter="feedBack" />
+                                <label class="layui-form-label">作品信息</label>
+                                <div class="layui-input-block prize_setting">
+                                    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                                        <ul class="layui-tab-title">
+                                            <li class="layui-this">计划单列市</li>
+                                            <li>气象类高校</li>
+                                            <li>气象局单位</li>
+                                            <li>团体组织（中学、社会性组织）</li>
+                                        </ul>
+                                        <div class="layui-tab-content">
+                                            <div class="layui-tab-item layui-show">
+                                                <table
+                                                    class="layui-hide"
+                                                    id="worksInfoTable0"
+                                                    lay-filter="works_info_table"
+                                                    style="width: 100%"
+                                                ></table>
+                                            </div>
+                                            <div class="layui-tab-item">
+                                                <table
+                                                    class="layui-hide"
+                                                    id="worksInfoTable1"
+                                                    lay-filter="works_info_table"
+                                                    style="width: 100%"
+                                                ></table>
+                                            </div>
+                                            <div class="layui-tab-item">
+                                                <table
+                                                    class="layui-hide"
+                                                    id="worksInfoTable2"
+                                                    lay-filter="works_info_table"
+                                                    style="width: 100%"
+                                                ></table>
+                                            </div>
+                                            <div class="layui-tab-item">
+                                                <table
+                                                    class="layui-hide"
+                                                    id="worksInfoTable3"
+                                                    lay-filter="works_info_table"
+                                                    style="width: 100%"
+                                                ></table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script type="text/html" id="work_format_btn">
+                                        <a class="layui-btn layui-btn-xs" lay-event="edit_format">编辑</a>
+                                    </script>
                                 </div>
-                                <div class="layui-input-block score-wrap">
-                                    <input type="radio" name="score" value="0" title="去最高分" checked />
-                                    <input type="radio" name="score" value="1" title="不去最高分" />
+                                <div class="layui-input-block activityInfoWrap">
+                                    <table class="layui-hide" id="worksInfoTable" lay-filter="works_info_table" style="width: 100%"></table>
                                 </div>
                             </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">作品派发方式</label>
-                                <div class="layui-input-block">
-                                    <input type="radio" name="distMethod" value="0" title="指定派发" checked />
-                                    <input type="radio" name="distMethod" value="1" title="随机派发" />
+                            <div class="layui-form-item prize_setting">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label required">奖项设定</label>
+                                    <div class="layui-input-block" id="awardSetting">
+                                        <script id="award_setting" type="text/html">
+                                            {{# layui.each(d, function(idx1, item){ }}
+                                            <div class="item relative overflow-hidden m-b-xs text-center">
+                                                <input type="text" class="layui-input label" value="{{item.level}}" placeholder="输入奖项等级" />
+                                                <input type="number" class="layui-input content" value="{{item.value}}" placeholder="输入奖项个数" />
+                                                <div class="del-level-btn">
+                                                    <i
+                                                        class="del layui-icon-reduce-circle layui-icon font-18 cursor-pointer"
+                                                        title="删除"
+                                                        onclick="removeAwardLevelNode(this)"
+                                                    ></i>
+                                                </div>
+                                                <div class="add-level-btn">
+                                                    <i
+                                                        class="add layui-icon-add-circle layui-icon font-18 cursor-pointer"
+                                                        title="新增"
+                                                        onclick="addAwardLevelNode(this)"
+                                                    ></i>
+                                                </div>
+                                            </div>
+                                            {{# }); }}
+                                        </script>
+                                    </div>
                                 </div>
-                            </div>
-                            <!-- <div class="layui-form-item">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">专家反馈模式</label>
+                                    <div class="layui-input-block">
+                                        <input type="radio" name="feedBack" value="1" title="作品打分" checked lay-filter="feedBack" />
+                                        <input type="radio" name="feedBack" value="2" title="作品排序" lay-filter="feedBack" />
+                                        <input type="radio" name="feedBack" value="3" title="投票" lay-filter="feedBack" />
+                                    </div>
+                                    <div class="layui-input-block score-wrap">
+                                        <input type="radio" name="score" value="0" title="去最高分" checked />
+                                        <input type="radio" name="score" value="1" title="不去最高分" />
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">作品派发方式</label>
+                                    <div class="layui-input-block">
+                                        <input type="radio" name="distMethod" value="0" title="指定派发" checked />
+                                        <input type="radio" name="distMethod" value="1" title="随机派发" />
+                                    </div>
+                                </div>
+                                <!-- <div class="layui-form-item">
                                 <label class="layui-form-label">分配工作人员</label>
                                 <div class="layui-input-block"></div>
                             </div> -->
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">复审专家数</label>
-                                <div class="layui-input-block">
-                                    <input type="number" name="assignCount" value="3" class="layui-input" />
-                                </div>
-                            </div>
-                            <div class="layui-form-item">
-                                <label class="layui-form-label required">指派终审专家</label>
-                                <div class="layui-input-block">
-                                    组员
-                                    <div class="layui-inline" id="expert_members" style="width: 200px"></div>
-                                    组长
-                                    <div class="layui-inline" style="width: 200px">
-                                        <select id="expert_leader" name="leaderId" lay-filter="expertLeader"></select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="layui-form-item onlineVoting" style="display: none">
-                                <label class="layui-form-label">线上投票</label>
-                                <div class="layui-input-block">
-                                    <input type="radio" name="vote" value="0" title="否" checked lay-filter="vote" />
-                                    <input type="radio" name="vote" value="1" title="是" lay-filter="vote" />
-                                </div>
-                            </div>
-                            <div class="vote-wrap" style="display: none">
                                 <div class="layui-form-item">
-                                    <label class="layui-form-label">投票环节</label>
+                                    <label class="layui-form-label">复审专家数</label>
                                     <div class="layui-input-block">
-                                        <input type="radio" name="voteLinks" value="0" title="复审" checked lay-filter="voteLinks" />
-                                        <input type="radio" name="voteLinks" value="1" title="终审" lay-filter="voteLinks" />
+                                        <input type="number" name="assignCount" value="3" class="layui-input" />
                                     </div>
                                 </div>
                                 <div class="layui-form-item">
-                                    <label class="layui-form-label"></label>
+                                    <label class="layui-form-label required">指派终审专家</label>
+                                    <div class="layui-input-block" id="expert_members"></div>
+                                    <div class="layui-input-block m-t-xs">
+                                        <select id="expert_leader" name="leaderId" lay-filter="expertLeader">
+                                            <option value="">请选择组长</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item onlineVoting" style="display: none">
+                                    <label class="layui-form-label">线上投票</label>
                                     <div class="layui-input-block">
-                                        专家评分平均分 *
-                                        <div class="layui-inline">
-                                            <input type="text" style="width: 100px" name="expertWeight" class="layui-input" />
+                                        <input type="radio" name="vote" value="0" title="否" checked lay-filter="vote" />
+                                        <input type="radio" name="vote" value="1" title="是" lay-filter="vote" />
+                                    </div>
+                                </div>
+                                <div class="vote-wrap" style="display: none">
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">投票环节</label>
+                                        <div class="layui-input-block">
+                                            <input type="radio" name="voteLinks" value="0" title="复审" checked lay-filter="voteLinks" />
+                                            <input type="radio" name="voteLinks" value="1" title="终审" lay-filter="voteLinks" />
                                         </div>
-                                        + 网络投票数 / 最高得票数 *
-                                        <div class="layui-inline">
-                                            <input type="text" name="voteWeight" style="width: 100px" class="layui-input" />
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label"></label>
+                                        <div class="layui-input-block">
+                                            专家评分平均分 *
+                                            <div class="layui-inline">
+                                                <input type="text" style="width: 100px" name="expertWeight" class="layui-input" />
+                                            </div>
+                                            + 网络投票数 / 最高得票数 *
+                                            <div class="layui-inline">
+                                                <input type="text" name="voteWeight" style="width: 100px" class="layui-input" />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="layui-form-item m-t-lg p-l-md">
-                        <div class="layui-input-block">
-                            <a lay-submit class="layui-btn" lay-filter="release">发布</a>
-                            <a lay-submit class="layui-btn layui-btn-primary" lay-filter="prev" style="display: none">上一步</a>
-                            <a lay-submit class="layui-btn layui-btn-primary" lay-filter="next" style="display: none">下一步</a>
-                            <a lay-submit class="layui-btn layui-btn-primary" lay-filter="draft">存为草稿</a>
-                            <a class="layui-btn layui-btn-primary" href="notifyManage.html">返回</a>
+                        <div class="layui-form-item m-t-lg p-l-md">
+                            <div class="layui-input-block">
+                                <a lay-submit class="layui-btn" lay-filter="release">发布</a>
+                                <a lay-submit class="layui-btn layui-btn-primary layui-border-blue" lay-filter="prev" style="display: none">上一步</a>
+                                <a lay-submit class="layui-btn layui-btn-primary layui-border-blue" lay-filter="next" style="display: none">下一步</a>
+                                <a lay-submit class="layui-btn layui-btn-primary layui-border-blue" lay-filter="draft">存为草稿</a>
+                                <a class="layui-btn layui-btn-primary layui-border-blue" href="notifyManage.html">返回</a>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
         <form class="layui-form p-md notyfy_form" id="work_info_form" action="" lay-filter="work_info_form" style="display: none">
