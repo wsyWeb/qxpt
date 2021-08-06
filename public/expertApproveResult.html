@@ -17,6 +17,7 @@
             .m-t-lg{
                 width: 899px;
                 height: 503px;
+                margin: 0 auto;
             }
             .name{
                 color: #2a6be3;
@@ -55,7 +56,7 @@
             .time{
                 color: #666666;
                 font-size: 16px;
-                padding-right: 40px;
+                padding-right: 62px;
             }
             .last-btn .btn{
                 border: 1px solid #2a6be3;
@@ -88,6 +89,8 @@
                         <a><cite>评选结果</cite></a>
                     </span>
                 </div>
+                <div style="width: 100%;height:50px;"></div>
+                <script id="demo" type="text/html">
                 <div class="m-t-lg block">
                     <div class="hot-windows">
                         <span class="hot-iocn-line"></span>
@@ -95,21 +98,29 @@
                     </div>
 
                     <div class="border">
-                        <div class="name">尊敬的张三</div>
+                        <div class="name">尊敬的{{d.name}}</div>
+                        {{# if (d.examineStatus == '2') { }}
                         <p>感谢您对本次专家评选活动的支持！</p>
-                        <p>恭喜您成为 观测类 领域二级专家，希望您能在后续科普活动中给予更多的支持！</p>
+                        <p>恭喜您成为 {{d.entryField}} 领域{{d.level}}级专家，希望您能在后续科普活动中给予更多的支持！</p>
+                        {{# } else { }}
+                        <p>你的申请正在审核中，请耐心等待！</p>
+                        {{# } }}
     <!--                    <div class="result-wrap font-26 text-center"></div>-->
                         <div class="qxj">
                             <span class="text-left text-indent57">中国气象局科普</span>
                             <span class="text-right text-indent57">宣传中心</span>
                         </div>
-                        <div class="time text-right"></div>
+                        <div class="time text-right">{{d.auditTime}}</div>
                     </div>
+                    {{# if (d.examineStatus == '2') { }}
                     <div class="last-btn clearfix">
-                        <div class="btn">查看详情</div>
+                        <div class="btn" onclick="go_expertForm();">查看详情</div>
                         <div class="btn">下载证书</div>
                     </div>
+                    {{# } }}
                 </div>
+                </script>
+                <div id="view"></div>
             </div>
         </div>
     </body>
@@ -126,20 +137,45 @@
         var year = date.getFullYear()
         var month = date.getMonth()
         var day = date.getDate()
-        $('.time').html(year + '年' + month + '月' + day + '日')
-        $.get(baseUrl + '/expert/queryExpertByUserId?user_name=' + sessionStorage.getItem('token'), function (res) {
-            if (res.code == 200) {
-                personDetail = res.data
-                if (Number(res.data.examineStatus) == 1 || Number(res.data.examineStatus) == 0) {
-                    $('.result-wrap').html(
-                        '尊敬的' + res.data.name + '，你的申请正在审核中，请耐心等待！'
-                        // "<a class='font-14 color-theme cursor-pointer' onclick='showDetail() '>查看申请详情</a>"
-                    )
-                } else if (Number(res.data.examineStatus) == 2) {
+        $('.time').html(year + '年' + month + '月' + day + '日');
 
-                   // $('.result-wrap').html('尊敬的' + sessionStorage.getItem('token') + '： 感谢您对本次专家评选活动的支持！恭喜您成为' + res.data.entryField + '领域' + (Number(res.data.expertLevel) === 1 ? '一' : '二') + '级专家，希望您能在后续科普活动中给予更多的支持！')
+        layui.use(['laytpl','form'], function () {
+            var laytpl = layui.laytpl
+            var form = layui.form
+            var demoTpl = demo.innerHTML
+            var demo_view = document.getElementById('view');
+
+            $.get(baseUrl + '/expert/queryExpertByUserId?user_name=' + sessionStorage.getItem('token'), function (res) {
+                if (res.code == 200) {
+                    personDetail = res.data;
+
+                    if (Number(res.data.examineStatus) == 1 || Number(res.data.examineStatus) == 0) {
+
+                        res.data.auditTime = res.data.createtime.substring(0,10);
+                        laytpl(demoTpl).render(res.data, function (html) {
+                            demo_view.innerHTML = html
+                        })
+
+                        $('.result-wrap').html(
+                            '尊敬的' + res.data.name + '，你的申请正在审核中，请耐心等待！'
+                            // "<a class='font-14 color-theme cursor-pointer' onclick='showDetail() '>查看申请详情</a>"
+                        )
+                    } else if (Number(res.data.examineStatus) == 2) {
+                        var str = (Number(res.data.expertLevel) === 1 ? '一' : '二');
+                        res.data.level = str;
+                        res.data.auditTime = res.data.auditTime.substring(0,10);
+                        laytpl(demoTpl).render(res.data, function (html) {
+                            demo_view.innerHTML = html
+                        })
+                        // $('.result-wrap').html('尊敬的' + sessionStorage.getItem('token') + '： 感谢您对本次专家评选活动的支持！恭喜您成为' + res.data.entryField + '领域' + (Number(res.data.expertLevel) === 1 ? '一' : '二') + '级专家，希望您能在后续科普活动中给予更多的支持！')
+                    }
                 }
+            })
+
+            window.go_expertForm = function(){
+                window.location.href = "expertForm.html";
             }
+
         })
     })
     function showDetail() {

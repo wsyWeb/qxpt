@@ -13,6 +13,7 @@
         <title>注册专家</title>
         <style>
             .invitation_code_wrap {
+                display: none;
                 width: 682px;
                 margin: auto;
                 /*padding-top: 100px;*/
@@ -49,7 +50,7 @@
             }
             .register_expert_form {
                 /* padding: 20px 50px; */
-                display: none;
+                display: block;
             }
             .register_expert_form .layui-input {
                 /* width: 80%; */
@@ -310,7 +311,7 @@
                             <ul class="file-lists p-t-md"></ul>
                         </div>
                     </div>
-                    <div class="layui-form-item">
+                    <div class="layui-form-item examineStatus">
                         <div class="layui-input-block m-t-md text-center">
                             <a class="layui-btn layui-btn-primary save-btn" lay-submit lay-filter="sav_expert">保存</a>
                             <a class="layui-btn layui-btn-primary" lay-submit lay-filter="download">下载</a>
@@ -330,10 +331,11 @@
 <script src="js/base.js"></script>
 <script src="js/js_expertForm.js"></script>
 <script>
-    if (sessionStorage.getItem('verificationCode')) {
-        $('.invitation_code_wrap').hide()
-        $('.register_expert_form').show()
-    }
+    // if (sessionStorage.getItem('verificationCode')) {
+    //     $('.invitation_code_wrap').hide()
+    //     $('.register_expert_form').show()
+    // }
+
     function validateCode() {
         var token = sessionStorage.getItem('token')
         console.log(token)

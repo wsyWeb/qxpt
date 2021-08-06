@@ -56,6 +56,11 @@ $('.defaultExpertParams').on('click', '.del-btn', function (e) {
 setTimeout(function(){
     $.get(baseUrl + '/expert/queryExpertByUserId?user_name=' + sessionStorage.getItem('token'), function (res) {
         if (res.code == 200) {
+            if(!res.data) {
+                $('.invitation_code_wrap').show();
+                $('.register_expert_form').hide();
+                return;
+            }
             resFormData = res.data || {}
             fieldOneArr = resFormData.fieldOneArr || []
             fieldTwoArr = resFormData.fieldTwoArr || []
@@ -69,6 +74,9 @@ setTimeout(function(){
                 getDefineParams()
             }
 
+            if(res.data.examineStatus!="99"){
+                $(".examineStatus").hide();
+            }
             $.get(baseUrl + '/entryField/queryEntryFieldList', function (resEntryFields) {
                 if (resEntryFields.code === 200) {
                     var mapRes = resEntryFields.data.filter(function (i) {

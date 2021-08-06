@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <!-- 导入 layui 的样式表 -->
+    <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/lib/layui/css/layui.css" />
+    <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/css/common.css"/>
+
+    <!-- 导入自己的样式表 -->
+    <link rel="stylesheet" href="./css/runnet_common.css" />
+    <link rel="stylesheet" href="./css/runnet_page.css" />
+    <title>专家入驻邀请码管理</title>
+    <style type="text/css">
+        .layui-btn{
+            padding:0 12px;
+        }
+        #addWindows{
+            display: none;
+        }
+        .layui-icon.layui-icon-rate:hover{cursor:pointer;}
+        .layui-icon.layui-icon-rate-solid:hover{cursor:pointer;}
+        .basic-info{
+            margin-top: 30px;
+            padding: 0px 20px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="headDiv"></div>
+<div id="searchDiv"></div>
+<div class="runnet_main_body">
+    <div class="wrap p-t-lg">
+        <div id="my_space_nav" class="float-left" style="width: 180px"></div>
+        <div id="my_space_content" class="float-right" style="width: 1000px">
+            <form class="layui-form search_form p-md" action="" lay-filter="search_form">
+                <div>
+                    <div class="layui-inline" style="margin-left:10px;">专家入驻所属期数</div>
+                    <div class="layui-inline">
+                        <select name="periodical" lay-verify="" >
+                        </select>
+                    </div>
+                    <div class="layui-inline" style="flex:1;text-align:right;margin-right:15px;">
+                        <button type="button" id="btnserach" class="layui-btn layui-btn-primary"  lay-submit data-type="reload" lay-filter="data-search-btn"><i class="layui-icon"></i>搜索</button>
+                    </div>
+                </div>
+            </form>
+            <table class="layui-hide" id="expert_table" lay-filter="expert_table"></table>
+            <script type="text/html" id="header_toolbar_wrap">
+                <div class="layui-btn-container">
+                    <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
+                </div>
+            </script>
+        </div>
+    </div>
+
+    <div class="layui-form" id="addWindows">
+        <div class="hot-windows">
+            <span class="hot-iocn-line"></span>
+            <span class="hot-title-pulic">新增配置</span>
+        </div>
+        <div class="layui-row basic-info layui-form">
+            <div class="layui-col-md6">
+                <label class="layui-form-label required">所属期数</label>
+                <div class="layui-input-block">
+                    <div id="add_periodical" class="xm-select-demo" lay-verify="required"></div>
+                </div>
+            </div>
+            <div class="layui-col-md6">
+                <label class="layui-form-label required">邀请码</label>
+                <div class="layui-input-block">
+                    <input type="text" name="code" class="layui-input" lay-verify="required" />
+                </div>
+            </div>
+            <div class="layui-col-md6" style="margin-top: 15px;">
+                <label class="layui-form-label required">截止时间</label>
+                <div class="layui-input-block">
+                    <input type="text"  lay-verify="required" name="etime" id="etime" placeholder="" autocomplete="off"  class="layui-input" />
+                </div>
+            </div>
+        </div>
+        <div class="layui-input-block m-t-md text-center">
+            <a class="layui-btn layui-btn-primary save-btn" lay-submit="" lay-filter="sav_expert">保存</a>
+            <a class="layui-btn layui-btn-primary cancel">取消</a></div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
+<script type="text/javascript" src="/rsp-group-innovation/static/lib/jquery.js"></script>
+<script type="text/javascript" src="/rsp-group-innovation/static/js/common.js"></script>
+<script type="text/javascript" src="/rsp-group-innovation/static/lib/layui/layui.all.js"></script>
+<script src="js/base.js"></script>
+<script src="lib/layui/xm-select.js"></script>
+
+<script>
+    var periodicalArr = [];
+    var add_periodical_xsel = null;
+    $('#my_space_nav').load('templates/my_space_nav.html');
+    var currentIndex,entryFields = [],fieldOneArr = [],fieldTwoArr = [],feildIDStr = [];
+    layui.use(['table','form','laydate','layer'], function () {
+        var table = layui.table,form = layui.form,laydate = layui.laydate,layer = layui.layer;
+        table.render({
+            elem: '#expert_table',
+            toolbar: '#header_toolbar_wrap',
+            defaultToolbar: [],
+            skin: 'line',
+            method: 'post',
+            url: baseUrl + '/invitationCode/list',
+            contentType: 'application/json',
+            limits: [20, 50, 80, 100],
+            response: {},
+            parseData: function (res) {
+                return {
+                    message: res.message,
+                    code: 0,
+                    count: res.data.count, //解析数据长度
+                    data: res.data.data, //解析数据列表
+                }
+            },
+            cols: [
+                [
+                    { type: 'numbers' },
+                    { field: 'periodical', title: '所属期数',width:100},
+                    { field: 'code', title: '邀请码' },
+                    { field: 'etime', title: '截止时间',
+                        templet: function (d) {
+                            return d.etime.substring(0,19);
+                        },width:170 },
+                    { field: 'isPublished', title: '是否发布',
+                        templet: function (d) {
+                            if(d.isPublished == "1"){
+                                return "已发布";
+                            }else{
+                                return "未发布";
+                            }
+                        },width:100 }
+                ],
+            ],
+            page: true,
+
+        })
+
+        table.on('sort(expert_table)', function (obj) {
+            table.reload('expert_table', {
+                where: {
+                    [obj.field]: obj.type, //排序方式
+                },
+            })
+        });
+
+        var active = {
+            reload: function(){
+                var periodical = $("select[name='periodical']").val();
+                table.reload('expert_table', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        periodical: periodical
+                    }
+                });
+            }
+        };
+
+        $('#btnserach').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+        table.on('toolbar(expert_table)', function (obj) {
+            if (obj.event === 'add') {
+                layer.open({
+                    type: 1
+                    ,title: false //不显示标题栏
+                    ,closeBtn: false
+                    ,area: '800px;height:270px;'
+                    ,shade: 0.8
+                    ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                    // ,btn: ['确定', '取消']
+                    ,btnAlign: 'c'
+                    ,moveType: 1 //拖拽模式，0或者1
+                    ,content: $("#addWindows")
+                    ,success: function(layero){
+                        var btn = layero.find('.layui-layer-btn');
+                        $("body").on("click",".save-btn",function(){
+                            var xsel = add_periodical_xsel.getValue("valueStr");
+                            var etime = $("input[name='etime']").val();
+                            var code = $("input[name='code']").val();
+                            if(!xsel || !etime || !code){
+                                return ;
+                            }
+                            addInvitationCode();
+                        })
+                        $("body").on("click",".cancel",function(){
+                            layer.closeAll();
+                        })
+                    }
+                });
+            }
+        })
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#createtime' //指定元素
+        });
+
+        renderXmSelect("");
+
+        function renderXmSelect (val){
+            $.get(baseUrl + '/invitationCode/periodicalList', function (res) {
+                periodicalArr = res.data;
+                for(var i = 0; i < res.data.length; i++) {
+                    var obj = res.data[i];
+                    $("select[name='periodical']").append("<option value='" + obj + "'>" + obj + "</option>");
+                }
+                form.render('select');
+                var periodicals = [];
+                periodicalArr.forEach((value)=>{
+                    var obj = {};
+                    obj.name = value;
+                    obj.value = value;
+                    periodicals.push(obj);
+                })
+
+                add_periodical_xsel = xmSelect.render({
+                    el: '#add_periodical',
+                    filterable: true,
+                    data: periodicals,
+                    radio: true,
+                    clickClose: true,
+                    repeat:true,
+                    create: function(val, arr){
+                        if(arr.length === 0){
+                            return {
+                                name: '新增-' + val,
+                                value: val
+                            }
+                        }
+                    },
+                    model: {
+                        icon: 'hidden',
+                        label: {
+                            type: 'text',
+                        }
+                    },
+                    on: function(data){
+                        var val = data.arr[0].value;
+                        var index = $.inArray(val,periodicalArr);
+                        if(index<0){
+                            addPeriodical(val);
+                        }
+                    },
+                })
+
+                if(val!=null&&val!=''){
+                    add_periodical_xsel.setValue([{name: val, value: val}]);
+                }
+            });
+        }
+
+        var date = new Date()
+        laydate.render({
+            elem: '#etime',
+            showBottom: true,
+            type:"datetime",
+            min: date.toLocaleDateString(),
+        })
+
+        var addInvitationCode = function(){
+            var xsel = add_periodical_xsel.getValue("valueStr");
+
+            var etime = $("input[name='etime']").val();
+            var code = $("input[name='code']").val();
+            $.ajax({
+                type: 'post',
+                url: baseUrl + "/invitationCode/addInvitationCode",
+                data: JSON.stringify({"etime":etime,"code":code,"periodical":xsel}),
+                contentType: 'application/json;charset=UTF-8',
+                success: function (res) {
+                    resFormData = res.data
+                    if (res.code == 200) {
+                        layer.closeAll();
+                        layer.msg('保存成功');
+                        table.reload('expert_table');
+                        add_periodical_xsel.setValue([ ]);
+                        $("input[name='etime']").val("");
+                        $("input[name='code']").val("");
+                    }else if(res.code != 200){
+                        layer.msg(res.message);
+                    }
+                },
+            })
+        }
+
+        var addPeriodical = function(val){
+            $.ajax({
+                type: 'post',
+                url: baseUrl + "/invitationCode/addPeriodical",
+                data: JSON.stringify({"periodical":val}),
+                contentType: 'application/json;charset=UTF-8',
+                success: function (res) {
+                    resFormData = res.data
+                    if (res.code == 200) {
+                        renderXmSelect(val);
+                    }else if(res.code != 200){
+                        layer.msg(res.message);
+                    }
+                },
+            })
+        }
+
+    });
+
+
+</script>
