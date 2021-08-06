@@ -33,7 +33,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">审核结果</label>
                         <div class="layui-input-block">
-                            <select name="state" lay-filter="state">
+                            <select name="firstReviewState" lay-filter="firstReviewState">
                                 <option value="1">通过</option>
                                 <option value="2">不通过</option>
                                 <option value="3">修改</option>
@@ -72,6 +72,10 @@
         notifyDetail = {}
     var expert = xmSelect.render({
         el: '#experts',
+        theme: {
+            color: '#2a6be3',
+        },
+        // theme: '#0b65b7',
         name: 'expertIds',
         autoRow: true,
         toolbar: {
@@ -119,7 +123,7 @@
                 if (!workDetail.nextWorkId) {
                     $('.next-btn').hide()
                 }
-                form.on('select(state)', function (obj) {
+                form.on('select(firstReviewState)', function (obj) {
                     if (Number(obj.value) === 1) {
                         $('.assignExpert').show()
                     } else {
@@ -130,13 +134,13 @@
                     var expertIds = expert.getValue('value'),
                         formData = obj.field
 
-                    if (Number(formData.state) === 1 && expertIds.length === 0 && Number(workDetail.distMethod) === 0) {
+                    if (Number(formData.firstReviewState) === 1 && expertIds.length === 0 && Number(workDetail.distMethod) === 0) {
                         return layer.msg('请分派专家')
                     }
-                    if (Number(formData.state) === 1 && notifyDetail.assignCount && expertIds.length !== notifyDetail.assignCount) {
+                    if (Number(formData.firstReviewState) === 1 && notifyDetail.assignCount && expertIds.length !== notifyDetail.assignCount) {
                         return layer.msg('请指派' + notifyDetail.assignCount + '个专家')
                     }
-                    if (Number(formData.state) !== 1 && !formData.opinion) {
+                    if (Number(formData.firstReviewState) !== 1 && !formData.opinion) {
                         return layer.msg('请填写审核意见')
                     }
                     formData.workId = workDetail.id

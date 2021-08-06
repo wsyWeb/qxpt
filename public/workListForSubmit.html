@@ -17,6 +17,11 @@
                 text-align: left;
                 padding-left: 0;
             }
+
+            .detailForm {
+                height: 95%;
+                overflow-y: scroll;
+            }
         </style>
     </head>
 
@@ -79,7 +84,9 @@
 <script>
     $('#my_space_nav').load('templates/my_space_nav.html')
     var formatWorks = [],
-        workDetail = {}
+        workDetail = {},
+        selectNotify = { worksInfos: {} },
+        notifyList = []
 
     // state //活动状态 0草稿 1提交  2初审 3复审 4终审
     layui.use(['table', 'form', 'laytpl'], function () {
@@ -99,6 +106,7 @@
                 form.render('select')
                 if (res.data.length > 0) {
                     sessionStorage.setItem('notifyId', res.data[0].id)
+                    selectNotify = res.data[0]
                     getAllWorks()
                 }
             }
@@ -109,7 +117,7 @@
                 type: 'post',
                 url: baseUrl + '/works/getList',
                 contentType: 'application/json;charset=UTF-8',
-                data: JSON.stringify({ noticeId }),
+                data: JSON.stringify({ noticeId: sessionStorage.getItem('notifyId') }),
                 success: function (res) {
                     if (res.code === 200) {
                         renderTable(res.data)
@@ -200,6 +208,19 @@
                             },
                         ],
                     ],
+                    done: function (d) {
+                        $('thead .laytable-cell-checkbox').children().remove()
+                        for (var i = 0; i < d.data.length; i++) {
+                            // 1、初审已通过的作品不能再次提交 2、提交次数大于3的作品不能再提交
+                            if (d.data[i].state === 2 || d.data[i].state === 3 || d.data[i].state === 4 || d.data[i].submitCount > 2) {
+                                // $('tr[data-index=' + i + '] input[type="checkbox"]').attr({
+                                //     name: 'layTableCheckbox_disabled',
+                                //     disabled: 'disabled',
+                                // })
+                                $('tr[data-index=' + i + '] .layui-unselect').remove()
+                            }
+                        }
+                    },
                 })
             })
         }
@@ -214,13 +235,19 @@
                                 type: 1,
                                 title: '作品详情',
                                 content: $('.detailForm'),
-                                fixed: true,
+                                // fixed: true,
                                 maxmin: true,
                                 area: ['1200px', '90%'],
                                 success: function (layero, index) {
-                                    var iframe = window['layui-layer-shade' + index] //拿到iframe元素
-                                    console.log($('.reviewOpinion input').val(), 'ssss')
-                                    // iframe.child(data, index) //向此iframe层方法 传递参数
+                                    var opinion
+                                    if (workDetail.finalReviewState !== -1) {
+                                        opinion = workDetail.finalOpinion
+                                    } else if (workDetail.reviewState !== -1) {
+                                        opinion = workDetail.opinion
+                                    } else {
+                                        opinion = workDetail.firstOpinion
+                                    }
+                                    $('.reviewOpinion input').val(opinion)
                                 },
                                 cancel: function () {
                                     $('.detailForm').hide()
@@ -248,13 +275,15 @@
             }
         })
         table.on('checkbox(work_table)', function (obj, idx) {
+            console.log(obj, '111')
             // obj.update({
             //     isCheked: obj.checked ? 1 : 0,
             // })
         })
 
         form.on('select(activity_search)', function (obj) {
-            // $('#tableWrap').empty()
+            sessionStorage.setItem('notifyId', obj.value)
+            selectNotify = notifyList.find((item) => item.id === obj.value)
             getAllWorks()
         })
     })
@@ -264,13 +293,39 @@
     }
     function submitWorks() {
         var ids = []
-        formatWorks.forEach(function (i) {
+        // 验证选中的作品个数不能超出公告设置的作品个数
+        for (var t = 0; t < formatWorks.length; t++) {
+            var i = formatWorks[t],
+                workInfo = selectNotify.worksInfos[i.value],
+                worktype = '计划单列市'
+            switch (i.value) {
+                case 1:
+                    worktype = '气象类高校'
+                    break
+                case 2:
+                    worktype = '气象局单位'
+                    break
+                case 3:
+                    worktype = '团体组织（中学、社会性组织）'
+                    break
+                default:
+                    worktype = '计划单列市'
+                    break
+            }
+            for (var o = 0; o < workInfo.length; o++) {
+                var count = workInfo[o].count,
+                    selectData = i.data.filter((item) => item.worksTypeId === workInfo[o].worksTypeId && item.LAY_CHECKED) || []
+                if (count && selectData.length > Number(count)) {
+                    return layer.msg(worktype + '中' + workInfo[o].type + '类作品最多能选择' + count + '个')
+                    break
+                }
+            }
             i.data.forEach(function (j) {
                 if (j.LAY_CHECKED) {
                     ids.push(j.id)
                 }
             })
-        })
+        }
         var recommendUnit = $('.recommendUnit').val()
         if (!recommendUnit) {
             return layer.msg('请填写报送单位')
@@ -289,8 +344,9 @@
             success: function (res) {
                 if (res.code === 200) {
                     layer.msg('作品提交成功，请耐心等待管理员审核')
-
                     getAllWorks()
+                } else {
+                    layer.msg(res.message)
                 }
             },
         })

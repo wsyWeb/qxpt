@@ -13,7 +13,9 @@
         <title>作品审核</title>
         <style>
             .review_form .layui-form-label {
-                width: 100px;
+            }
+            .none {
+                display: none;
             }
         </style>
     </head>
@@ -35,19 +37,15 @@
                     <div class="p-md">
                         <form class="layui-form m-t-md" action lay-filter="search_form">
                             <div class="layui-form-item">
-                                <div class="layui-inline">活动简称</div>
-                                <div class="layui-inline">
+                                <label class="layui-form-label">活动简称</label>
+                                <div class="layui-input-block">
                                     <select name="shortName" lay-filter="shortName"></select>
                                 </div>
                             </div>
                         </form>
-                        <div>
-                            <div>奖项限额：</div>
-                            <div class="award_list"></div>
-                        </div>
+                        <div class="award_list"></div>
                         <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
-                        <div class="border-top m-t-lg m-b-lg"></div>
-                        <form class="review_form layui-form" action lay-filter="review_form">
+                        <form class="review_form layui-form m-t-lg none" action lay-filter="review_form">
                             <div class="layui-form-item">
                                 <label class="layui-form-label required">审核意见</label>
                                 <div class="layui-input-block">
@@ -73,7 +71,8 @@
 <script>
     var token = sessionStorage.getItem('token')
     var activityDataGrid = [],
-        selectNotify = { awardSetting: [] }
+        selectNotify = { awardSetting: [] },
+        awardSetting = []
 
     $('#my_space_nav').load('templates/my_space_nav.html')
     function changeShortName(e) {
@@ -92,8 +91,9 @@
         })
         getWorks = function () {
             $.get(baseUrl + '/works/awardList?expertId=' + token + '&noticeId=' + selectNotify.id, function (workRes) {
-                if (workRes.code === 200) {
+                if (workRes.code === 200 && workRes.data.length > 0) {
                     activityDataGrid = workRes.data
+                    $('.review_form').show()
                     renderTable()
                 }
             })
@@ -161,6 +161,7 @@
             })
         }
 
+        renderTable()
         form.on('submit(submit_form)', function (obj) {
             var formData = obj.field
             var awardForms = $('.award_form'),

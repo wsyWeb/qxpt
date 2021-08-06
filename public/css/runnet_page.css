@@ -71,7 +71,7 @@
     margin-bottom: 8px;
 }
 .runnet_tab_custom .tab-left .layui-this {
-    background-color: #0b65b7;
+    background-color: #2a6be3;
     color: #fff !important;
 }
 .runnet_tab_custom .content-right {
@@ -97,7 +97,7 @@
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background-color: #0b65b7;
+    background-color: #2a6be3;
     margin-right: 10px;
     display: inline-block;
     vertical-align: middle;
@@ -191,17 +191,17 @@
 }
 /* 导航 */
 .runnut_head .layui-breadcrumb a:hover {
-    color: #0b65b7 !important;
+    color: #2a6be3 !important;
 }
 /*i表单on*/
 .layui-form .layui-form-label {
     padding-left: 0;
 }
 .layui-tab-brief > .layui-tab-title .layui-this {
-    color: #0b65b7;
+    color: #2a6be3;
 }
 .layui-tab-brief > .layui-tab-title .layui-this:after {
-    border-bottom: 2px solid #0b65b7;
+    border-bottom: 2px solid #2a6be3;
 }
 
 /* 表单里增加删除按钮 */
@@ -209,7 +209,7 @@
     color: #f04040;
 }
 .layui-icon-add-circle.add {
-    color: #0b65b7;
+    color: #2a6be3;
 }
 .layui-layer-page .layui-layer-content {
     overflow: visible !important;

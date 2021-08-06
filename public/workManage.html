@@ -18,6 +18,17 @@
             .none {
                 display: none;
             }
+            .activityState span::before {
+                content: '';
+                width: 5px;
+                height: 5px;
+                display: block;
+                background-color: #fff;
+                border-radius: 50%;
+                position: absolute;
+                left: 7px;
+                top: 17px;
+            }
         </style>
     </head>
 
@@ -34,14 +45,18 @@
                         <div class="layui-inline">
                             <select class="activity_search" lay-verify="" lay-filter="activity_search" style="width: 100px"></select>
                         </div>
+                        <div class="layui-inline p-l-lg">当前环节</div>
+                        <div class="layui-inline">
+                            <a class="layui-btn activityState"><span>报名中</span></a>
+                        </div>
                     </form>
 
                     <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
-                    <div class="text-center m-t-lg">
-                        <button class="layui-btn turnResultReviewBtn" onclick="toFinalReview()">进入终审环节</button>
-                        <button class="layui-btn turnVoteBtn" onclick="toVote()">进入投票环节</button>
-                        <button class="layui-btn expertOpinion" onclick="inExopertComment()">专家组意见</button>
-                        <button class="layui-btn finalReiviewList" onclick="inFinalResult()">查看终审结果</button>
+                    <div class="text-center m-t-lg none optWrap">
+                        <button class="layui-btn turnResultReviewBtn" onclick="toNextLink(4)">进入终审环节</button>
+                        <button class="layui-btn turnVoteBtn" onclick="toNextLink(7)">进入投票环节</button>
+                        <button class="layui-btn expertOpinion" onclick="toNextLink(5)">专家组意见</button>
+                        <button class="layui-btn finalReiviewList" onclick="toNextLink(6)">查看终审结果</button>
                     </div>
                     <script type="text/html" id="person_detail_btn">
                         <a class="layui-btn layui-btn-xs assignExpertBtn" lay-event="assignExpert">分配专家</a>
@@ -118,9 +133,10 @@
                 },
             })
         }
+        renderTable()
         getAllWorks = function (id) {
-            $.get(baseUrl + '/works/worksList?noticeId=' + noticeId, function (res) {
-                if (res.code === 200) {
+            $.get(baseUrl + '/works/worksList?noticeId=' + sessionStorage.getItem('notifyId'), function (res) {
+                if (res.code === 200 && res.data.length > 0) {
                     activityDataGrid = res.data
                     renderTable()
                     setOperateBtn()
@@ -147,8 +163,8 @@
                         temp += el
                     }
                     $('.activity_search').append(temp)
-
                     form.render('select')
+                    setActivityState()
                     getAllWorks()
                 }
             }
@@ -195,19 +211,36 @@
             }
         })
     }
-    function toVote() {
-        sessionStorage.setItem('reviewType', 'vote')
-        window.location.href = 'workListForFinal.html'
-    }
-
-    function toFinalReview() {
-        window.location.href = 'workListForReview.html'
-    }
-    function inExopertComment() {}
-
-    function inFinalResult() {
-        sessionStorage.setItem('reviewType', 'lookResult')
-        window.location.href = 'workListForFinal.html'
+    function toNextLink(state) {
+        $.ajax({
+            type: 'post',
+            url: baseUrl + '/notice/updateNoticeState',
+            data: JSON.stringify({
+                state,
+                noticeId: selectNotify.id,
+            }),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (res) {
+                if (res.code === 200) {
+                    switch (state) {
+                        case 4:
+                            window.location.href = 'workListForReview.html'
+                            break
+                        case 5:
+                            //专家组意见不需要跳转页面
+                            break
+                        case 7: //投票
+                            sessionStorage.setItem('reviewType', 'vote')
+                            window.location.href = 'workListForFinal.html'
+                            break
+                        case 6:
+                            sessionStorage.setItem('reviewType', 'lookResult')
+                            window.location.href = 'workListForFinal.html'
+                            break
+                    }
+                }
+            },
+        })
     }
     function setOperateBtn() {
         $('.none').hide()
@@ -222,5 +255,32 @@
         } else {
             $('.turnResultReviewBtn').show()
         }
+    }
+    function setActivityState() {
+        var v = ''
+        console.log(selectNotify.state)
+
+        switch (selectNotify.state) {
+            case 1:
+                v = '报名中'
+                break
+            case 2:
+                v = '作品初审中'
+                break
+            case 3:
+                v = '专家复审中'
+                break
+            case 4:
+                v = '专家终审中'
+                break
+            case 5:
+                v = '专家组长评审中'
+                break
+            case 6:
+                v = '评审结束'
+            case 7:
+                v = '投票中'
+        }
+        $('.ctivityState').find('span').html(v)
     }
 </script>

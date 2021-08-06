@@ -8,6 +8,7 @@
         <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/css/common.css"/>
         <link rel="stylesheet" href="./css/runnet_common.css" />
         <link rel="stylesheet" href="./css/runnet_page.css" />
+        <link rel="stylesheet" href="css/font/iconfont.css" />
         <title>专家领域设置</title>
         <style>
             #treeWrap .layui-colla-title .layui-btn-group {
@@ -25,40 +26,45 @@
             #treeWrap .item .layui-btn {
                 border-left: 1px solid #c9c9c9;
             }
-            .register_expert_form .layui-form-label {
-                text-align: center;
-                width: 120px;
-                color: #999999;
+            .basic-info .right .iconfont {
+                font-size: 120px;
+                color: #ddd;
+                border: 1px solid #dedede;
+                padding: 10px 0px;
             }
-            .register_expert_form .layui-input-block {
-                border-left: 1px solid #dedede;
-                margin-left: 150px;
+            .register_expert_form .basic-info .layui-form-label {
+                text-align: right;
+                text-align-last: justify;
             }
-            .register_expert_form .basic-info .layui-form-item {
-                margin: 0;
-                border-bottom: 1px solid #dedede;
+            .register_expert_form .basic-info .layui-input-block {
+                margin-right: 20px;
+                margin-left: 80px;
             }
-            .register_expert_form .layui-col-md6:nth-child(2n) {
-                border-left: 1px solid #dedede;
-            }
-            .register_expert_form .layui-col-md6 {
-                border-bottom: 1px solid #dedede;
-            }
-            .register_expert_form .achievement .layui-input {
-                width: 90%;
-            }
-            .register_expert_form .achievement .del-btn {
-                cursor: pointer;
+            .defaultExpertParams .layui-icon-reduce-circle {
                 position: absolute;
                 right: 0;
-                top: 15px;
+                line-height: 36px;
+                top: 0;
+                border-left: 1px solid #dedede;
+                width: 40px;
+                text-align: center;
+                color: #f04040;
+                cursor: pointer;
             }
-            .register_expert_form .layui-form-item[disable='1'] {
-                border-top: 1px dotted #c9c9c9;
-                padding-top: 20px;
+            .addNodeWrap {
+                line-height: 40px;
+                border: 1px dashed #2a6be3;
+                text-align: center;
+                color: #2a6be3;
             }
-            .register_expert_form .layui-form-item[disable='1'] .del-btn {
-                display: none;
+            .tips-title::before {
+                content: '';
+                width: 2px;
+                height: 13px;
+                background-color: #2a6be3;
+                position: absolute;
+                left: -10px;
+                top: 4px;
             }
         </style>
     </head>
@@ -70,12 +76,12 @@
         <div class="runnet_main_body">
             <div class="wrap p-t-lg overflow-hidden" id="expertFormSetting">
                 <div id="my_space_nav" class="m-r-md float-left" style="width: 180px"></div>
-                <div id="my_space_content" class="float-left" style="width: 1000px">
+                <div id="my_space_content" class="float-left p-md" style="width: 1000px">
                     <div class="m-b-md">
                         <span class="font-15 font-bold">领域设置</span>
                         <a onclick="addFun(this, 1)" class="layui-btn layui-btn-sm">新增</a>
                     </div>
-                    <!-- <ul id="tree-wrap"></ul> -->
+                    <ul id="tree-wrap"></ul>
                     <div class="layui-collapse" id="treeWrap"></div>
                     <script id="tree" type="text/html">
                         {{# layui.each(d, function(idx1, item){ }}
@@ -130,96 +136,125 @@
 
                         {{# }); }}
                     </script>
-                    <div class="font-15 font-bold m-t-lg">表单设置</div>
-                    <div class="m-t-sm">基本信息</div>
                     <div id="expert_form" class="m-t-lg">
                         <form class="layui-form m-t-md register_expert_form" action="" lay-filter="register_expert_form">
-                            <div class="border basic-info">
-                                <div class="layui-form-item">
-                                    <div class="p-xs">
-                                        <img id="headPortrait-img" width="100px" height="120px" />
-                                    </div>
+                            <div class="m-t-sm font-15 font-bold color-theme tips-title relative">平台信息</div>
+                            <div class="layui-row">
+                                <label class="layui-form-label">入驻领域</label>
+                                <div class="layui-input-block">
+                                    <a class="layui-btn layui-btn-sm">设置</a>
                                 </div>
-                                <div class="layui-row">
-                                    <div class="layui-col-md6">
+                            </div>
+                            <div class="m-t-sm font-15 font-bold color-theme">基本信息</div>
+                            <div class="layui-row basic-info">
+                                <div class="layui-col-md10 left">
+                                    <div class="layui-col-md4 m-b-sm">
                                         <label class="layui-form-label">姓名</label>
-                                        <div class="layui-input-block"></div>
+                                        <div class="layui-input-block">
+                                            <input type="text" readonly class="layui-input" />
+                                        </div>
                                     </div>
-                                    <div class="layui-col-md6">
+                                    <div class="layui-col-md4 m-b-sm">
                                         <label class="layui-form-label">性别</label>
-                                        <div class="layui-input-block"></div>
+                                        <div class="layui-input-block">
+                                            <input type="text" readonly class="layui-input" />
+                                        </div>
                                     </div>
-                                    <div class="layui-col-md6">
+                                    <div class="layui-col-md4 m-b-sm">
                                         <label class="layui-form-label">出生日期</label>
-                                        <div class="layui-input-block"></div>
+                                        <div class="layui-input-block">
+                                            <input type="text" readonly class="layui-input" />
+                                        </div>
                                     </div>
-                                    <div class="layui-col-md6">
+                                    <div class="layui-col-md4 m-b-sm">
                                         <label class="layui-form-label">政治面貌</label>
-                                        <div class="layui-input-block"></div>
+                                        <div class="layui-input-block">
+                                            <input type="text" readonly class="layui-input" />
+                                        </div>
                                     </div>
 
-                                    <div class="layui-col-md6">
+                                    <div class="layui-col-md4 m-b-sm">
                                         <label class="layui-form-label">工作单位</label>
-                                        <div class="layui-input-block"></div>
+                                        <div class="layui-input-block">
+                                            <input type="text" readonly class="layui-input" />
+                                        </div>
                                     </div>
-                                    <div class="layui-col-md6">
+                                    <div class="layui-col-md4 m-b-sm">
                                         <label class="layui-form-label">参工时间</label>
-                                        <div class="layui-input-block"></div>
+                                        <div class="layui-input-block">
+                                            <input type="text" readonly class="layui-input" />
+                                        </div>
                                     </div>
-                                    <div class="layui-col-md6">
+                                    <div class="layui-col-md4 m-b-sm">
                                         <label class="layui-form-label">岗位级别</label>
-                                        <div class="layui-input-block"></div>
+                                        <div class="layui-input-block">
+                                            <input type="text" readonly class="layui-input" />
+                                        </div>
                                     </div>
-                                    <div class="layui-col-md6">
+                                    <div class="layui-col-md4 m-b-sm">
                                         <label class="layui-form-label">从事专业</label>
-                                        <div class="layui-input-block"></div>
+                                        <div class="layui-input-block">
+                                            <input type="text" readonly class="layui-input" />
+                                        </div>
                                     </div>
 
-                                    <div class="layui-col-md6">
+                                    <div class="layui-col-md4 m-b-sm">
                                         <label class="layui-form-label">职称</label>
-                                        <div class="layui-input-block"></div>
+                                        <div class="layui-input-block">
+                                            <input type="text" readonly class="layui-input" />
+                                        </div>
                                     </div>
-                                    <div class="layui-col-md6">
+                                    <div class="layui-col-md4 m-b-sm">
                                         <label class="layui-form-label">职务</label>
-                                        <div class="layui-input-block"></div>
+                                        <div class="layui-input-block">
+                                            <input type="text" readonly class="layui-input" />
+                                        </div>
                                     </div>
-                                    <div class="layui-col-md6">
+                                    <div class="layui-col-md4 m-b-sm">
                                         <label class="layui-form-label">毕业学校</label>
-                                        <div class="layui-input-block"></div>
+                                        <div class="layui-input-block">
+                                            <input type="text" readonly class="layui-input" />
+                                        </div>
                                     </div>
-                                    <div class="layui-col-md6">
+                                    <div class="layui-col-md4 m-b-sm">
                                         <label class="layui-form-label">最高学历</label>
-                                        <div class="layui-input-block"></div>
+                                        <div class="layui-input-block">
+                                            <input type="text" readonly class="layui-input" />
+                                        </div>
                                     </div>
-                                    <div class="layui-col-md6">
+                                    <div class="layui-col-md4 m-b-sm">
                                         <label class="layui-form-label">电子邮箱</label>
-                                        <div class="layui-input-block"></div>
+                                        <div class="layui-input-block">
+                                            <input type="text" readonly class="layui-input" />
+                                        </div>
                                     </div>
-                                    <div class="layui-col-md6">
+                                    <div class="layui-col-md4 m-b-sm">
                                         <label class="layui-form-label">手机号</label>
-                                        <div class="layui-input-block"></div>
+                                        <div class="layui-input-block">
+                                            <input type="text" readonly class="layui-input" />
+                                        </div>
                                     </div>
-                                    <div class="layui-col-md6">
+                                    <div class="layui-col-md4 m-b-sm">
                                         <label class="layui-form-label">通讯地址</label>
-                                        <div class="layui-input-block"></div>
+                                        <div class="layui-input-block">
+                                            <input type="text" readonly class="layui-input" />
+                                        </div>
                                     </div>
-                                    <div class="layui-col-md6">
+                                    <!-- <div class="layui-col-md4">
                                         <label class="layui-form-label">入驻领域</label>
                                         <div class="layui-input-block"></div>
-                                    </div>
+                                    </div> -->
+                                </div>
+                                <div class="layui-col-md2 right text-right">
+                                    <i class="iconfont icon-morentouxiang"></i>
                                 </div>
                             </div>
-                            <div class="m-b-md m-t-md">
-                                其它说明
-                                <i class="layui-icon-add-circle layui-icon font-18 cursor-pointer" onclick="addNode()"></i>
+                            <div class="m-t-sm font-15 font-bold color-theme">个人经验</div>
+                            <div class="defaultExpertParams"></div>
+                            <div class="addNodeWrap cursor-pointer" onclick="addNode()">
+                                <i class="layui-icon-add-circle layui-icon"> 新增节点</i>
                             </div>
-                            <div class="achievement">
-                                <div class="defaultExpertParams"></div>
-                                <div class="layui-form-item">
-                                    <a class="layui-btn layui-btn-primary" id="upload_attachment_btn">上传打扫件</a>
-                                </div>
-                            </div>
-                            <div class="text-center"><a class="layui-btn layui-btn save-btn" lay-submit lay-filter="save_form">保存</a></div>
+                            <div class="text-center m-t-lg"><a class="layui-btn layui-btn save-btn" lay-submit lay-filter="save_form">保存</a></div>
                         </form>
                     </div>
                 </div>
@@ -363,24 +398,32 @@
         )
     }
     function setNode() {
+        var el = ''
+
         for (var i = 0; i < resExpertParams.length; i++) {
-            $('.defaultExpertParams').append(
-                '<div class="layui-form-item relative" id="' +
-                    resExpertParams[i].id +
-                    '" disable="' +
-                    resExpertParams[i].disable +
-                    '">' +
+            var opt = ''
+            if (Number(resExpertParams[i].disable) !== 1) {
+                opt =
                     '<input class="layui-input title" lay-verify="required" value="' +
                     resExpertParams[i].title +
                     '"/>' +
-                    '<i class="layui-icon layui-icon-reduce-circle del-btn" onclick="removeNode(this)"></i>' +
-                    '</div>'
-            )
+                    '<i class="layui-icon layui-icon-reduce-circle del-btn" onclick="removeNode(this)"></i>'
+            } else {
+                opt = '<input class="layui-input title" disabled lay-verify="required" value="' + resExpertParams[i].title + '"/>'
+            }
+            el +=
+                '<div class="layui-form-item relative" id="' +
+                resExpertParams[i].id +
+                '" disable="' +
+                resExpertParams[i].disable +
+                '">' +
+                opt +
+                '</div>'
         }
-        $('input[name="workUnit"]').val('xxx')
+        $('.defaultExpertParams').append(el)
     }
     function addNode() {
-        $('.defaultExpertParams').prepend(
+        $('.defaultExpertParams').append(
             '<div class="layui-form-item relative">' +
                 '<input class="layui-input title" lay-verify="required" placeholder="请输入节点名称"/>' +
                 '<i class="layui-icon layui-icon-reduce-circle  del-btn" onclick="removeNode(this)"></i>' +

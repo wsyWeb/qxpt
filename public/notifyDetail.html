@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
         <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/lib/layui/css/layui.css" />
-        <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/css/common.css"/>
+        <link rel="stylesheet" type="text/css" href="/rsp-group-innovation/static/css/common.css" />
         <!-- 导入自己的样式表 -->
         <link rel="stylesheet" href="css/runnet_common.css" />
         <link rel="stylesheet" href="css/runnet_page.css" />
@@ -18,19 +18,23 @@
                 line-height: 28px;
             }
             .attachments li {
-                line-height: 32px;
+                margin-bottom: 8px;
             }
             .message_form .layui-form-label {
-                width: 150px;
+                width: 100px;
+                text-align: left;
             }
             .message_form .layui-input-block {
-                margin-left: 150px;
+                margin-left: 100px;
             }
-            #notifyContent {
-                height: 300px;
-                frameborder: '0';
-                scrolling: 'no';
-                width: 100%;
+            .msg-title {
+                border-top: 1px dotted #2a6be3;
+            }
+            .notify-lists .header {
+                border-bottom: 1px dotted #2a6be3;
+                height: 50px;
+                line-height: 50px;
+                padding: 0 20px;
             }
         </style>
     </head>
@@ -43,115 +47,107 @@
             <div class="wrap">
                 <div class="runnut_head">
                     <span class="borderl"></span>
-                    <span class="layui-breadcrumb" lay-separator=">">
+                    <span class="layui-breadcrumb">
                         <a href="index.html">首页</a>
                         <a href="runnet_crowdCreate.html">众创平台</a>
                         <a href="notifyList.html">通知公告</a>
-                        <a><cite>公告详情</cite></a>
+                        <a><cite id="curTitle">公告详情</cite></a>
                     </span>
                 </div>
-                <div class="block p-md m-t-lg overflow-hidden">
-                    <iframe
-                        id="notifyContent"
-                        name="notifyContent"
-                        marginwidth="0"
-                        marginheight="0"
-                        vspace="0"
-                        hspace="0"
-                        allowtransparency="true"
-                        allowfullscreen="true"
-                    ></iframe>
-                    <!-- <div id="handout_wrap_inner"></div> -->
-                    <!-- <object :src="previewUrl" id="notifyContent" type="application/pdf" width="100%" height="100%"></object> -->
+                <div class="layui-row m-t-lg">
+                    <div class="layui-col-md9">
+                        <div class="block p-md overflow-hidden m-r-md">
+                            <div id="notifyContent">
+                                <img src="images/abc/iecPDF_0.png" style="width: 100%" />
+                                <img src="images/abc/iecPDF_1.png" style="width: 100%" />
+                                <img src="images/abc/iecPDF_2.png" style="width: 100%" />
+                            </div>
+                            <div class="overflow-hidden">
+                                <div class="float-left">附件：</div>
+                                <ul class="attachments float-left">
+                                    暂无
+                                </ul>
+                                <div class="activity-rigister-wrap float-right">
+                                    <a class="layui-btn" onclick="signUp()">点击报名</a>
+                                </div>
+                            </div>
+                            <div class="m-t-lg msg-title p-t-lg">
+                                <div>上一篇：<a class="link-hover">魏凤和同德国国防部长视频通话</a></div>
+                                <div>下一篇：<a class="link-hover">刘鹤出席天问一号探测器着陆火星首批科学影像图揭幕仪式</a></div>
+                            </div>
 
-                    <!-- <iframe src="" frameborder="0" id="notifyContent" scrolling="no"></iframe> -->
-                    <!-- <h1 class="font-20 text-center">李克强主持召开国务院党组会 学习贯彻习近平总书记在庆祝中国共产党成立100周年大会上重要讲话精神</h1>
-                    <ul class="flex-around color-tip m-t-lg">
-                        <li>时间：2012-02-01</li>
-                        <li>来源：中国日报</li>
-                        <li>浏览：120次浏览</li>
-                        <li>字号：大 中 小</li>
-                    </ul>
-                    <div class="notify-content m-t-md p-t-md">
-                        <p class="text-indent-2">
-                            7月2日，中共中央政治局常委、国务院总理、党组书记李克强主持召开国务院党组会议，学习贯彻习近平总书记在庆祝中国共产党成立100周年大会上的重要讲话精神，研究做好下一步工作。
-                        </p>
-                    </div> -->
-                    <h3 class="font-16 m-t-lg">附件:</h3>
-                    <ul class="attachments"></ul>
-                    <div class="flex-between font-16 m-t-lg">
-                        <div>上一篇：<a class="link-hover">魏凤和同德国国防部长视频通话</a></div>
-                        <div>下一篇：<a class="link-hover">刘鹤出席天问一号探测器着陆火星首批科学影像图揭幕仪式</a></div>
+                            <div class="font-15 font-bold m-t-lg">在线留言</div>
+                            <form class="layui-form m-t-md message_form" action="" lay-filter="message_form">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label required">用户名</label>
+                                    <div class="layui-input-block">
+                                        <input
+                                            type="text"
+                                            name="name"
+                                            lay-verify="required"
+                                            autocomplete="off"
+                                            placeholder="请输入用户名"
+                                            class="layui-input"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label required">邮箱</label>
+                                    <div class="layui-input-block">
+                                        <input
+                                            type="text"
+                                            name="email"
+                                            lay-verify="required|email"
+                                            autocomplete="off"
+                                            placeholder="请输入邮箱"
+                                            class="layui-input"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label required">电话</label>
+                                    <div class="layui-input-block">
+                                        <input
+                                            type="text"
+                                            name="phone"
+                                            lay-verify="required|phone"
+                                            autocomplete="off"
+                                            placeholder="请输入电话"
+                                            class="layui-input"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label required">留言内容</label>
+                                    <div class="layui-input-block">
+                                        <textarea placeholder="请输入内容" name="content" lay-verify="required" class="layui-textarea"></textarea>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <a class="layui-btn" lay-submit lay-filter="submit_message">提交留言</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    <div class="font-15 font-bold m-t-lg">相关文章</div>
-                    <script id="notify_demo" type="text/html">
-                        {{# layui.each(notifyLists, function(index, item){ }}
-                        <li class="flex-between">
-                            <div class="text-ellipsis-1 " style="width: 60%;">
-                                <i></i>
-                                <a href="javascript:;" class="link-hover">{{item.memo}}</a>
+                    <div class="layui-col-md3 notify-lists">
+                        <div class="block">
+                            <div class="overflow-hidden header">
+                                <span class="float-left color-theme">通知公告</span>
+                                <a href="notifyList.html" class="float-right">更多>></a>
                             </div>
-                            <div class="color-tip">{{item.name}}</div>
-                        </li>
-                        {{# }); }}
-                    </script>
-                    <ul id="notify-wrap" class="runnet_lists"></ul>
-                    <div class="text-center m-t-lg activity-rigister-wrap">
-                        <a class="layui-btn layui-btn-primary" onclick="signUp()">点击报名</a>
+                            <script id="notify_demo" type="text/html">
+                                {{# layui.each(d, function(index, item){ }}
+                                <li class="text-ellipsis-1">
+                                    <i></i>
+                                    <a onclick="toNotifyDetail(this)" id="{{item.id}}" class="link-hover">{{item.title}}</a>
+                                </li>
+                                {{# }); }}
+                            </script>
+                            <ul id="notify-wrap" class="runnet_lists p-md"></ul>
+                        </div>
                     </div>
-                    <div class="font-15 font-bold m-t-lg">在线留言</div>
-                    <form class="layui-form m-t-md border p-md message_form" action="" lay-filter="message_form">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label required">用户名</label>
-                            <div class="layui-input-block" style="width: 500px">
-                                <input
-                                    type="text"
-                                    name="name"
-                                    lay-verify="required"
-                                    autocomplete="off"
-                                    placeholder="请输入用户名"
-                                    class="layui-input"
-                                />
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label required">邮箱</label>
-                            <div class="layui-input-block" style="width: 500px">
-                                <input
-                                    type="text"
-                                    name="email"
-                                    lay-verify="required|email"
-                                    autocomplete="off"
-                                    placeholder="请输入邮箱"
-                                    class="layui-input"
-                                />
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label required">电话</label>
-                            <div class="layui-input-block" style="width: 500px">
-                                <input
-                                    type="text"
-                                    name="phone"
-                                    lay-verify="required|phone"
-                                    autocomplete="off"
-                                    placeholder="请输入电话"
-                                    class="layui-input"
-                                />
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label required">留言内容</label>
-                            <div class="layui-input-block">
-                                <textarea placeholder="请输入内容" name="content" lay-verify="required" class="layui-textarea"></textarea>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <div class="layui-input-block">
-                                <a class="layui-btn" lay-submit lay-filter="submit_message">提交留言</a>
-                            </div>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
@@ -188,20 +184,31 @@
 
         var notifyTpl = notify_demo.innerHTML
         var notifyView = document.getElementById('notify-wrap')
-        laytpl(notifyTpl).render(notifyLists, function (html) {
-            notifyView.innerHTML = html
-        })
+
         $.get(baseUrl + '/notice/detail?noticeId=' + notifyId, function (res) {
             if (res.code === 200) {
                 notifyDetail = res.data
+                if (notifyDetail.pdfPng && notifyDetail.pdfPng.length) {
+                    for (var i = 0; i < notifyDetail.pdfPng.length; i++) {
+                        $('#notifyContent').append('<img src="' + notifyDetail.pdfPng[i] + '"/>')
+                    }
+                }
                 setAttachement()
-                // $('#notifyContent').attr('src', imageUrl + '' + notifyDetail.filePath)
-
-                // var iframe = document.getElementById('notifyContent')
-                // var iwindow = iframe.contentWindow
-                // var idoc = iwindow.document
-                // iframe.height = idoc.body.offsetHeight
             }
+        })
+        $.ajax({
+            type: 'post',
+            url: baseUrl + '/notice/pageList',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({ page: 1, limit: 10, state: 1 }),
+            success: function (res) {
+                if (res.code == 200) {
+                    datagrid = res.data
+                    laytpl(notifyTpl).render(res.data.data, function (html) {
+                        notifyView.innerHTML = html
+                    })
+                }
+            },
         })
         form.on('submit(submit_message)', function (data) {
             $.post({
@@ -278,5 +285,9 @@
         })
         if (Number) {
         }
+    }
+    function toNotifyDetail(target) {
+        sessionStorage.setItem('notifyId', $(target).attr('id'))
+        window.location.href = 'notifyDetail.html'
     }
 </script>
