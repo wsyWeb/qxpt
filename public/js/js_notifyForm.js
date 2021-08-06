@@ -378,6 +378,7 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
     var date = new Date()
     laydate.render({
         elem: '#submit_date',
+        theme: '#2a6be3',
         showBottom: false,
         min: date.toLocaleDateString(),
     })
@@ -469,7 +470,7 @@ function setFormDefaultValue(form) {
         expertWeight: resFormData.expertWeight,
         voteWeight: resFormData.voteWeight,
     })
-    $('.word_wrap').html(resFormData.fileName)
+    $('.word_wrap').html('<a class="color-theme" href="' + resFormData.filePath + '" target="_blank">' + resFormData.fileName + '</a>')
     for (var i = 0; i < resFormData.enclosures.length; i++) {
         $('.attachment_list').append(
             '<li> <a class="color-theme " target="_blank" href=' +
@@ -546,15 +547,15 @@ function submitFun(obj, type) {
     } else if (formData.isCollection === 1) {
         formData.worksInfos = workInfos
     }
-    debugger
     $.ajax({
         type: 'post',
         url: baseUrl + '/notice/saveNotice',
         data: JSON.stringify(formData),
         contentType: 'application/json;charset=UTF-8',
         success: function (res) {
-            resFormData = res.data
             if (res.code == 200) {
+                resFormData = res.data
+
                 layer.msg('提交成功')
                 window.location.href = 'notifyManage.html'
                 sessionStorage.removeItem('notifyId')

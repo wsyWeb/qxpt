@@ -672,7 +672,7 @@ input::-moz-focus-inner {
     color: #525252;
 }
 .color-theme {
-    color: #0b65b7;
+    color: #2a6be3;
 }
 .color-success {
     color: #009688;
@@ -683,7 +683,7 @@ input::-moz-focus-inner {
 }
 .link-hover:hover {
     cursor: pointer;
-    color: #0b65b7;
+    color: #2a6be3;
 }
 .border {
     border: 1px solid #dedede;

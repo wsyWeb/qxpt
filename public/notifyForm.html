@@ -147,14 +147,18 @@
                             <div class="layui-form-item">
                                 <label class="layui-form-label required">导入</label>
                                 <div class="layui-input-block">
-                                    <a class="layui-btn" id="upload_word"><i class="layui-icon">&#xe67c;</i>上传word文档</a>
+                                    <a class="layui-btn layui-btn-primary layui-border-blue" id="upload_word"
+                                        ><i class="layui-icon">&#xe67c;</i>上传公告正文</a
+                                    >
                                     <div class="layui-inline word_wrap"></div>
                                 </div>
                             </div>
                             <div class="layui-form-item">
                                 <label class="layui-form-label">附件</label>
                                 <div class="layui-input-block">
-                                    <a class="layui-btn" id="upload_attachment"><i class="layui-icon">&#xe67c;</i>上传附件</a>
+                                    <a class="layui-btn layui-btn-primary layui-border-blue" id="upload_attachment"
+                                        ><i class="layui-icon">&#xe67c;</i>上传附件</a
+                                    >
                                     <div class="attachment_list"></div>
                                 </div>
                             </div>
@@ -220,7 +224,7 @@
                                             <h2 class="layui-colla-title">
                                                 <input type="text" class="layui-input" lay-filter="work_type_input" value="{{item.name}}" />
                                                 <i
-                                                    class="layui-icon-reduce-circle layui-icon font-18 cursor-pointer del-award-btn"
+                                                    class="del layui-icon-reduce-circle layui-icon font-18 cursor-pointer del-award-btn"
                                                     title="删除"
                                                     onclick="removeAwardTypeNode(this)"
                                                 ></i>

@@ -21,6 +21,44 @@
             .none {
                 display: none;
             }
+            #tabTitle li {
+                padding: 0 20px;
+                height: 80px;
+                /* line-height: 80px; */
+                width: 20%;
+                float: left;
+            }
+            #tabTitle li > div {
+                border: 1px solid #dedede;
+                border-radius: 4px;
+                text-align: center;
+                height: 100%;
+                color: #2a6be3;
+                font-weight: bold;
+                font-size: 15px;
+                cursor: pointer;
+                padding-top: 20px;
+            }
+            #tabTitle li > div .num {
+                color: #f04040;
+            }
+            #tabTitle li > div.active {
+                border: 1px solid #2a6be3;
+            }
+            .bold {
+                font-weight: bold;
+            }
+            .work-company {
+                right: 1px;
+                top: 1px;
+                height: 36px;
+                width: 40px;
+                text-align: center;
+                background: #fff;
+                border-left: 1px solid #dedede;
+                font-weight: normal;
+                line-height: 36px;
+            }
         </style>
     </head>
 
@@ -37,59 +75,50 @@
                             <a><cite id="curTitle">作品复审结果</cite></a>
                         </span>
                     </div>
+                    <ul id="tabTitle" class="overflow-hidden m-t-lg"></ul>
+                    <script id="tab_title" type="text/html">
+                        {{# layui.each(d, function(idx1, item){ }}
+                        <li>
+                            <div id="{{item.id}}" lay-id="{{item.id}}" class="item">
+                                {{item.name}}
+                                <div class="num"></div>
+                            </div>
+                        </li>
+                        {{# }); }}
+                    </script>
                     <div class="p-md">
-                        <!-- <ul id="tabTitle" class="flex-around-w"></ul>
-                        <script id="tab_title" type="text/html">
-                            {{# layui.each(d, function(idx1, item){ }}
-                            <li lay-id="{{item.id}}">{{item.name}}</li>
-                            {{# }); }}
-                        </script> -->
-                        <div class="layui-tab layui-tab-brief" lay-filter="worktype_tab">
-                            <ul class="layui-tab-title" id="tabTitle"></ul>
-                            <script id="tab_title" type="text/html">
-                                {{# layui.each(d, function(idx1, item){ }}
-                                <li lay-id="{{item.id}}">{{item.name}}</li>
-                                {{# }); }}
-                            </script>
-                        </div>
                         <div class="layui-row m-t-md">
-                            <div class="layui-col-md4">
-                                <div class="setting-wrap">
-                                    <div class="layui-inline">终审作品数</div>
+                            <form class="layui-form search_form m-b-xs" action="" lay-filter="search_form">
+                                <div>
+                                    <div class="layui-inline bold">参赛情况</div>
                                     <div class="layui-inline">
-                                        <input type="number" class="layui-input workNum" onblur="changeWorkNum(this)" value="5" />
+                                        <select class="activity_search" lay-verify="" lay-filter="activity_search" style="width: 100px">
+                                            <option value="">按单位统计</option>
+                                        </select>
                                     </div>
-                                    <div class="layui-inline">个</div>
                                 </div>
-                                <div class="m-t-md setting-wrap">
-                                    <div class="layui-inline">已选择</div>
-                                    <div class="layui-inline selectNum">5</div>
-                                    <div class="layui-inline">个作品</div>
+                            </form>
+                            <table lay-filter="statisticsTable" id="statisticsTable"></table>
+                        </div>
+                        <div class="m-t-lg p-t-lg">
+                            <div class="setting-wrap bold none">
+                                <div class="layui-inline">终审作品数</div>
+                                <div class="layui-inline relative">
+                                    <input type="number" class="layui-input workNum" onblur="changeWorkNum(this)" value="5" />
+                                    <div class="layui-inline absolute work-company">个</div>
                                 </div>
-                                <div class="total-wrap"></div>
-                            </div>
-                            <div class="layui-col-md8">
-                                <form class="layui-form search_form m-b-xs" action="" lay-filter="search_form">
-                                    <div>
-                                        <div class="layui-inline">参赛情况</div>
-                                        <div class="layui-inline">
-                                            <select class="activity_search" lay-verify="" lay-filter="activity_search" style="width: 100px">
-                                                <option value="">按单位统计</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </form>
-                                <table lay-filter="statisticsTable" id="statisticsTable"></table>
+
+                                <div class="layui-inline p-l-md">已选择</div>
+                                <div class="layui-inline selectNum bold color-theme">5</div>
+                                <div class="layui-inline">个作品</div>
                             </div>
                         </div>
-
-                        <div class="border-top m-t-lg m-b-lg"></div>
-                        <div class="text-center font-bold font-15">拟终审作品名单</div>
+                        <div class="bold m-b-xs">拟终审作品名单</div>
                         <table class="layui-hide" id="work_table" lay-filter="work_table"></table>
                         <div class="m-t-lg text-center optWrap none">
                             <!-- <button class="layui-btn layui-btn-primary" onclick="loadMore()">加载更多</button> -->
-                            <button class="layui-btn save-btn" onclick="saveFun()">保存</button>
-                            <button class="layui-btn none submit-btn" onclick="submitFun()">提交</button>
+                            <button class="layui-btn none save-btn" onclick="saveFun()">保存</button>
+                            <button class="layui-btn submit-btn" onclick="submitFun()">提交</button>
                         </div>
                     </div>
                 </div>
@@ -118,36 +147,40 @@
         var tabTpl = tab_title.innerHTML,
             titleWrap = document.getElementById('tabTitle')
 
-        element.on('tab(worktype_tab)', function () {
-            worksTypeId = this.getAttribute('lay-id')
+        $('#tabTitle').on('click', '.item', function (e) {
+            worksTypeId = $(this).attr('lay-id')
+            $('#tabTitle').find('.item').removeClass('active')
+            $(this).addClass('active')
             if (Number(worksTypeId) === 0) {
                 $('.submit-btn').show()
                 $('.save-btn').hide()
                 $('.setting-wrap').hide()
-                $('.total-wrap').show()
                 getTotalNum()
             } else {
                 $('.submit-btn').hide()
                 $('.save-btn').show()
                 $('.setting-wrap').show()
-                $('.total-wrap').hide()
             }
             getCompanyStatistic()
             getWorks()
         })
+
         // 获取作品统计数量
-        var getTotalNum = function () {
-            $('.total-wrap').empty()
+        getTotalNum = function () {
             $.get(baseUrl + '/works/finalCountByType?noticeId=' + noticeId, function (res) {
-                var el = ''
                 if (res.code === 200) {
-                    for (var i = 0; i < res.data.length; i++) {
-                        el += '<div class="m-b-sm">' + res.data[i].worksType + '：' + res.data[i].count + '</div>'
+                    for (var j = 0; j < worksTypes.length; j++) {
+                        var d =
+                            res.data.find((item) => {
+                                var id = item.worksTypeId
+                                if (!id) id = 0
+                                return id === worksTypes[j].id
+                            }) || {}
+                        $('#tabTitle')
+                            .find('#' + worksTypes[j].id + ' .num')
+                            .html((d.count || 0) + '个')
                     }
                 }
-                $('.total-wrap').append(el)
-                $('.setting-wrap').hide()
-                $('.total-wrap').show()
             })
         }
         // 获取进入终审的作品
@@ -179,16 +212,18 @@
         $.get(baseUrl + '/notice/detail?noticeId=' + noticeId, function (res) {
             if (res.code === 200) {
                 notifyDetail = res.data
-                var worksTypes = notifyDetail.worksTypes
-                worksTypes.push({ name: '全部', id: 0 })
+                worksTypes = notifyDetail.worksTypes
+                worksTypes.unshift({ name: '终审作品', id: 0 })
 
                 laytpl(tabTpl).render(notifyDetail.worksTypes, function (html) {
                     titleWrap.innerHTML = html
                 })
-                $('#tabTitle li:first-child').addClass('layui-this')
-                worksTypeId = $('#tabTitle li.layui-this').attr('lay-id')
+                $('#tabTitle li:first-child div').addClass('active')
+                worksTypeId = 0
+
                 getCompanyStatistic()
                 getWorks()
+                getTotalNum()
             }
         })
         renderStatisticsTable = function () {
@@ -320,6 +355,8 @@
         //         },
         //     })
         // })
+        renderStatisticsTable()
+        renderTable()
     })
     function changeWorkNum(target) {
         var num = parseInt($(target).val())
@@ -353,6 +390,7 @@
             success: function (res) {
                 if (res.code === 200) {
                     layer.msg('保存成功')
+                    getTotalNum()
                 }
             },
         })
