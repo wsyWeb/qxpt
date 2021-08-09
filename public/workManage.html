@@ -45,8 +45,8 @@
                         <div class="layui-inline">
                             <select class="activity_search" lay-verify="" lay-filter="activity_search" style="width: 100px"></select>
                         </div>
-                        <div class="layui-inline p-l-lg">当前环节</div>
-                        <div class="layui-inline">
+                        <div class="layui-inline p-l-lg cur-state none">当前环节</div>
+                        <div class="layui-inline cur-state none">
                             <a class="layui-btn activityState"><span>报名中</span></a>
                         </div>
                     </form>
@@ -148,6 +148,7 @@
             if (res.code === 200) {
                 notifyList = res.data
                 if (notifyList.length) {
+                    $('cur-state').show()
                     selectNotify = res.data[0]
                     if (!noticeId) {
                         sessionStorage.setItem('notifyId', selectNotify.id)
@@ -258,7 +259,6 @@
     }
     function setActivityState() {
         var v = ''
-        console.log(selectNotify.state)
 
         switch (selectNotify.state) {
             case 1:

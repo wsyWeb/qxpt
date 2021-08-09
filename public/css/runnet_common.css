@@ -345,6 +345,9 @@ input::-moz-focus-inner {
 .p-b-md {
     padding-bottom: 20px;
 }
+.p-r-md {
+    padding-right: 20px;
+}
 
 .p-md {
     padding: 20px;

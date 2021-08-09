@@ -73,8 +73,8 @@
                                 </div>
                             </div>
                             <div class="m-t-lg msg-title p-t-lg">
-                                <div class="nextNotice">上一篇：</div>
-                                <div class="prevNotice">下一篇：</div>
+                                <div class="nextNotice none">上一篇：</div>
+                                <div class="prevNotice none">下一篇：</div>
                             </div>
 
                             <div class="font-15 font-bold m-t-lg">在线留言</div>
@@ -256,11 +256,13 @@
             $('.nextNotice').append(
                 '<a class="link-hover " id="' + notifyDetail.nextId + '" onclick="toNotifyDetail(this)" >' + notifyDetail.nextTitle + '</a>'
             )
+            $('.nextNotice').show()
         }
         if (notifyDetail.lastTitle && notifyDetail.lastId) {
             $('.prevNotice').append(
                 '<a class="link-hover " id="' + notifyDetail.lastId + '" onclick="toNotifyDetail(this)" >' + notifyDetail.lastTitle + '</a>'
             )
+            $('.prevNotice').show()
         }
     }
     function signUp() {

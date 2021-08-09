@@ -20,6 +20,9 @@ var workThemeSelect = xmSelect.render({
     language: 'zn',
     layVerify: 'required',
     layVerType: 'msg',
+    theme: {
+        color: '#2a6be3',
+    },
     prop: {
         name: 'title',
         value: 'id',
@@ -39,7 +42,7 @@ layui.use(['form', 'upload', 'laydate'], function () {
     var form = layui.form,
         laydate = layui.laydate,
         upload = layui.upload
-
+    renderFormParams()
     $.get(baseUrl + '/notice/detail?noticeId=' + notifyId, function (res) {
         if (res.code === 200) {
             notifyDetail = res.data
@@ -141,7 +144,9 @@ function setWorkDefaultValue(form) {
         format: resFormData.format,
         smallTypeId: resFormData.smallTypeId,
     })
-    $('.workList').html('<a class="color-theme " target="_blank" href=' + imageUrl + resFormData.url + '>' + resFormData.filename + '</a>')
+    if (resFormData.url) {
+        $('.workList').html('<a class="color-theme " target="_blank" href=' + imageUrl + resFormData.url + '>' + resFormData.filename + '</a>')
+    }
 }
 function setSmallOption(form, id) {
     smallInfos =
@@ -257,8 +262,6 @@ function renderFormParams(laydate, type) {
                 '"/>'
         } else if (formParams[i].sort === 2) {
             el = '<textarea class="layui-textarea item" placeholder="' + formParams[i].placeholder + '">' + v + '</textarea>'
-        } else if (formParams[i].sort === 0) {
-            el = '<a class="layui-btn layui-btn-primary" id="companyAttachment">上传打扫件</a> <div class="layui-inline attachementList"></div>'
         }
         temp +=
             '<div class="layui-form-item" sort="' +

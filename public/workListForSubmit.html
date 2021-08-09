@@ -212,7 +212,13 @@
                         $('thead .laytable-cell-checkbox').children().remove()
                         for (var i = 0; i < d.data.length; i++) {
                             // 1、初审已通过的作品不能再次提交 2、提交次数大于3的作品不能再提交
-                            if (d.data[i].state === 2 || d.data[i].state === 3 || d.data[i].state === 4 || d.data[i].submitCount > 2) {
+                            if (
+                                d.data[i].state === 1 ||
+                                d.data[i].state === 2 ||
+                                d.data[i].state === 3 ||
+                                d.data[i].state === 4 ||
+                                d.data[i].submitCount > 2
+                            ) {
                                 // $('tr[data-index=' + i + '] input[type="checkbox"]').attr({
                                 //     name: 'layTableCheckbox_disabled',
                                 //     disabled: 'disabled',
