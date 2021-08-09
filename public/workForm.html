@@ -11,17 +11,24 @@
         <title>活动报名</title>
         <style>
             .wrok_form .layui-form-label {
-                width: 130px;
+                width: 110px;
+                /* text-align: left; */
             }
             .wrok_form .layui-input-block {
-                margin-left: 130px;
+                margin-left: 110px;
             }
             .tip-title {
                 font-weight: bold;
                 padding: 20px 0;
             }
-            .none {
-                display: none;
+            /* .wrok_form .layui-form-label {
+                text-align-last: justify;
+            } */
+            .wrok_form .basic-info > .layui-col-md6:nth-child(2n-1) {
+                padding-right: 50px;
+            }
+            .wrok_form .basic-info > .layui-col-md6:nth-child(2n) {
+                padding-left: 50px;
             }
         </style>
     </head>
@@ -43,137 +50,147 @@
                         <a><cite id="curTitle">作品信息编辑</cite></a>
                     </span>
                 </div>
-                <form class="layui-form m-t-md wrok_form" action="" lay-filter="work_form">
-                    <input name="noticeId" type="hidden" />
-                    <div class="block p-md">
-                        <div class="layui-form-item font-bold font-15">基本信息</div>
-
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">所属活动</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="activityName" readonly class="layui-input activityName" />
-                            </div>
-                        </div>
-                        <div class="layui-form-item worksInfo_wrap">
-                            <label class="layui-form-label required">报送作品性质</label>
-                            <div class="layui-input-block">
-                                <select name="worksInfo" lay-verify="required" lay-filter="worksInfo">
-                                    <option value="0">计划单列市</option>
-                                    <option value="1">气象类高校</option>
-                                    <option value="2">气象局单位</option>
-                                    <option value="3">团体组织（中学、社会性组织）</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label required">作品类型</label>
-                            <div class="layui-input-block">
-                                <div class="layui-inline">
-                                    <select id="work_type" name="worksTypeId" lay-verify="required" lay-filter="worksTypes"></select>
-                                </div>
-                                <div class="layui-inline">
-                                    <select id="small_type" name="smallTypeId" lay-verify="" lay-filter="smallType"></select>
+                <div class="block p-md m-t-md">
+                    <form class="layui-form wrok_form" action="" lay-filter="work_form">
+                        <input name="noticeId" type="hidden" />
+                        <div class="m-b-sm font-15 font-bold color-theme tips-title relative">平台信息</div>
+                        <div class="layui-row basic-info">
+                            <div class="layui-col-md6 m-b-sm">
+                                <label class="layui-form-label">所属活动</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="activityName" readonly class="layui-input activityName" />
                                 </div>
                             </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label required">作品主题</label>
-                            <div class="layui-input-block">
-                                <div id="workTheme"></div>
+                            <div class="layui-col-md6 m-b-sm worksInfo_wrap">
+                                <label class="layui-form-label required">报送作品性质</label>
+                                <div class="layui-input-block">
+                                    <select name="worksInfo" lay-verify="required" lay-filter="worksInfo">
+                                        <option value="0">计划单列市</option>
+                                        <option value="1">气象类高校</option>
+                                        <option value="2">气象局单位</option>
+                                        <option value="3">团体组织（中学、社会性组织）</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
+                            <div class="layui-col-md6 m-b-sm">
+                                <label class="layui-form-label required">作品类型</label>
+                                <div class="layui-input-block">
+                                    <div class="layui-col-md6">
+                                        <select id="work_type" name="worksTypeId" lay-verify="required" lay-filter="worksTypes"></select>
+                                    </div>
+                                    <div class="layui-col-md6">
+                                        <select id="small_type" name="smallTypeId" lay-verify="" lay-filter="smallType"></select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-md6 m-b-sm">
+                                <label class="layui-form-label required">作品主题</label>
+                                <div class="layui-input-block">
+                                    <div id="workTheme"></div>
+                                </div>
+                            </div>
+                            <div class="layui-col-md6 m-b-sm">
+                                <label class="layui-form-label required">作品名称</label>
+                                <div class="layui-input-block">
+                                    <input name="name" id="name" lay-verify="required" class="layui-input" />
+                                </div>
+                            </div>
+                            <div class="layui-col-md6 m-b-sm">
+                                <label class="layui-form-label required">作者</label>
+                                <div class="layui-input-block">
+                                    <input name="author" lay-verify="required" class="layui-input" />
+                                </div>
+                            </div>
+                            <div class="layui-col-md6 m-b-sm">
+                                <label class="layui-form-label">作品格式</label>
+                                <div class="layui-input-block">
+                                    <select name="format" id="workFormat" lay-filter="work_format"></select>
+                                </div>
+                            </div>
+                            <div class="layui-col-md6 m-b-sm" id="linkWrap">
+                                <label class="layui-form-label">作品链接</label>
+                                <div class="layui-input-block">
+                                    <input type="text" lay-verify="" placeholder="" class="layui-input" />
+                                </div>
+                            </div>
+                            <div class="layui-col-md6" id="uploadWork">
+                                <label class="layui-form-label required">上传作品</label>
+                                <div class="layui-input-block">
+                                    <a class="layui-btn layui-btn-primary layui-border-blue" id="workAttachment">点击上传</a>
+                                    <div class="layui-inline workList"></div>
+                                    <div class="uploadTip"></div>
+                                </div>
+                            </div>
 
-                        <div class="layui-form-item">
-                            <label class="layui-form-label required">作品名称</label>
+                            <div class="layui-col-md6" id="">
+                                <label class="layui-form-label">推荐单位盖章</label>
+                                <div class="layui-input-block">
+                                    <a class="layui-btn layui-btn-primary layui-border-blue" id="unionAttachment">上传打扫件</a>
+                                    <div class="layui-inline unionWrap"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="m-t-lg m-b-sm font-15 font-bold color-theme tips-title relative">推荐表信息</div>
+                            <div id="customDefineParmWrap" class="border p-md">
+                                <div id="formBasic"></div>
+                                <div id="formOther"></div>
+                                <div id="formList" class="none">
+                                    <div class="tip-title">参评作品目录</div>
+                                    <table class="layui-table">
+                                        <colgroup>
+                                            <col width="150" />
+                                            <col width="150" />
+                                            <col width="150" />
+                                            <col width="150" />
+                                            <col width="120" />
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th>作品标题</th>
+                                                <th>刊发媒体</th>
+                                                <th>刊发日期</th>
+                                                <th>版面</th>
+                                                <th>字数</th>
+                                                <th>备注（标出代表作）</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><input type="text" class="layui-input" /></td>
+                                                <td><input type="text" class="layui-input" /></td>
+                                                <td><input type="text" class="layui-input" /></td>
+                                                <td><input type="text" class="layui-input" /></td>
+                                                <td><input type="text" class="layui-input" /></td>
+                                                <td><input type="text" class="layui-input" /></td>
+                                                <td>
+                                                    <i
+                                                        class="layui-icon-reduce-circle layui-icon font-18 cursor-pointer del-award-btn"
+                                                        title="删除"
+                                                        onclick="removeColunmNode(this)"
+                                                    ></i>
+                                                    <i
+                                                        class="layui-icon-add-circle layui-icon font-18 cursor-pointer"
+                                                        title="新增"
+                                                        onclick="addColunmNode(this)"
+                                                    ></i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item m-t-lg p-l-md text-center">
                             <div class="layui-input-block">
-                                <input name="name" id="name" lay-verify="required" class="layui-input" />
+                                <a lay-submit class="layui-btn" lay-filter="submit_form">保存</a>
+                                <a lay-submit class="layui-btn layui-btn-primary" lay-filter="download">下载</a>
+                                <a class="layui-btn layui-btn-primary" onclick="back()">返回</a>
                             </div>
                         </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label required">作者</label>
-                            <div class="layui-input-block">
-                                <input name="author" lay-verify="required" class="layui-input" />
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">作品格式</label>
-                            <div class="layui-input-block">
-                                <select name="format" id="workFormat" lay-filter="work_format"></select>
-                            </div>
-                        </div>
-                        <div class="layui-form-item" id="uploadWork">
-                            <label class="layui-form-label required">上传作品</label>
-                            <div class="layui-input-block">
-                                <a class="layui-btn layui-btn-primary" id="workAttachment">点击上传</a>
-                                <div class="layui-inline workList"></div>
-                                <div class="uploadTip"></div>
-                            </div>
-                        </div>
-                        <div class="layui-form-item" id="linkWrap">
-                            <label class="layui-form-label">作品网页链接</label>
-                            <div class="layui-input-block">
-                                <input type="text" lay-verify="" placeholder="" class="layui-input" />
-                            </div>
-                        </div>
-                        <div class="layui-form-item font-bold font-15">推荐表信息</div>
-                        <div id="customDefineParmWrap" class="border p-md">
-                            <div id="formBasic"></div>
-                            <div id="formOther"></div>
-                            <div id="formList" class="none">
-                                <div class="tip-title">参评作品目录</div>
-                                <table class="layui-table">
-                                    <colgroup>
-                                        <col width="150" />
-                                        <col width="150" />
-                                        <col width="150" />
-                                        <col width="150" />
-                                        <col width="120" />
-                                    </colgroup>
-                                    <thead>
-                                        <tr>
-                                            <th>作品标题</th>
-                                            <th>刊发媒体</th>
-                                            <th>刊发日期</th>
-                                            <th>版面</th>
-                                            <th>字数</th>
-                                            <th>备注（标出代表作）</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><input type="text" class="layui-input" /></td>
-                                            <td><input type="text" class="layui-input" /></td>
-                                            <td><input type="text" class="layui-input" /></td>
-                                            <td><input type="text" class="layui-input" /></td>
-                                            <td><input type="text" class="layui-input" /></td>
-                                            <td><input type="text" class="layui-input" /></td>
-                                            <td>
-                                                <i
-                                                    class="layui-icon-reduce-circle layui-icon font-18 cursor-pointer del-award-btn"
-                                                    title="删除"
-                                                    onclick="removeColunmNode(this)"
-                                                ></i>
-                                                <i
-                                                    class="layui-icon-add-circle layui-icon font-18 cursor-pointer"
-                                                    title="新增"
-                                                    onclick="addColunmNode(this)"
-                                                ></i>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="layui-form-item m-t-lg p-l-md text-center">
-                        <div class="layui-input-block">
-                            <a lay-submit class="layui-btn" lay-filter="submit_form">保存</a>
-                            <a lay-submit class="layui-btn layui-btn-primary" lay-filter="download">下载</a>
-                            <a class="layui-btn layui-btn-primary" onclick="back()">返回</a>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </body>

@@ -222,11 +222,11 @@
 /* 表单里增加删除按钮 */
 .layui-icon-reduce-circle.del {
     color: #f04040;
-    font-weight: 700 !important;
+    /* font-weight: 700 !important; */
 }
 .layui-icon-add-circle.add {
     color: #2a6be3;
-    font-weight: 700 !important;
+    /* font-weight: 700 !important; */
 }
 .layui-layer-page .layui-layer-content {
     overflow: visible !important;
