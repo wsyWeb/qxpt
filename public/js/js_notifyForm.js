@@ -312,9 +312,11 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
         if (Number(obj.value) === 1) {
             $('a[lay-filter="next"]').show()
             $('a[lay-filter="release"]').hide()
+            $('.workImgWrap').show()
         } else {
             $('a[lay-filter="next"]').hide()
             $('a[lay-filter="release"]').show()
+            $('.workImgWrap').hide()
         }
         if (Number(obj.value) === 1 && Number(form.val('notyfy_form').isCollection) !== 1) {
             $('.activityInfoWrap').show()
@@ -439,6 +441,27 @@ layui.use(['upload', 'laydate', 'form', 'laytpl', 'element', 'table'], function 
             layer.msg('上传失败')
         },
     })
+    upload.render({
+        elem: '#upload_img', //绑定元素
+        url: baseUrl + '/upload/fileUpload', //上传接口
+        accept: 'images',
+        acceptMime: 'image/*',
+        done: function (res) {
+            if (res.code != 200) {
+                layer.msg('上传失败')
+            } else {
+                resFormData.img = res.data.newFileName
+                $('#img_wrap')
+                    .find('img')
+                    .attr('src', imageUrl + '/' + res.data.newFileName)
+                $('#img_wrap').show()
+            }
+            //上传完毕回调
+        },
+        error: function () {
+            layer.msg('上传失败')
+        },
+    })
 })
 function updateExpertMemberSelectStatus() {
     var finalExperts = resFormData.finalExperts || []
@@ -470,7 +493,10 @@ function setFormDefaultValue(form) {
         expertWeight: resFormData.expertWeight,
         voteWeight: resFormData.voteWeight,
     })
-    $('.word_wrap').html('<a class="color-theme" href="' + resFormData.filePath + '" target="_blank">' + resFormData.fileName + '</a>')
+    $('.word_wrap').html('<a class="color-theme" href="' + imageUrl + resFormData.filePath + '" target="_blank">' + resFormData.fileName + '</a>')
+    $('#img_wrap')
+        .find('img')
+        .attr('src', imageUrl + '/' + resFormData.img)
     for (var i = 0; i < resFormData.enclosures.length; i++) {
         $('.attachment_list').append(
             '<li> <a class="color-theme " target="_blank" href=' +
@@ -490,6 +516,7 @@ function setFormDefaultValue(form) {
     if (Number(resFormData.isEnter) === 1) {
         $('a[lay-filter="next"]').show()
         $('a[lay-filter="release"]').hide()
+        $('.workImgWrap').show()
         if (Number(resFormData.isCollection) !== 1) {
             $('.activityInfoWrap').show()
         }

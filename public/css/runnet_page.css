@@ -54,6 +54,9 @@
     -ms-border-radius: 2px;
     -o-border-radius: 2px; */
 }
+.none {
+    display: none;
+}
 .scroll-y {
     overflow-y: scroll;
 }
@@ -138,6 +141,18 @@
     -ms-transform: scale(1.3);
     -o-transform: scale(1.3);
 }
+.tips-title {
+    position: relative;
+}
+.tips-title::before {
+    content: '';
+    width: 2px;
+    height: 13px;
+    background-color: #2a6be3;
+    position: absolute;
+    left: -10px;
+    top: 4px;
+}
 /* 覆盖layui 样式 */
 /*分页*/
 .layui-table-page {
@@ -207,9 +222,11 @@
 /* 表单里增加删除按钮 */
 .layui-icon-reduce-circle.del {
     color: #f04040;
+    font-weight: 700 !important;
 }
 .layui-icon-add-circle.add {
     color: #2a6be3;
+    font-weight: 700 !important;
 }
 .layui-layer-page .layui-layer-content {
     overflow: visible !important;

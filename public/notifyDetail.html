@@ -36,6 +36,9 @@
                 line-height: 50px;
                 padding: 0 20px;
             }
+            #notifyContent img {
+                width: 100%;
+            }
         </style>
     </head>
 
@@ -58,6 +61,7 @@
                     <div class="layui-col-md9">
                         <div class="block p-md overflow-hidden m-r-md">
                             <div id="notifyContent">
+                                <iframe id="Iframe" frameborder="0" scrolling="no" style="border: 0px"></iframe>
                             </div>
                             <div class="overflow-hidden">
                                 <div class="float-left">附件：</div>
@@ -69,8 +73,8 @@
                                 </div>
                             </div>
                             <div class="m-t-lg msg-title p-t-lg">
-                                <div>上一篇：<a class="link-hover">魏凤和同德国国防部长视频通话</a></div>
-                                <div>下一篇：<a class="link-hover">刘鹤出席天问一号探测器着陆火星首批科学影像图揭幕仪式</a></div>
+                                <div class="nextNotice">上一篇：</div>
+                                <div class="prevNotice">下一篇：</div>
                             </div>
 
                             <div class="font-15 font-bold m-t-lg">在线留言</div>
@@ -182,12 +186,22 @@
         var notifyTpl = notify_demo.innerHTML
         var notifyView = document.getElementById('notify-wrap')
 
-        $.get(baseUrl + '/notice/detail?noticeId=' + notifyId, function (res) {
+        $.get(baseUrl + '/notice/noticeText?noticeId=' + notifyId, function (res) {
             if (res.code === 200) {
                 notifyDetail = res.data
-                if (notifyDetail.pdfPng && notifyDetail.pdfPng.length) {
-                    for (var i = 0; i < notifyDetail.pdfPng.length; i++) {
-                        $('#notifyContent').append('<img src="' + baseUrl+ '/'+notifyDetail.pdfPng[i] + '"/>')
+                if (notifyDetail.pdfToPngList && notifyDetail.pdfToPngList.length) {
+                    for (var i = 0; i < notifyDetail.pdfToPngList.length; i++) {
+                        $('#notifyContent').append('<img src="' + baseUrl + '/' + notifyDetail.pdfToPngList[i] + '"/>')
+                    }
+                } else {
+                    var iframe = document.getElementById('Iframe')
+                    iframe.style.width = '100%'
+                    iframe.src = baseUrl + '/' + res.data.wordToHtml
+                    iframe.onload = function () {
+                        var iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow
+                        if (iframeWin.document.body) {
+                            iframe.height = iframeWin.document.body.scrollHeight
+                        }
                     }
                 }
                 setAttachement()
@@ -237,6 +251,16 @@
         }
         if (Number(notifyDetail.isEnter !== 1)) {
             $('.activity-rigister-wrap').hide()
+        }
+        if (notifyDetail.nextTitle && notifyDetail.nextId) {
+            $('.nextNotice').append(
+                '<a class="link-hover " id="' + notifyDetail.nextId + '" onclick="toNotifyDetail(this)" >' + notifyDetail.nextTitle + '</a>'
+            )
+        }
+        if (notifyDetail.lastTitle && notifyDetail.lastId) {
+            $('.prevNotice').append(
+                '<a class="link-hover " id="' + notifyDetail.lastId + '" onclick="toNotifyDetail(this)" >' + notifyDetail.lastTitle + '</a>'
+            )
         }
     }
     function signUp() {

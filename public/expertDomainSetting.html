@@ -11,20 +11,34 @@
         <link rel="stylesheet" href="css/font/iconfont.css" />
         <title>专家领域设置</title>
         <style>
-            #treeWrap .layui-colla-title .layui-btn-group {
+            #treeWrap .layui-btn-group {
                 position: absolute;
                 right: 15px;
                 top: 0;
             }
+            .add-tree-node {
+                line-height: 38px;
+                border: 1px dashed #2a6be3;
+                color: #2a6be3;
+                cursor: pointer;
+                text-align: center;
+            }
+            #treeWrap .layui-btn-group .layui-btn {
+                background-color: transparent !important;
+                color: #2a6be3;
+            }
+            #treeWrap .layui-btn-group .layui-btn.del {
+                color: #f04040;
+            }
             #treeWrap .item {
-                border: 1px solid #c9c9c9;
-                padding: 5px 0 5px 10px;
+                margin-bottom: 10px;
+                padding-left: 20px;
             }
             #treeWrap .item .layui-btn {
                 border-color: transparent;
             }
-            #treeWrap .item .layui-btn {
-                border-left: 1px solid #c9c9c9;
+            #treeWrap .item .layui-btn-group {
+                right: 0;
             }
             .basic-info .right .iconfont {
                 font-size: 120px;
@@ -32,11 +46,11 @@
                 border: 1px solid #dedede;
                 padding: 10px 0px;
             }
-            .register_expert_form .basic-info .layui-form-label {
+            .register_expert_form .layui-form-label {
                 text-align: right;
                 text-align-last: justify;
             }
-            .register_expert_form .basic-info .layui-input-block {
+            .register_expert_form .layui-input-block {
                 margin-right: 20px;
                 margin-left: 80px;
             }
@@ -51,20 +65,11 @@
                 color: #f04040;
                 cursor: pointer;
             }
-            .addNodeWrap {
+            .addExpertNodeWrap {
                 line-height: 40px;
                 border: 1px dashed #2a6be3;
                 text-align: center;
                 color: #2a6be3;
-            }
-            .tips-title::before {
-                content: '';
-                width: 2px;
-                height: 13px;
-                background-color: #2a6be3;
-                position: absolute;
-                left: -10px;
-                top: 4px;
             }
         </style>
     </head>
@@ -77,57 +82,26 @@
             <div class="wrap p-t-lg overflow-hidden" id="expertFormSetting">
                 <div id="my_space_nav" class="m-r-md float-left" style="width: 180px"></div>
                 <div id="my_space_content" class="float-left p-md" style="width: 1000px">
-                    <div class="m-b-md">
-                        <span class="font-15 font-bold">领域设置</span>
-                        <a onclick="addFun(this, 1)" class="layui-btn layui-btn-sm">新增</a>
-                    </div>
-                    <ul id="tree-wrap"></ul>
-                    <div class="layui-collapse" id="treeWrap"></div>
                     <script id="tree" type="text/html">
                         {{# layui.each(d, function(idx1, item){ }}
                         <div class="layui-colla-item">
                             <h2 class="layui-colla-title">
                                 {{item.title}}
                                 <div class="layui-btn-group">
-                                    <button type="button" class="layui-btn layui-btn-primary layui-btn-xs" id="{{item.id}}" onclick="addFun(this)">
-                                        <i class="layui-icon">&#xe654;</i>
-                                    </button>
-                                    <button
-                                        type="button"
-                                        class="layui-btn layui-btn-primary layui-btn-xs"
-                                        name="{{item.title}}"
-                                        id="{{item.id}}"
-                                        onclick="updateFun(this)"
-                                    >
-                                        <i class="layui-icon">&#xe642;</i>
-                                    </button>
-                                    <button type="button" class="layui-btn layui-btn-primary layui-btn-xs" id="{{item.id}}" onclick="deleteFun(this)">
-                                        <i class="layui-icon">&#xe640;</i>
-                                    </button>
+                                    <a class="layui-btn layui-btn-xs add" name="{{item.title}}" id="{{item.id}}" onclick="addFun(this)">新增</a>
+                                    <a class="layui-btn layui-btn-xs" name="{{item.title}}" id="{{item.id}}" onclick="updateFun(this)">编辑</a>
+                                    <a class="layui-btn layui-btn-xs del" name="{{item.title}}" id="{{item.id}}" onclick="deleteFun(this)">删除</a>
                                 </div>
                             </h2>
                             <div class="layui-colla-content">
                                 {{# layui.each(item.children, function(idx2, work){ }}
-                                <div class="layui-inline item relative">
+                                <div class="item relative">
                                     <span>{{work.title}}</span>
                                     <div class="layui-btn-group">
-                                        <button
-                                            type="button"
-                                            class="layui-btn layui-btn-primary layui-btn-xs"
-                                            name="{{work.title}}"
-                                            id="{{work.id}}"
-                                            onclick="updateFun(this)"
+                                        <a class="layui-btn layui-btn-xs" name="{{work.title}}" id="{{work.id}}" onclick="updateFun(this)">编辑</a>
+                                        <a class="layui-btn layui-btn-xs del" name="{{work.title}}" id="{{work.id}}" onclick="deleteFun(this)"
+                                            >删除</a
                                         >
-                                            <i class="layui-icon">&#xe642;</i>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            class="layui-btn layui-btn-primary layui-btn-xs"
-                                            id="{{work.id}}"
-                                            onclick="deleteFun(this)"
-                                        >
-                                            <i class="layui-icon">&#xe640;</i>
-                                        </button>
                                     </div>
                                 </div>
                                 {{# }); }}
@@ -138,14 +112,17 @@
                     </script>
                     <div id="expert_form" class="m-t-lg">
                         <form class="layui-form m-t-md register_expert_form" action="" lay-filter="register_expert_form">
-                            <div class="m-t-sm font-15 font-bold color-theme tips-title relative">平台信息</div>
+                            <div class="m-t-lg m-b-sm font-15 font-bold color-theme tips-title relative">平台信息</div>
                             <div class="layui-row">
                                 <label class="layui-form-label">入驻领域</label>
                                 <div class="layui-input-block">
-                                    <a class="layui-btn layui-btn-sm">设置</a>
+                                    <div class="add-tree-node" onclick="addFun(this, 1)"><i class="layui-icon-addition layui-icon"></i> 新增</div>
+                                    <ul id="tree-wrap"></ul>
+                                    <div class="layui-collapse" id="treeWrap"></div>
+                                    <!-- <a class="layui-btn layui-btn-sm">设置</a> -->
                                 </div>
                             </div>
-                            <div class="m-t-sm font-15 font-bold color-theme">基本信息</div>
+                            <div class="m-t-lg m-b-sm font-15 font-bold color-theme tips-title">基本信息</div>
                             <div class="layui-row basic-info">
                                 <div class="layui-col-md10 left">
                                     <div class="layui-col-md4 m-b-sm">
@@ -157,7 +134,8 @@
                                     <div class="layui-col-md4 m-b-sm">
                                         <label class="layui-form-label">性别</label>
                                         <div class="layui-input-block">
-                                            <input type="text" readonly class="layui-input" />
+                                            <input type="radio" name="gender" value="男" title="男" />
+                                            <input type="radio" name="gender" value="女" title="女" />
                                         </div>
                                     </div>
                                     <div class="layui-col-md4 m-b-sm">
@@ -240,18 +218,14 @@
                                             <input type="text" readonly class="layui-input" />
                                         </div>
                                     </div>
-                                    <!-- <div class="layui-col-md4">
-                                        <label class="layui-form-label">入驻领域</label>
-                                        <div class="layui-input-block"></div>
-                                    </div> -->
                                 </div>
                                 <div class="layui-col-md2 right text-right">
                                     <i class="iconfont icon-morentouxiang"></i>
                                 </div>
                             </div>
-                            <div class="m-t-sm font-15 font-bold color-theme">个人经验</div>
+                            <div class="m-t-lg m-b-sm font-15 font-bold color-theme tips-title">个人经验</div>
                             <div class="defaultExpertParams"></div>
-                            <div class="addNodeWrap cursor-pointer" onclick="addNode()">
+                            <div class="addExpertNodeWrap cursor-pointer" onclick="addNode()">
                                 <i class="layui-icon-add-circle layui-icon"> 新增节点</i>
                             </div>
                             <div class="text-center m-t-lg"><a class="layui-btn layui-btn save-btn" lay-submit lay-filter="save_form">保存</a></div>
@@ -269,6 +243,10 @@
 <script>
     $('#my_space_nav').load('templates/my_space_nav.html')
 
+    // $('#treeWrap').on('click', '.add', function (e) {
+    //     layui.stope(e)
+    //     console.log('asjdsj ', e.target)
+    // })
     var treeLists = [],
         resExpertParams = [],
         renderTree
@@ -278,6 +256,7 @@
             form = layui.form
         var tpl = tree.innerHTML
         var view = document.getElementById('treeWrap')
+
         renderTree = function () {
             $.get(baseUrl + '/entryField/queryEntryFieldList', function (res) {
                 if (res.code === 200) {
@@ -407,7 +386,7 @@
                     '<input class="layui-input title" lay-verify="required" value="' +
                     resExpertParams[i].title +
                     '"/>' +
-                    '<i class="layui-icon layui-icon-reduce-circle del-btn" onclick="removeNode(this)"></i>'
+                    '<i class="layui-icon layui-icon-reduce-circle del" onclick="removeNode(this)"></i>'
             } else {
                 opt = '<input class="layui-input title" disabled lay-verify="required" value="' + resExpertParams[i].title + '"/>'
             }
@@ -426,7 +405,7 @@
         $('.defaultExpertParams').append(
             '<div class="layui-form-item relative">' +
                 '<input class="layui-input title" lay-verify="required" placeholder="请输入节点名称"/>' +
-                '<i class="layui-icon layui-icon-reduce-circle  del-btn" onclick="removeNode(this)"></i>' +
+                '<i class="layui-icon layui-icon-reduce-circle  del" onclick="removeNode(this)"></i>' +
                 '</div>'
         )
     }
