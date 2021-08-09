@@ -143,6 +143,7 @@
 }
 .tips-title {
     position: relative;
+    padding-left: 10px;
 }
 .tips-title::before {
     content: '';
@@ -150,7 +151,7 @@
     height: 13px;
     background-color: #2a6be3;
     position: absolute;
-    left: -10px;
+    left: -0;
     top: 4px;
 }
 /* 覆盖layui 样式 */

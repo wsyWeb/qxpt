@@ -1,6 +1,7 @@
 <link rel="stylesheet" href="lib/layui/css/layui.css" />
 <link rel="stylesheet" href="css/runnet_common.css" />
 <link rel="stylesheet" href="css/runnet_page.css" />
+<link rel="stylesheet" href="css/font/iconfont.css" />
 <style>
     /* .register_expert_form .layui-input,
     .register_expert_form .layui-textarea,
@@ -10,31 +11,43 @@
     .register_expert_form .layui-textarea:focus {
         border-color: transparent !important;
     } */
-    .register_expert_form .layui-form-label,
+    .register_expert_form .basic-info .layui-form-label,
     .commnt .layui-form-label {
         text-align: right;
         text-align-last: justify;
+    }
+    .commnt .layui-form-label {
+        color: #2a6be3;
+        font-weight: bold;
     }
     .register_expert_form .layui-input-block,
     .commnt .layui-input-block {
         margin-right: 20px;
         margin-left: 80px;
     }
-    .commnt .layui-input-block {
-        min-height: 100px;
-    }
-    .upload-img {
-        margin-left: 80px;
+    .basic-info .right .iconfont {
+        font-size: 100px;
+        color: #ddd;
+        border: 1px solid #dedede;
+        padding: 10px 0px;
     }
     .none {
         display: none;
+    }
+    .defaultExpertParams .layui-form-label {
+        display: block;
+        width: 100%;
+        text-align: left;
+    }
+    .defaultExpertParams .layui-input-block {
+        margin-left: 0;
     }
     /* #headPortrait-img {
         borde: 1px solid #dedede;
     } */
 </style>
-<form class="layui-form m-t-md register_expert_form" action="" lay-filter="register_expert_form">
-    <div class="m-t-lg m-b-sm font-15 font-bold color-theme tips-title relative">平台信息</div>
+<form class="layui-form p-md register_expert_form" action="" lay-filter="register_expert_form">
+    <div class="m-b-sm font-15 font-bold color-theme tips-title relative">平台信息</div>
     <div class="layui-row basic-info">
         <div class="layui-col-md10 left">
             <div class="layui-col-md4 m-b-sm">
@@ -137,33 +150,34 @@
                 </div>
             </div>
         </div>
-        <div class="layui-col-md2 right">
-            <div>
-                <i class="iconfont icon-morentouxiang default-headPortrait"></i>
-                <img id="headPortrait-img none" width="100px" height="120px" />
-            </div>
+        <div class="layui-col-md2 right text-right">
+            <i class="iconfont icon-morentouxiang default-headPortrait"></i>
+            <img id="headPortrait-img" class="none" width="100px" height="120px" />
         </div>
     </div>
+    <div class="m-t-md m-b-sm font-15 font-bold color-theme tips-title relative">个人经验</div>
     <div class="defaultExpertParams"></div>
 </form>
-<div class="commnt-wrap commnt">
-    <div class="layui-row">
-        <label class="layui-form-label required">评分</label>
-        <div class="layui-input-block">
-            <input style="width: 500px; display: inline-block" name="score" type="number" class="layui-input comment-input" lay-verify="required" />
-            <a class="color-theme cursor-pointer">查看评分标准</a>
+<div class="commnt-wrap commnt p-l-md p-r-md m-b-md">
+    <!-- <div>参考评分标准</div> -->
+    <div class="border p-b-md p-t-md">
+        <div class="layui-form-item score-wrap">
+            <label class="layui-form-label required">评分</label>
+            <div class="layui-input-block">
+                <input name="score" type="number" placeholder="请打分" class="layui-input comment-input" lay-verify="required" />
+            </div>
         </div>
-    </div>
-    <div class="layui-row m-t-md">
-        <label class="layui-form-label required">评价</label>
-        <div class="layui-input-block">
-            <textarea
-                name="evaluate"
-                placeholder="请输入评价，限500字"
-                maxlength="500"
-                class="layui-textarea comment-input"
-                lay-verify="required"
-            ></textarea>
+        <div>
+            <label class="layui-form-label required">评价</label>
+            <div class="layui-input-block">
+                <textarea
+                    name="evaluate"
+                    placeholder="请输入评价，限500字"
+                    maxlength="500"
+                    class="layui-textarea comment-input"
+                    lay-verify="required"
+                ></textarea>
+            </div>
         </div>
     </div>
 </div>
@@ -191,29 +205,30 @@
         if (formData.examineStatus == 1) {
             $('.commnt-wrap').find('input').attr('readonly', true)
             $('.commnt-wrap').find('textarea').attr('readonly', true)
+            $('.scoreCondition').hide()
         }
         for (var i = 0; i < formData.dataArr.length; i++) {
-            $('.defaultExpertParams').append(
-                '<div class="layui-form-item" disable="' +
-                    formData.dataArr[i].disable +
-                    '">' +
-                    '<label class="layui-form-label"> ' +
-                    formData.dataArr[i].title +
-                    '</label>' +
-                    '<div class="layui-input-block"><textarea readonly class="layui-textarea content">' +
-                    formData.dataArr[i].value +
-                    '</textarea></div>' +
-                    '</div>'
-            )
+            if (!!formData.dataArr[i].value || Number(formData.dataArr[i].disable) === 1) {
+                $('.defaultExpertParams').append(
+                    '<div class="layui-form-item" disable="' +
+                        formData.dataArr[i].disable +
+                        '">' +
+                        '<label class="layui-form-label"> ' +
+                        formData.dataArr[i].title +
+                        '</label>' +
+                        '<div class="layui-input-block"><textarea readonly class="layui-textarea content">' +
+                        formData.dataArr[i].value +
+                        '</textarea></div>' +
+                        '</div>'
+                )
+            }
         }
         var node = $('.layui-form-item[disable="1"]').find('.layui-input-block') //获取单位节点
         node.empty()
         for (var i = 0; i < formData.resumeAddressArr.length; i++) {
             var item = formData.resumeAddressArr[i]
             node.append(
-                '<div class="p-b-md p-t-sm p-l-md"><span>附件' +
-                    (i + 1) +
-                    '：</span><a class="color-theme" target="_blak" href=' +
+                '<div class="p-b-md p-t-sm"><a class="color-theme" target="_blak" href=' +
                     imageUrl +
                     item.newFileName +
                     '>' +
@@ -254,6 +269,9 @@
                 scorereadonly: formData.score,
                 evaluatereadonly: formData.evaluate,
             })
+
+            $('input[name="score"]').val(formData.score)
+            $('textarea[name="evaluate"]').val(formData.evaluate)
         })
     }
 
