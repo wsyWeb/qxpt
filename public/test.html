@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatib le" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="lib/layui/css/layui.css" />
+    <link rel="stylesheet" type="text/css" href="http://10.168.0.218:8086/rsp-group-innovation/static/css/common.css"/>
+
+    <link rel="stylesheet" href="css/font/iconfont.css" />
+    <link rel="stylesheet" href="css/runnet_common.css" />
+    <link rel="stylesheet" href="css/runnet_page.css" />
+    <title>注册专家</title>
+    <style>
+        .invitation_code_wrap {
+            width: 400px;
+            margin: auto;
+            padding-top: 100px;
+            text-align: center;
+        }
+        .code_input_wrap {
+            width: 100%;
+            height: 100px;
+            padding: 30px;
+        }
+        .code_input_wrap .layui-input {
+            /* width: 100px; */
+            /* background-color: rgb(242, 242, 242); */
+            border-color: transparent;
+        }
+        .code_input_wrap .layui-input:hover,
+        .code_input_wrap .layui-input:focus {
+            border-color: transparent !important;
+        }
+        .register_expert_form {
+            /* padding: 20px 50px; */
+            display: none;
+        }
+        .register_expert_form .layui-input {
+            /* width: 80%; */
+        }
+        .basic-info .layui-form-label {
+            width: 120px;
+        }
+        .basic-info .layui-input-block {
+            margin-left: 120px;
+        }
+        .register_expert_form .achievement .layui-input-block {
+            margin-left: 0;
+        }
+        .layui-col-md6 {
+            margin-bottom: 15px;
+        }
+        .upload-img {
+            width: 100px;
+            height: 120px;
+            position: relative;
+        }
+        .not-image {
+            /* background-color: #ccc; */
+            /* border: 1px solid #ccc; */
+            cursor: pointer;
+        }
+        .not-image::before {
+            content: '+';
+            color: #ccc;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 60px;
+        }
+        .file-lists li {
+            width: 500px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .file-lists i {
+            position: absolute;
+            right: 0;
+        }
+        .file-lists i:hover,
+        .defaultExpertParams .layui-icon-reduce-circle:hover {
+            color: red;
+        }
+
+        .defaultExpertParams .layui-form-item:not(:first-child) {
+            border-top: 1px dashed #ccc;
+            padding-top: 15px;
+        }
+        .defaultExpertParams .layui-form-item[disable='1'] .layui-input-block {
+            display: none;
+        }
+    </style>
+</head>
+
+<div>
+    <button onclick="validateCode()">下载</button>
+</div>
+</html>
+<script src="lib/layui/layui.all.js"></script>
+<script src="lib/jquery.js"></script>
+<script type="text/javascript" src="http://10.168.0.218:8086/rsp-group-innovation/static/js/common.js"></script>
+
+<script src="lib/layui/xm-select.js"></script>
+<script src="js/base.js"></script>
+<script src="js/js_expertForm.js"></script>
+<script>
+    if (sessionStorage.getItem('verificationCode')) {
+        $('.invitation_code_wrap').hide()
+        $('.register_expert_form').show()
+    }
+    function validateCode() {
+        window.location.href = baseUrl + '/notice/test'
+    }
+</script>

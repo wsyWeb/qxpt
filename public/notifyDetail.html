@@ -58,9 +58,6 @@
                     <div class="layui-col-md9">
                         <div class="block p-md overflow-hidden m-r-md">
                             <div id="notifyContent">
-                                <img src="images/abc/iecPDF_0.png" style="width: 100%" />
-                                <img src="images/abc/iecPDF_1.png" style="width: 100%" />
-                                <img src="images/abc/iecPDF_2.png" style="width: 100%" />
                             </div>
                             <div class="overflow-hidden">
                                 <div class="float-left">附件：</div>
@@ -190,7 +187,7 @@
                 notifyDetail = res.data
                 if (notifyDetail.pdfPng && notifyDetail.pdfPng.length) {
                     for (var i = 0; i < notifyDetail.pdfPng.length; i++) {
-                        $('#notifyContent').append('<img src="' + notifyDetail.pdfPng[i] + '"/>')
+                        $('#notifyContent').append('<img src="' + baseUrl+ '/'+notifyDetail.pdfPng[i] + '"/>')
                     }
                 }
                 setAttachement()

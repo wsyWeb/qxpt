@@ -1,4 +1,4 @@
-var baseUrl = '/rsp-group-innovation';//正式环境
+var baseUrl = 'http://11.1.1.186:8082/rsp-group-innovation';//正式环境
 var imageUrl = 'http://10.168.0.218:20001/';//正式环境
 //var imageUrl = 'http://11.1.1.186:20001/' ;//测试环境 没用
 
